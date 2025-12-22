@@ -8,7 +8,7 @@
 /* ================= BASE ================= */
 body {
   font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-  background: #F3EEE8; /* LOGO BACKGROUND */
+  background: #F3EEE8; /* Logo background */
   color: #2A1E1A;
   line-height: 1.65;
 }
@@ -118,26 +118,65 @@ h1, h2, h3 {
   border-radius: 4px;
 }
 
-/* ================= SECTIONS ================= */
+/* ================= SECTIONS (BASE) ================= */
 section {
   max-width: 1200px;
   margin: 0 auto;
   padding: 72px 8%;
-  background: transparent;
 }
 
+/* Clear break after header */
+.site-header + section {
+  margin-top: 32px;
+}
+
+/* ================= SECTION EMPHASIS ================= */
+.about,
+.waitlist,
+.contact {
+  background: rgba(255, 255, 255, 0.55);
+  border: 1px solid rgba(124, 74, 44, 0.18);
+  border-radius: 12px;
+  margin: 64px auto;
+  padding: 64px 8%;
+}
+
+/* Subtle alternation so sections don’t blend */
+.about:nth-of-type(even) {
+  background: rgba(255, 255, 255, 0.45);
+}
+
+/* ================= SECTION HEADINGS ================= */
 section h2 {
-  font-size: 44px;
+  font-size: 42px;
   text-align: center;
-  margin-bottom: 20px;
+  margin-bottom: 28px;
+  position: relative;
+  letter-spacing: 0.3px;
 }
 
+/* Elegant divider under headings */
+section h2::after {
+  content: "";
+  display: block;
+  width: 48px;
+  height: 1px;
+  background: rgba(124, 74, 44, 0.6);
+  margin: 18px auto 0;
+}
+
+/* ================= SECTION TEXT ================= */
 section p {
   max-width: 720px;
   margin: 0 auto;
   text-align: center;
   font-size: 18px;
   color: rgba(42,30,26,0.78);
+}
+
+/* Better paragraph rhythm */
+section p + p {
+  margin-top: 18px;
 }
 
 /* ================= HOSTS ================= */
@@ -149,7 +188,7 @@ section p {
 }
 
 .host-card {
-  background: rgba(255,255,255,0.7);
+  background: rgba(255,255,255,0.75);
   border: 1px solid rgba(124,74,44,0.22);
   padding: 44px 32px;
   text-align: center;
@@ -157,7 +196,7 @@ section p {
 }
 
 .host-card:hover {
-  background: rgba(255,255,255,0.9);
+  background: rgba(255,255,255,0.95);
   transform: translateY(-3px);
 }
 
@@ -174,7 +213,7 @@ section p {
   aspect-ratio: 3 / 4;
   object-fit: cover;
   filter: grayscale(20%);
-  border-radius: 2px;
+  border-radius: 4px;
   transition: 0.4s ease;
 }
 
@@ -187,8 +226,7 @@ section p {
 .waitlist {
   text-align: center;
   background: rgba(124,74,44,0.08);
-  border-top: 1px solid rgba(124,74,44,0.22);
-  border-bottom: 1px solid rgba(124,74,44,0.22);
+  border: 1px solid rgba(124,74,44,0.22);
 }
 
 /* Buttons */
@@ -200,7 +238,7 @@ section p {
   color: #fff;
   text-decoration: none;
   font-size: 15px;
-  border-radius: 2px;
+  border-radius: 4px;
   transition: 0.3s ease;
 }
 
@@ -272,6 +310,13 @@ footer {
     padding: 52px 5%;
   }
 
+  .about,
+  .waitlist,
+  .contact {
+    padding: 48px 5%;
+    margin: 48px auto;
+  }
+
   .hosts-grid {
     grid-template-columns: 1fr;
   }
@@ -284,3 +329,4 @@ footer {
     flex-direction: column;
   }
 }
+
