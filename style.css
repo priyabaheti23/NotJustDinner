@@ -8,8 +8,8 @@
 /* ================= BASE ================= */
 body {
   font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-  background: #f8f4ef;
-  color: #2a1e1a;
+  background: #F3EEE8; /* LOGO BACKGROUND */
+  color: #2A1E1A;
   line-height: 1.65;
 }
 
@@ -24,9 +24,9 @@ h1, h2, h3 {
   top: 0;
   left: 0;
   right: 0;
-  background: rgba(248, 244, 239, 0.96);
+  background: rgba(243, 238, 232, 0.96);
   backdrop-filter: blur(16px);
-  border-bottom: 1px solid rgba(124, 74, 44, 0.15);
+  border-bottom: 1px solid rgba(124, 74, 44, 0.18);
   z-index: 1000;
 }
 
@@ -40,7 +40,7 @@ h1, h2, h3 {
 }
 
 .logo-wrap {
-  background: #f3eee8;
+  background: #F3EEE8;
   padding: 10px 14px;
   border-radius: 6px;
   display: inline-flex;
@@ -54,7 +54,7 @@ h1, h2, h3 {
 
 /* Header CTA */
 .header-cta {
-  background: #7c4a2c;
+  background: #7C4A2C;
   color: #fff;
   text-decoration: none;
   padding: 10px 18px;
@@ -64,7 +64,7 @@ h1, h2, h3 {
 }
 
 .header-cta:hover {
-  background: #6a3e25;
+  background: #6A3E25;
   transform: translateY(-1px);
 }
 
@@ -72,7 +72,7 @@ h1, h2, h3 {
 .hero {
   position: relative;
   height: 90vh;
-  margin-top: 84px; /* pushes hero below header */
+  margin-top: 84px;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -84,7 +84,7 @@ h1, h2, h3 {
   width: 100%;
   height: 100%;
   object-fit: cover;
-  filter: brightness(0.78);
+  filter: brightness(0.8);
 }
 
 .hero-overlay {
@@ -123,6 +123,7 @@ section {
   max-width: 1200px;
   margin: 0 auto;
   padding: 72px 8%;
+  background: transparent;
 }
 
 section h2 {
@@ -136,7 +137,7 @@ section p {
   margin: 0 auto;
   text-align: center;
   font-size: 18px;
-  color: rgba(42,30,26,0.75);
+  color: rgba(42,30,26,0.78);
 }
 
 /* ================= HOSTS ================= */
@@ -149,7 +150,7 @@ section p {
 
 .host-card {
   background: rgba(255,255,255,0.7);
-  border: 1px solid rgba(124,74,44,0.2);
+  border: 1px solid rgba(124,74,44,0.22);
   padding: 44px 32px;
   text-align: center;
   transition: 0.3s ease;
@@ -173,6 +174,7 @@ section p {
   aspect-ratio: 3 / 4;
   object-fit: cover;
   filter: grayscale(20%);
+  border-radius: 2px;
   transition: 0.4s ease;
 }
 
@@ -181,27 +183,29 @@ section p {
   transform: scale(1.05);
 }
 
-/* ================= WAITLIST ================= */
+/* ================= WAITLIST / PAYMENT ================= */
 .waitlist {
   text-align: center;
-  background: rgba(124,74,44,0.06);
-  border-top: 1px solid rgba(124,74,44,0.2);
-  border-bottom: 1px solid rgba(124,74,44,0.2);
+  background: rgba(124,74,44,0.08);
+  border-top: 1px solid rgba(124,74,44,0.22);
+  border-bottom: 1px solid rgba(124,74,44,0.22);
 }
 
+/* Buttons */
 .btn {
   display: inline-block;
   margin-top: 24px;
   padding: 16px 44px;
-  background: #7c4a2c;
+  background: #7C4A2C;
   color: #fff;
   text-decoration: none;
   font-size: 15px;
+  border-radius: 2px;
   transition: 0.3s ease;
 }
 
 .btn:hover {
-  background: #6a3e25;
+  background: #6A3E25;
   transform: translateY(-2px);
 }
 
@@ -217,7 +221,7 @@ section p {
   padding: 14px 32px;
   border: 1px solid rgba(124,74,44,0.3);
   text-decoration: none;
-  color: #2a1e1a;
+  color: #2A1E1A;
   transition: 0.3s ease;
 }
 
@@ -229,7 +233,7 @@ section p {
 footer {
   text-align: center;
   padding: 36px 8%;
-  background: #f3eee8;
+  background: #F3EEE8;
   color: rgba(42,30,26,0.5);
   font-size: 13px;
   border-top: 1px solid rgba(124,74,44,0.15);
