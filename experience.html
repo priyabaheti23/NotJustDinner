@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Not Just Dinner | Experiences</title>
+  <title>Not Just Dinner | Make Your Own Pizza</title>
   <link rel="stylesheet" href="style.css">
 </head>
 
@@ -13,7 +13,8 @@
   <div class="header-inner">
     <div class="logo-wrap">
       <a href="index.html">
-        <img src="assets/branding/Logo V1.png" alt="Not Just Dinner" class="logo">
+        <!-- SAME LOGO AS INDEX & DINNER -->
+        <img src="assets/branding/logo.png" alt="Not Just Dinner" class="logo">
       </a>
     </div>
 
@@ -23,29 +24,32 @@
   </div>
 </header>
 
-<!-- EXPERIENCE INTRO -->
+<!-- EVENT INTRO -->
 <section class="about">
-  <h2>Make Your Own Pizza — New Year’s Eve</h2>
+  <h2>Make Your Own Pizza Party 🍕</h2>
 
   <p>
-    Say goodbye to the year with dough on your hands
-    and cheese on your mind.
+    We’re hosting a <strong>Make Your Own Pizza Party</strong> on
+    <strong>31st December</strong> — a hands-on, festive experience to
+    close the year on a delicious note.
   </p>
 
   <p>
-    This New Year’s Eve, join us for a hands-on pizza experience where
-    you stretch, top, bake, and eat your very own pizza — hosted the
-    Not Just Dinner way.
+    You’ll make your own pizza from scratch using fresh dough and
+    thoughtfully curated toppings, while soaking in a fun New Year’s Eve vibe.
   </p>
 
   <p>
-    Expect great food, easy conversations, festive energy,
-    and drinks available to purchase at the venue.
+    The event is hosted at our apartment, where we regularly host curated,
+    small-group experiences designed to feel warm, personal, and unforced.
+  </p>
+
+  <p>
+    Drinks will be available to purchase at the venue during the event.
   </p>
 
   <p style="font-style:italic;">
-    Limited seats. Curated crowd. One last delicious
-    memory before the year ends.
+    Seats are limited and filling up fast — it’s an NYE special ✨
   </p>
 </section>
 
@@ -54,13 +58,14 @@
   <h2>Event Details</h2>
 
   <p>
-    <strong>Tuesday, 31st December</strong><br>
-    <strong>Time:</strong> Evening (shared after confirmation)<br>
-    <strong>Location:</strong> Bangalore
+    <strong>Date:</strong> 31st December<br>
+    <strong>Time:</strong> 7:30 PM onwards<br>
+    <strong>Location:</strong> Koramangala
+    <em>(exact location will be shared after payment)</em>
   </p>
 
   <p>
-    This is a small-group, hosted experience with limited seats.
+    This is a small-group, hosted experience.
   </p>
 </section>
 
@@ -69,62 +74,169 @@
   <h2>Pricing</h2>
 
   <p style="font-size:24px;font-weight:500;">
-    ₹1,999 per person
+    ₹999 per person
   </p>
 
   <p>
-    Includes all ingredients, guidance, oven time,
-    hosting, and the complete experience.
+    This includes all ingredients, step-by-step guidance,
+    pizza-making from scratch, oven time, and one-time hosting.
+  </p>
+
+  <p>
+    Drinks can be purchased separately at the venue.
   </p>
 </section>
 
-<!-- PAYMENT -->
+<!-- PAYMENT & CONFIRMATION -->
 <section class="waitlist">
-  <h2>Payment</h2>
+  <h2>Payment & Confirmation</h2>
 
-  <img src="assets/branding/payment-qr.jpeg" alt="Payment QR" class="qr">
+  <p>
+    Please make the payment using the QR code below.
+  </p>
 
-  <!-- FORM (unchanged) -->
+  <p>
+    <strong>
+      Once you’ve completed the payment, please fill the form below
+      to confirm your spot.
+    </strong>
+  </p>
+
+  <div style="margin:32px 0;">
+    <img src="assets/branding/payment-qr.jpeg" alt="Payment QR" class="qr">
+  </div>
+
   <form
+    id="pizzaForm"
     action="https://script.google.com/macros/s/AKfycbwovUaD3d0bPDNwBSYvUEmhQM7UZwtWyKl5qBAX1sLXFuBkUneDSRP8T-iGcbeW9rhE/exec"
     method="POST"
     target="hidden_iframe"
-    style="max-width:520px;margin:32px auto;text-align:left;"
+    style="max-width:620px;margin:0 auto;text-align:left;"
   >
 
-    <label>Name</label>
-    <input type="text" name="name" required>
+    <label>Full Name</label>
+    <input
+      type="text"
+      name="name"
+      required
+      pattern="[A-Za-z ]{3,}"
+      title="Please enter your full name"
+    >
 
     <label>WhatsApp Number</label>
-    <input type="tel" name="whatsapp" required>
+    <input
+      type="tel"
+      name="whatsapp"
+      required
+      pattern="[0-9]{10}"
+      title="Enter a valid 10-digit WhatsApp number"
+    >
 
     <label>Number of People Joining</label>
-    <input type="number" name="guests" min="1" max="4" required>
+    <input
+      type="number"
+      name="guests"
+      min="1"
+      max="6"
+      required
+    >
 
-    <button type="submit" class="btn">
-      Confirm After Payment
+    <label>Social Profile You’d Like to Share</label>
+    <select name="social_platform" required>
+      <option value="">Select one</option>
+      <option>Instagram</option>
+      <option>LinkedIn</option>
+      <option>X (Twitter)</option>
+    </select>
+
+    <label>Username / Profile Handle</label>
+    <input
+      type="text"
+      name="social_username"
+      required
+      pattern="^\S+$"
+      title="No spaces allowed"
+    >
+
+    <button type="submit" class="btn" id="pizzaSubmitBtn">
+      I’ve Paid – Confirm My Spot
     </button>
   </form>
 
   <iframe name="hidden_iframe" style="display:none;"></iframe>
 </section>
 
-  <!-- PAST EVENTS -->
-<section class="about">
-  <h2>From Our Last Events</h2>
-
-  <div class="gallery">
-    <img src="assets/past-events/madeleine-1.jpg" alt="">
-    <img src="assets/past-events/flower-1.jpg" alt="">
-    <img src="assets/past-events/halloween-1.jpg" alt="">
-    <img src="assets/past-events/madeleine-2.jpg" alt="">
-  </div>
-</section>
-  
+<!-- FOOTER (SAME ACROSS ALL PAGES) -->
 <footer>
-  © 2024 Not Just Dinner · Koramangala, Bengaluru
+  <div class="footer-contact">
+    <h3>Contact Us</h3>
+
+    <div class="footer-links">
+      <a href="https://instagram.com/notjust.dinner" target="_blank">
+        Instagram
+      </a>
+      <a href="https://x.com/notjustdinner" target="_blank">
+        Twitter
+      </a>
+    </div>
+  </div>
+
+  <p class="footer-copy">
+    © 2024 Not Just Dinner · Koramangala, Bengaluru
+  </p>
 </footer>
+
+<!-- SUCCESS MODAL -->
+<div id="successModal" style="
+  display:none;
+  position:fixed;
+  inset:0;
+  background:rgba(0,0,0,0.55);
+  align-items:center;
+  justify-content:center;
+  z-index:2000;
+">
+  <div style="
+    background:#fff;
+    padding:32px;
+    max-width:420px;
+    text-align:center;
+    border-radius:12px;
+  ">
+    <h3>You're In 🎉</h3>
+    <p style="margin-top:12px;">
+      We’ve received your details and will share the exact location
+      and next steps on WhatsApp soon.
+    </p>
+    <button onclick="closeModal()" class="btn" style="margin-top:20px;">
+      Okay
+    </button>
+  </div>
+</div>
+
+<script>
+  const form = document.getElementById("pizzaForm");
+  const modal = document.getElementById("successModal");
+  const submitBtn = document.getElementById("pizzaSubmitBtn");
+
+  form.addEventListener("submit", function () {
+    submitBtn.disabled = true;
+    submitBtn.innerText = "Submitting...";
+
+    setTimeout(() => {
+      modal.style.display = "flex";
+      form.reset();
+      submitBtn.disabled = false;
+      submitBtn.innerText = "I’ve Paid – Confirm My Spot";
+    }, 900);
+  });
+
+  function closeModal() {
+    modal.style.display = "none";
+  }
+
+  // Seat limit logic (NYE cap) can be added here later
+</script>
 
 </body>
 </html>
-
