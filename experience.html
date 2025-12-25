@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Not Just Dinner | Experiences</title>
+  <title>Not Just Dinner | Community Events</title>
   <link rel="stylesheet" href="style.css">
 </head>
 
@@ -13,130 +13,51 @@
   <div class="header-inner">
     <div class="logo-wrap">
       <a href="index.html">
-        <img src="Logo V1.png" alt="Not Just Dinner" class="logo">
+        <img src="Logo V1.png" class="logo">
       </a>
     </div>
 
-    <a href="index.html" class="header-cta">
-      Back to Home
-    </a>
+    <a href="index.html" class="header-cta">Back</a>
   </div>
 </header>
 
-<!-- EXPERIENCE INTRO -->
 <section class="about">
-  <h2>Make Your Own Pizza — New Year’s Eve</h2>
+  <h2>Make Your Own Pizza</h2>
 
   <p>
-    Say goodbye to the year with dough on your hands
-    and cheese on your mind.
-  </p>
-
-  <p>
-    This New Year’s Eve, join us for a hands-on pizza experience where
-    you stretch, top, bake, and eat your very own pizza — hosted the
-    Not Just Dinner way.
-  </p>
-
-  <p>
-    Expect great food, easy conversations, festive energy,
-    and drinks available to purchase at the venue.
-  </p>
-
-  <p style="font-style:italic;">
-    Limited seats. Curated crowd. One last delicious
-    memory before the year ends.
+    A hands-on, social experience where you
+    stretch, top, bake, and eat your own pizza.
   </p>
 </section>
 
-<!-- EVENT DETAILS -->
-<section class="about">
-  <h2>Event Details</h2>
-
-  <p>
-    <strong>Tuesday, 31st December</strong><br>
-    <strong>Time:</strong> Evening (shared after confirmation)<br>
-    <strong>Location:</strong> Bangalore
-  </p>
-
-  <p>
-    This is a small-group, hosted experience with limited seats.
-  </p>
-</section>
-
-<!-- PRICING -->
-<section class="about">
-  <h2>Pricing</h2>
-
-  <p style="font-size:24px;font-weight:500;">
-    ₹1,999 per person
-  </p>
-
-  <p>
-    Includes all ingredients, guidance, oven time,
-    hosting, and the complete experience.
-  </p>
-</section>
-
-<!-- FORM -->
 <section class="waitlist">
-  <h2>Request to Join</h2>
+  <h2>Payment</h2>
 
-  <p>
-    Fill in the form below to request your spot.
-    Once approved, we’ll reach out on WhatsApp
-    with confirmation and payment details.
-  </p>
+  <img src="payment-qr.jpeg" class="qr">
 
   <form
     action="https://script.google.com/macros/s/AKfycbwovUaD3d0bPDNwBSYvUEmhQM7UZwtWyKl5qBAX1sLXFuBkUneDSRP8T-iGcbeW9rhE/exec"
     method="POST"
     target="hidden_iframe"
-    style="max-width:520px;margin:32px auto;text-align:left;"
   >
-
     <label>Name</label>
-    <input type="text" name="name" required>
+    <input name="name" required>
 
-    <label>WhatsApp Number</label>
-    <input type="tel" name="whatsapp" required>
+    <label>WhatsApp</label>
+    <input name="whatsapp" required>
 
-    <label>Instagram / Social Handle</label>
-    <input type="text" name="social" placeholder="@username" required>
+    <label>Guests</label>
+    <input name="guests" type="number" min="1" max="4">
 
-    <label>Number of People Joining</label>
-    <input type="number" name="guests" min="1" max="4" required>
-
-    <button type="submit" class="btn" style="width:100%;">
-      Request My Spot
-    </button>
+    <button class="btn">Confirm After Payment</button>
   </form>
 
-  <!-- Hidden iframe prevents redirect -->
   <iframe name="hidden_iframe" style="display:none;"></iframe>
-
-  <p id="formMessage" style="display:none;text-align:center;margin-top:16px;">
-    Thanks! We’ll get back to you on WhatsApp soon ✨
-  </p>
 </section>
 
 <footer>
-  © 2024 Not Just Dinner · Koramangala, Bengaluru
+  © 2024 Not Just Dinner
 </footer>
-
-<!-- SUCCESS MESSAGE SCRIPT -->
-<script>
-  const form = document.querySelector("form");
-  const message = document.getElementById("formMessage");
-
-  form.addEventListener("submit", function () {
-    setTimeout(() => {
-      form.reset();
-      message.style.display = "block";
-    }, 800);
-  });
-</script>
 
 </body>
 </html>
-
