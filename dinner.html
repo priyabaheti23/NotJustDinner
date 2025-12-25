@@ -4,7 +4,6 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Not Just Dinner | Event Details</title>
-
   <link rel="stylesheet" href="style.css">
 </head>
 
@@ -14,7 +13,8 @@
   <div class="header-inner">
     <div class="logo-wrap">
       <a href="index.html">
-        <img src="assets/branding/Logo V1.png" alt="Not Just Dinner" class="logo">
+        <!-- FIXED LOGO -->
+        <img src="assets/branding/logo.png" alt="Not Just Dinner" class="logo">
       </a>
     </div>
 
@@ -34,25 +34,19 @@
     chef and her best friend.
   </p>
 
-  <p style="margin-top:18px;">
+  <p>
     What began as a shared dream has become an intimate table where strangers arrive
     curious and leave feeling oddly familiar.
   </p>
 
-  <p style="margin-top:18px;">
+  <p>
     Picture warm lighting, soft music, playful ice-breakers, and conversations that
     unfold as naturally as the courses themselves.
   </p>
 
-  <p style="margin-top:18px; font-style:italic; color:rgba(42,30,26,0.7);">
-    Every dish carries a story — of memories, ingredients, and moments -
-    and for one night, you’re part of that narrative.
+  <p style="font-style:italic;">
+    Every dish carries a story — and for one night, you’re part of that narrative.
   </p>
-</section>
-
-<!-- SOFT DIVIDER -->
-<section style="padding:0 8%;">
-  <div style="max-width:1200px;margin:0 auto;border-top:1px solid rgba(124,74,44,0.2);"></div>
 </section>
 
 <!-- WHAT TO EXPECT -->
@@ -65,9 +59,9 @@
     restaurant and more like a beautifully hosted dinner party.
   </p>
 
-  <p style="margin-top:16px;">
-    Think cosy dinner-party energy — elevated food, effortless vibes,
-    and people you haven’t met yet… but probably won’t forget.
+  <p>
+    Cosy dinner-party energy, elevated food, and people you haven’t met yet —
+    but probably won’t forget.
   </p>
 </section>
 
@@ -78,14 +72,14 @@
   <p>
     <strong>Saturday, 3rd January</strong><br>
     <strong>Time:</strong> 7:30 PM<br>
-    <strong>Location:</strong> Koramangala, Bangalore
+    <strong>Location:</strong> Koramangala, Bengaluru
   </p>
 
-  <p style="margin-top:14px; font-size:15px; color:rgba(42,30,26,0.65);">
-    Exact location will be shared once your payment is confirmed.
+  <p style="font-size:15px;">
+    Exact location will be shared once your seat is confirmed.
   </p>
 
-  <p style="margin-top:16px;">
+  <p>
     Only <strong>8 seats</strong> — once they’re gone, they’re gone.
   </p>
 </section>
@@ -95,10 +89,10 @@
   <h2>Moments from the Last Supper</h2>
 
   <div class="gallery">
-    <img src="assets/supper-club/image1.JPEG" alt="">
-    <img src="assets/supper-club/image2.JPEG" alt="">
-    <img src="assets/supper-club/image3.JPEG" alt="">
-    <img src="assets/supper-club/image4.jpg" alt="">
+    <img src="assets/supper-club/supper-1.jpg" alt="">
+    <img src="assets/supper-club/supper-2.jpg" alt="">
+    <img src="assets/supper-club/supper-3.jpg" alt="">
+    <img src="assets/supper-club/supper-4.jpg" alt="">
   </div>
 </section>
 
@@ -111,11 +105,16 @@
   </p>
 
   <p>
-    Includes the complete five-course dining experience.
+    Includes a five-course dining experience, thoughtful hosting,
+    curated conversations, and an intimate evening at the table.
+  </p>
+
+  <p>
+    This is not a restaurant booking — it’s a hosted experience.
   </p>
 </section>
 
-<!-- PAYMENT -->
+<!-- PAYMENT & CONFIRMATION -->
 <section class="waitlist">
   <h2>Payment & Confirmation</h2>
 
@@ -123,20 +122,20 @@
     Please complete the payment using the QR code below.
   </p>
 
+  <p>
+    <strong>Fill the form below to complete your booking.</strong>
+  </p>
+
   <div style="margin:32px 0;">
-    <img
-      src="assets/branding/payment-qr.jpeg"
-      alt="Payment QR Code"
-      class="qr"
-    >
+    <img src="assets/branding/payment-qr.jpeg" alt="Payment QR" class="qr">
   </div>
 
-  <!-- PAYMENT CONFIRMATION FORM (unchanged) -->
   <form
+    id="confirmationForm"
     action="https://script.google.com/macros/s/AKfycbwcmZxo9kXvfVGn5Jv2JCOlmWmjbg5HTY1RCntPKHbTbFMgkoxRf4AeqXSaxooZJf_z/exec"
     method="POST"
     target="hidden_iframe"
-    style="max-width:620px;margin:32px auto;text-align:left;"
+    style="max-width:620px;margin:0 auto;text-align:left;"
   >
 
     <label>Full Name</label>
@@ -163,21 +162,6 @@
     <label>Username / Profile Handle</label>
     <input type="text" name="social_username" required>
 
-    <label>Dinner Date You Paid For</label>
-    <select name="dinner_date" required>
-      <option value="">Select one</option>
-      <option value="3rd January">3rd January</option>
-      <option value="10th January">10th January</option>
-    </select>
-
-    <label>How did you hear about Not Just Dinner?</label>
-    <select name="source" required>
-      <option value="">Select one</option>
-      <option value="Instagram">Instagram</option>
-      <option value="X (Twitter)">X (Twitter)</option>
-      <option value="Friend / Previous Guest">Friend / Previous Guest</option>
-    </select>
-
     <button type="submit" class="btn">
       I’ve Paid – Confirm My Seat
     </button>
@@ -186,9 +170,33 @@
   <iframe name="hidden_iframe" style="display:none;"></iframe>
 </section>
 
+<!-- CONTACT -->
+<section class="contact">
+  <h2>Contact Us</h2>
+
+  <div class="contact-links">
+    <a href="https://instagram.com/notjust.dinner" target="_blank">Instagram</a>
+    <a href="https://x.com/notjustdinner" target="_blank">Twitter</a>
+  </div>
+</section>
+
 <footer>
   © 2024 Not Just Dinner · Koramangala, Bengaluru
 </footer>
+
+<!-- SUBMIT DIALOG -->
+<script>
+  const form = document.getElementById("confirmationForm");
+
+  form.addEventListener("submit", function () {
+    setTimeout(() => {
+      alert(
+        "Thank you! ✨\n\nWe’ve received your details and will confirm your seat on WhatsApp shortly."
+      );
+      form.reset();
+    }, 800);
+  });
+</script>
 
 </body>
 </html>
