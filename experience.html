@@ -13,7 +13,6 @@
   <div class="header-inner">
     <div class="logo-wrap">
       <a href="index.html">
-        <!-- SAME LOGO AS INDEX & DINNER -->
         <img src="assets/branding/logo.png" alt="Not Just Dinner" class="logo">
       </a>
     </div>
@@ -36,12 +35,13 @@
 
   <p>
     You’ll make your own pizza from scratch using fresh dough and
-    thoughtfully curated toppings, while soaking in a fun New Year’s Eve vibe.
+    curated toppings, enjoy a fun New Year’s Eve vibe,
+    and end the year around good food and easy conversations.
   </p>
 
   <p>
-    The event is hosted at our apartment, where we regularly host curated,
-    small-group experiences designed to feel warm, personal, and unforced.
+    The event is hosted at our apartment, where we regularly host
+    curated, small-group experiences.
   </p>
 
   <p>
@@ -78,8 +78,9 @@
   </p>
 
   <p>
-    This includes all ingredients, step-by-step guidance,
-    pizza-making from scratch, oven time, and one-time hosting.
+    Includes all ingredients, step-by-step guidance,
+    pizza-making from scratch, oven time,
+    and one-time hosting.
   </p>
 
   <p>
@@ -115,31 +116,15 @@
   >
 
     <label>Full Name</label>
-    <input
-      type="text"
-      name="name"
-      required
-      pattern="[A-Za-z ]{3,}"
-      title="Please enter your full name"
-    >
+    <input type="text" id="name" name="name" required>
+    <small class="error"></small>
 
     <label>WhatsApp Number</label>
-    <input
-      type="tel"
-      name="whatsapp"
-      required
-      pattern="[0-9]{10}"
-      title="Enter a valid 10-digit WhatsApp number"
-    >
+    <input type="tel" id="whatsapp" name="whatsapp" required>
+    <small class="error"></small>
 
     <label>Number of People Joining</label>
-    <input
-      type="number"
-      name="guests"
-      min="1"
-      max="6"
-      required
-    >
+    <input type="number" name="guests" min="1" max="6" required>
 
     <label>Social Profile You’d Like to Share</label>
     <select name="social_platform" required>
@@ -150,15 +135,10 @@
     </select>
 
     <label>Username / Profile Handle</label>
-    <input
-      type="text"
-      name="social_username"
-      required
-      pattern="^\S+$"
-      title="No spaces allowed"
-    >
+    <input type="text" id="social_username" name="social_username" required>
+    <small class="error"></small>
 
-    <button type="submit" class="btn" id="pizzaSubmitBtn">
+    <button type="submit" class="btn" id="submitBtn">
       I’ve Paid – Confirm My Spot
     </button>
   </form>
@@ -166,18 +146,14 @@
   <iframe name="hidden_iframe" style="display:none;"></iframe>
 </section>
 
-<!-- FOOTER (SAME ACROSS ALL PAGES) -->
+<!-- FOOTER -->
 <footer>
   <div class="footer-contact">
     <h3>Contact Us</h3>
 
     <div class="footer-links">
-      <a href="https://instagram.com/notjust.dinner" target="_blank">
-        Instagram
-      </a>
-      <a href="https://x.com/notjustdinner" target="_blank">
-        Twitter
-      </a>
+      <a href="https://instagram.com/notjust.dinner" target="_blank">Instagram</a>
+      <a href="https://x.com/notjustdinner" target="_blank">Twitter</a>
     </div>
   </div>
 
@@ -203,10 +179,10 @@
     text-align:center;
     border-radius:12px;
   ">
-    <h3>You're In 🎉</h3>
+    <h3>You’re In 🎉</h3>
     <p style="margin-top:12px;">
-      We’ve received your details and will share the exact location
-      and next steps on WhatsApp soon.
+      We’ve received your details and will share the
+      exact location on WhatsApp soon.
     </p>
     <button onclick="closeModal()" class="btn" style="margin-top:20px;">
       Okay
@@ -214,10 +190,41 @@
   </div>
 </div>
 
+<!-- LIVE VALIDATION + SUBMIT HANDLING -->
 <script>
+  function showError(input, message) {
+    input.classList.add("invalid");
+    input.nextElementSibling.innerText = message;
+    input.nextElementSibling.style.display = "block";
+  }
+
+  function clearError(input) {
+    input.classList.remove("invalid");
+    input.nextElementSibling.innerText = "";
+    input.nextElementSibling.style.display = "none";
+  }
+
+  document.getElementById("name").addEventListener("blur", function () {
+    /^[A-Za-z ]{3,}$/.test(this.value)
+      ? clearError(this)
+      : showError(this, "Please enter your full name");
+  });
+
+  document.getElementById("whatsapp").addEventListener("blur", function () {
+    /^[0-9]{10}$/.test(this.value)
+      ? clearError(this)
+      : showError(this, "Enter a valid 10-digit WhatsApp number");
+  });
+
+  document.getElementById("social_username").addEventListener("blur", function () {
+    !this.value.includes(" ")
+      ? clearError(this)
+      : showError(this, "Username cannot contain spaces");
+  });
+
   const form = document.getElementById("pizzaForm");
   const modal = document.getElementById("successModal");
-  const submitBtn = document.getElementById("pizzaSubmitBtn");
+  const submitBtn = document.getElementById("submitBtn");
 
   form.addEventListener("submit", function () {
     submitBtn.disabled = true;
@@ -234,8 +241,6 @@
   function closeModal() {
     modal.style.display = "none";
   }
-
-  // Seat limit logic (NYE cap) can be added here later
 </script>
 
 </body>
