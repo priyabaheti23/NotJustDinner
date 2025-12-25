@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Not Just Dinner | Community Events</title>
+  <title>Not Just Dinner | Experiences</title>
   <link rel="stylesheet" href="style.css">
 </head>
 
@@ -13,37 +13,104 @@
   <div class="header-inner">
     <div class="logo-wrap">
       <a href="index.html">
-        <img src="assets/branding/logo.png" class="logo">
+        <img src="assets/branding/Logo V1.png" alt="Not Just Dinner" class="logo">
       </a>
     </div>
 
-    <a href="index.html" class="header-cta">Back</a>
+    <a href="index.html" class="header-cta">
+      Back to Home
+    </a>
   </div>
 </header>
 
+<!-- EXPERIENCE INTRO -->
 <section class="about">
-  <h2>Make Your Own Pizza</h2>
+  <h2>Make Your Own Pizza — New Year’s Eve</h2>
 
   <p>
-    A hands-on community experience —
-    stretch, top, bake, and eat together.
+    Say goodbye to the year with dough on your hands
+    and cheese on your mind.
   </p>
 
-  <div class="gallery">
-    <img src="assets/community-events/pizza-1.jpg">
-  </div>
+  <p>
+    This New Year’s Eve, join us for a hands-on pizza experience where
+    you stretch, top, bake, and eat your very own pizza — hosted the
+    Not Just Dinner way.
+  </p>
+
+  <p>
+    Expect great food, easy conversations, festive energy,
+    and drinks available to purchase at the venue.
+  </p>
+
+  <p style="font-style:italic;">
+    Limited seats. Curated crowd. One last delicious
+    memory before the year ends.
+  </p>
 </section>
 
+<!-- EVENT DETAILS -->
+<section class="about">
+  <h2>Event Details</h2>
+
+  <p>
+    <strong>Tuesday, 31st December</strong><br>
+    <strong>Time:</strong> Evening (shared after confirmation)<br>
+    <strong>Location:</strong> Bangalore
+  </p>
+
+  <p>
+    This is a small-group, hosted experience with limited seats.
+  </p>
+</section>
+
+<!-- PRICING -->
+<section class="about">
+  <h2>Pricing</h2>
+
+  <p style="font-size:24px;font-weight:500;">
+    ₹1,999 per person
+  </p>
+
+  <p>
+    Includes all ingredients, guidance, oven time,
+    hosting, and the complete experience.
+  </p>
+</section>
+
+<!-- PAYMENT -->
 <section class="waitlist">
   <h2>Payment</h2>
 
-  <img src="assets/branding/payment-qr.jpeg" class="qr">
+  <img src="assets/branding/payment-qr.jpeg" alt="Payment QR" class="qr">
 
-  <!-- Form stays unchanged -->
+  <!-- FORM (unchanged) -->
+  <form
+    action="https://script.google.com/macros/s/AKfycbwovUaD3d0bPDNwBSYvUEmhQM7UZwtWyKl5qBAX1sLXFuBkUneDSRP8T-iGcbeW9rhE/exec"
+    method="POST"
+    target="hidden_iframe"
+    style="max-width:520px;margin:32px auto;text-align:left;"
+  >
+
+    <label>Name</label>
+    <input type="text" name="name" required>
+
+    <label>WhatsApp Number</label>
+    <input type="tel" name="whatsapp" required>
+
+    <label>Number of People Joining</label>
+    <input type="number" name="guests" min="1" max="4" required>
+
+    <button type="submit" class="btn">
+      Confirm After Payment
+    </button>
+  </form>
+
+  <iframe name="hidden_iframe" style="display:none;"></iframe>
 </section>
 
 <footer>
-  © 2024 Not Just Dinner
+  © 2024 Not Just Dinner · Koramangala, Bengaluru
 </footer>
 
 </body>
