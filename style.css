@@ -8,7 +8,40 @@
 /* ================= BASE ================= */
 body {
   font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-  background: #F3EEE8; /* Logo background */
+  background: #F3EEE8;
+  color: #2A1E1A;
+  line-height: 1.65;
+}
+
+h1, h2, h3 {
+  font-family: Georgia, "Times New Roman", serif;
+  font-weight: 300;
+}
+
+/* ================= HEADER ================= */
+.site-header {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  background: rgba(243, 238, 232, 0.96);
+  backdrop-filter: blur(16px);
+  border-bottom: 1px solid rgba(124, 74, 44, 0.18);
+  z-index: 1000;
+}
+
+.header-inner
+/* ================= RESET ================= */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+/* ================= BASE ================= */
+body {
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  background: #F3EEE8;
   color: #2A1E1A;
   line-height: 1.65;
 }
@@ -118,19 +151,18 @@ h1, h2, h3 {
   border-radius: 4px;
 }
 
-/* ================= SECTIONS (BASE) ================= */
+/* ================= SECTIONS ================= */
 section {
   max-width: 1200px;
   margin: 0 auto;
   padding: 72px 8%;
 }
 
-/* Clear break after header */
 .site-header + section {
   margin-top: 32px;
 }
 
-/* ================= SECTION EMPHASIS ================= */
+/* ================= SECTION CARDS ================= */
 .about,
 .waitlist,
 .contact {
@@ -141,12 +173,11 @@ section {
   padding: 64px 8%;
 }
 
-/* Subtle alternation so sections don’t blend */
 .about:nth-of-type(even) {
   background: rgba(255, 255, 255, 0.45);
 }
 
-/* ================= SECTION HEADINGS ================= */
+/* ================= HEADINGS ================= */
 section h2 {
   font-size: 42px;
   text-align: center;
@@ -155,7 +186,6 @@ section h2 {
   letter-spacing: 0.3px;
 }
 
-/* Elegant divider under headings */
 section h2::after {
   content: "";
   display: block;
@@ -165,7 +195,7 @@ section h2::after {
   margin: 18px auto 0;
 }
 
-/* ================= SECTION TEXT ================= */
+/* ================= TEXT ================= */
 section p {
   max-width: 720px;
   margin: 0 auto;
@@ -174,7 +204,6 @@ section p {
   color: rgba(42,30,26,0.78);
 }
 
-/* Better paragraph rhythm */
 section p + p {
   margin-top: 18px;
 }
@@ -222,14 +251,7 @@ section p + p {
   transform: scale(1.05);
 }
 
-/* ================= WAITLIST / PAYMENT ================= */
-.waitlist {
-  text-align: center;
-  background: rgba(124,74,44,0.08);
-  border: 1px solid rgba(124,74,44,0.22);
-}
-
-/* Buttons */
+/* ================= BUTTONS ================= */
 .btn {
   display: inline-block;
   margin-top: 24px;
@@ -239,12 +261,43 @@ section p + p {
   text-decoration: none;
   font-size: 15px;
   border-radius: 4px;
+  border: none;
+  cursor: pointer;
   transition: 0.3s ease;
 }
 
 .btn:hover {
   background: #6A3E25;
   transform: translateY(-2px);
+}
+
+/* ================= FORMS ================= */
+form label {
+  display: block;
+  font-size: 14px;
+  margin: 18px 0 6px;
+  color: rgba(42,30,26,0.85);
+}
+
+form input {
+  width: 100%;
+  padding: 12px 14px;
+  border-radius: 4px;
+  border: 1px solid rgba(124,74,44,0.35);
+  font-size: 14px;
+  background: #fff;
+}
+
+form input:focus {
+  outline: none;
+  border-color: #7C4A2C;
+}
+
+/* ================= WAITLIST ================= */
+.waitlist {
+  text-align: center;
+  background: rgba(124,74,44,0.08);
+  border: 1px solid rgba(124,74,44,0.22);
 }
 
 /* ================= CONTACT ================= */
@@ -329,4 +382,3 @@ footer {
     flex-direction: column;
   }
 }
-
