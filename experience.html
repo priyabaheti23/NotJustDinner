@@ -88,7 +88,12 @@
     with confirmation and payment details.
   </p>
 
-  <form id="pizzaForm" style="max-width:520px;margin:32px auto;text-align:left;">
+  <form
+    action="https://script.google.com/macros/s/AKfycbwovUaD3d0bPDNwBSYvUEmhQM7UZwtWyKl5qBAX1sLXFuBkUneDSRP8T-iGcbeW9rhE/exec"
+    method="POST"
+    target="hidden_iframe"
+    style="max-width:520px;margin:32px auto;text-align:left;"
+  >
 
     <label>Name</label>
     <input type="text" name="name" required>
@@ -107,6 +112,9 @@
     </button>
   </form>
 
+  <!-- Hidden iframe prevents redirect -->
+  <iframe name="hidden_iframe" style="display:none;"></iframe>
+
   <p id="formMessage" style="display:none;text-align:center;margin-top:16px;">
     Thanks! We’ll get back to you on WhatsApp soon ✨
   </p>
@@ -116,37 +124,19 @@
   © 2024 Not Just Dinner · Koramangala, Bengaluru
 </footer>
 
-<!-- FORM SCRIPT -->
+<!-- SUCCESS MESSAGE SCRIPT -->
 <script>
-const form = document.getElementById("pizzaForm");
-const message = document.getElementById("formMessage");
+  const form = document.querySelector("form");
+  const message = document.getElementById("formMessage");
 
-form.addEventListener("submit", function(e) {
-  e.preventDefault();
-
-  const data = {
-    name: form.name.value,
-    whatsapp: form.whatsapp.value,
-    social: form.social.value,
-    guests: form.guests.value
-  };
-
-  fetch("https://script.google.com/macros/s/AKfycbwovUaD3d0bPDNwBSYvUEmhQM7UZwtWyKl5qBAX1sLXFuBkUneDSRP8T-iGcbeW9rhE/exec", {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json"
-    },
-    body: JSON.stringify(data)
-  })
-  .then(() => {
-    form.reset();
-    message.style.display = "block";
-  })
-  .catch(() => {
-    alert("Something went wrong. Please try again.");
+  form.addEventListener("submit", function () {
+    setTimeout(() => {
+      form.reset();
+      message.style.display = "block";
+    }, 800);
   });
-});
 </script>
 
 </body>
 </html>
+
