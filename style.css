@@ -11,6 +11,7 @@ body {
   background: #F3EEE8;
   color: #2A1E1A;
   line-height: 1.65;
+  padding-top: 96px; /* space for fixed header */
 }
 
 h1, h2, h3 {
@@ -52,6 +53,7 @@ h1, h2, h3 {
   display: block;
 }
 
+/* Header CTA */
 .header-cta {
   background: #7C4A2C;
   color: #fff;
@@ -70,14 +72,11 @@ h1, h2, h3 {
 /* ================= SECTIONS ================= */
 section {
   max-width: 1200px;
-  margin: 0 auto;
-  padding: 72px 8%;
+  margin: 64px auto;
+  padding: 64px 8%;
 }
 
-.site-header + section {
-  margin-top: 120px;
-}
-
+/* Card-style sections */
 .about,
 .waitlist,
 .contact,
@@ -85,8 +84,6 @@ section {
   background: rgba(255, 255, 255, 0.55);
   border: 1px solid rgba(124, 74, 44, 0.18);
   border-radius: 12px;
-  margin: 64px auto;
-  padding: 64px 8%;
 }
 
 /* ================= HEADINGS ================= */
@@ -132,8 +129,8 @@ section p + p {
   border: 1px solid rgba(124,74,44,0.22);
   padding: 44px 32px;
   text-align: center;
-  transition: 0.3s ease;
   border-radius: 8px;
+  transition: 0.3s ease;
 }
 
 .host-card:hover {
@@ -270,6 +267,7 @@ footer {
 
 /* ================= MOBILE ================= */
 @media (max-width: 768px) {
+
   .header-inner {
     padding: 12px 5%;
   }
@@ -284,15 +282,7 @@ footer {
   }
 
   section {
-    padding: 52px 5%;
-  }
-
-  .about,
-  .waitlist,
-  .contact,
-  .hosts {
     padding: 48px 5%;
-    margin: 48px auto;
   }
 
   .hosts-grid {
