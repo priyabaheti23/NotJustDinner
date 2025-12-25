@@ -258,12 +258,62 @@ form select:focus {
 /* ================= FOOTER ================= */
 footer {
   text-align: center;
-  padding: 36px 8%;
+  padding: 48px 8% 32px;
   background: #F3EEE8;
-  color: rgba(42,30,26,0.5);
-  font-size: 13px;
+  color: rgba(42,30,26,0.6);
+  font-size: 14px;
   border-top: 1px solid rgba(124,74,44,0.15);
 }
+
+.footer-contact h3 {
+  font-family: Georgia, "Times New Roman", serif;
+  font-weight: 300;
+  font-size: 28px;
+  margin-bottom: 20px;
+  color: #2A1E1A;
+}
+
+.footer-links {
+  display: flex;
+  justify-content: center;
+  gap: 28px;
+  margin-bottom: 24px;
+}
+
+.footer-links a {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  text-decoration: none;
+  color: #2A1E1A;
+  padding: 10px 18px;
+  border: 1px solid rgba(124,74,44,0.25);
+  border-radius: 6px;
+  transition: all 0.25s ease;
+}
+
+.footer-links a:hover {
+  background: rgba(124,74,44,0.08);
+  transform: translateY(-2px);
+}
+
+.footer-links svg {
+  color: #7C4A2C;
+}
+
+.footer-copy {
+  font-size: 13px;
+  color: rgba(42,30,26,0.5);
+}
+
+/* Mobile */
+@media (max-width: 768px) {
+  .footer-links {
+    flex-direction: column;
+    gap: 16px;
+  }
+}
+
 
 /* ================= MOBILE ================= */
 @media (max-width: 768px) {
@@ -297,3 +347,4 @@ footer {
     flex-direction: column;
   }
 }
+
