@@ -13,7 +13,6 @@
   <div class="header-inner">
     <div class="logo-wrap">
       <a href="index.html">
-        <!-- FIXED LOGO -->
         <img src="assets/branding/logo.png" alt="Not Just Dinner" class="logo">
       </a>
     </div>
@@ -84,15 +83,15 @@
   </p>
 </section>
 
-<!-- MOMENTS FROM LAST SUPPER -->
+<!-- MOMENTS -->
 <section class="about">
   <h2>Moments from the Last Supper</h2>
 
   <div class="gallery">
-    <img src="assets/supper-club/supper-1.jpg" alt="">
-    <img src="assets/supper-club/supper-2.jpg" alt="">
-    <img src="assets/supper-club/supper-3.jpg" alt="">
-    <img src="assets/supper-club/supper-4.jpg" alt="">
+    <img src="assets/supper-club/supper-1.jpg">
+    <img src="assets/supper-club/supper-2.jpg">
+    <img src="assets/supper-club/supper-3.jpg">
+    <img src="assets/supper-club/supper-4.jpg">
   </div>
 </section>
 
@@ -123,11 +122,14 @@
   </p>
 
   <p>
-    <strong>Fill the form below to complete your booking.</strong>
+    <strong>
+      Once you’ve completed the payment using the QR code above,
+      please fill the form below to complete your booking.
+    </strong>
   </p>
 
   <div style="margin:32px 0;">
-    <img src="assets/branding/payment-qr.jpeg" alt="Payment QR" class="qr">
+    <img src="assets/branding/payment-qr.jpeg" class="qr">
   </div>
 
   <form
@@ -139,30 +141,38 @@
   >
 
     <label>Full Name</label>
-    <input type="text" name="name" required>
+    <input type="text" name="name" required pattern="[A-Za-z ]{3,}">
 
     <label>WhatsApp Number</label>
-    <input type="tel" name="whatsapp" required>
+    <input type="tel" name="whatsapp" required pattern="[0-9]{10}">
 
     <label>Dietary Preference</label>
     <select name="dietary" required>
       <option value="">Select one</option>
-      <option value="Egg in dessert OK">Egg in dessert OK</option>
-      <option value="Egg in dessert NOT OK">Egg in dessert NOT OK</option>
+      <option>Egg in dessert OK</option>
+      <option>Egg in dessert NOT OK</option>
     </select>
 
     <label>Social Profile You’re Sharing</label>
     <select name="social_platform" required>
       <option value="">Select one</option>
-      <option value="Instagram">Instagram</option>
-      <option value="LinkedIn">LinkedIn</option>
-      <option value="X (Twitter)">X (Twitter)</option>
+      <option>Instagram</option>
+      <option>LinkedIn</option>
+      <option>X (Twitter)</option>
     </select>
 
     <label>Username / Profile Handle</label>
-    <input type="text" name="social_username" required>
+    <input type="text" name="social_username" required pattern="^\S+$">
 
-    <button type="submit" class="btn">
+    <label>How did you hear about us?</label>
+    <select name="source" required>
+      <option value="">Select one</option>
+      <option>Instagram</option>
+      <option>Twitter / X</option>
+      <option>Friend / Previous Guest</option>
+    </select>
+
+    <button type="submit" class="btn" id="submitBtn">
       I’ve Paid – Confirm My Seat
     </button>
   </form>
@@ -184,18 +194,55 @@
   © 2024 Not Just Dinner · Koramangala, Bengaluru
 </footer>
 
-<!-- SUBMIT DIALOG -->
+<!-- SUCCESS MODAL -->
+<div id="successModal" style="
+  display:none;
+  position:fixed;
+  inset:0;
+  background:rgba(0,0,0,0.55);
+  align-items:center;
+  justify-content:center;
+  z-index:2000;
+">
+  <div style="
+    background:#fff;
+    padding:32px;
+    max-width:420px;
+    text-align:center;
+    border-radius:12px;
+  ">
+    <h3>Thank you ✨</h3>
+    <p style="margin-top:12px;">
+      We’ve received your details and will confirm your seat on WhatsApp shortly.
+    </p>
+    <button onclick="closeModal()" class="btn" style="margin-top:20px;">
+      Okay
+    </button>
+  </div>
+</div>
+
 <script>
   const form = document.getElementById("confirmationForm");
+  const modal = document.getElementById("successModal");
+  const submitBtn = document.getElementById("submitBtn");
 
   form.addEventListener("submit", function () {
+    submitBtn.disabled = true;
+    submitBtn.innerText = "Submitting...";
+
     setTimeout(() => {
-      alert(
-        "Thank you! ✨\n\nWe’ve received your details and will confirm your seat on WhatsApp shortly."
-      );
+      modal.style.display = "flex";
       form.reset();
-    }, 800);
+      submitBtn.disabled = false;
+      submitBtn.innerText = "I’ve Paid – Confirm My Seat";
+    }, 900);
   });
+
+  function closeModal() {
+    modal.style.display = "none";
+  }
+
+  // 🔒 Seat limit logic will be added here later (8 seats)
 </script>
 
 </body>
