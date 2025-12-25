@@ -4,7 +4,6 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Not Just Dinner | Supper Club</title>
-
   <link rel="stylesheet" href="style.css">
 </head>
 
@@ -24,186 +23,99 @@
   </div>
 </header>
 
-<!-- ABOUT EVENT -->
 <section class="about">
-  <h2>About the Supper Club</h2>
+  <h2>The Supper Club</h2>
 
-  <p style="font-style:italic;">
-    This is one of the curated experiences hosted by Not Just Dinner.
+  <p>
+    An intimate dinner table where strangers arrive
+    and friends leave.
   </p>
 
   <p>
-    This isn’t just dinner — it’s one of those evenings people talk about after.
-    A small, intimate supper club in Bangalore, hosted with warmth, intention,
-    and thoughtful food.
-  </p>
-
-  <p>
-    Guests arrive as strangers and leave feeling oddly familiar.
-    The table is set for connection, conversation, and comfort.
-  </p>
-
-  <p style="font-style:italic;color:rgba(42,30,26,0.7);">
-    Every dish carries a story — and for one night, you’re part of it.
+    Hosted in small groups, our supper club evenings
+    focus on thoughtful food, slow conversations,
+    and shared moments.
   </p>
 </section>
 
-<!-- WHAT TO EXPECT -->
+<!-- GALLERY MOVED FROM INDEX -->
 <section class="about">
-  <h2>What to Expect</h2>
+  <h2>Moments from the Last Supper</h2>
 
-  <p>
-    A thoughtfully crafted <strong>five-course, all-vegetarian menu</strong>
-    <em>(dessert contains egg)</em>, served in a space that feels more like
-    a beautifully hosted home than a restaurant.
-  </p>
-
-  <p>
-    Cosy dinner-party energy, elevated food, and conversations
-    that unfold naturally over the evening.
-  </p>
+  <div class="gallery">
+    <img src="image1.JPEG">
+    <img src="image2.JPEG">
+    <img src="image3.JPEG">
+    <img src="image4.jpg">
+  </div>
 </section>
 
-<!-- EVENT DETAILS -->
-<section class="about">
-  <h2>Event Details</h2>
-
-  <p>
-    <strong>Saturday, 3rd January</strong><br>
-    <strong>Time:</strong> 7:30 PM<br>
-    <strong>Location:</strong> Koramangala, Bengaluru
-  </p>
-
-  <p style="font-size:15px;color:rgba(42,30,26,0.65);">
-    Exact location will be shared once your seat is confirmed.
-  </p>
-
-  <p>
-    Only <strong>8 seats</strong>. Once they’re gone, they’re gone.
-  </p>
-</section>
-
-<!-- PRICING -->
 <section class="about">
   <h2>Pricing</h2>
 
-  <p style="font-size:24px;font-weight:500;">
-    ₹1,999 per person
-  </p>
-
-  <p>
-    Includes the complete five-course dining experience.
-  </p>
+  <p style="font-size:24px;">₹1,999 per person</p>
+  <p>Five-course vegetarian menu (dessert contains egg)</p>
 </section>
 
-<!-- PAYMENT -->
 <section class="waitlist">
   <h2>Payment</h2>
 
   <p>
-    Please complete the payment using the QR code below.
-    After payment, fill in the confirmation form to secure your seat.
+    Complete payment using the QR code below,
+    then confirm your seat.
   </p>
 
-  <div style="margin:32px 0;">
-    <img
-      src="payment-qr.jpeg"
-      alt="Payment QR Code"
-      style="
-        width:220px;
-        max-width:100%;
-        border:1px solid rgba(124,74,44,0.25);
-        padding:14px;
-        background:#fff;
-        border-radius:8px;
-      "
-    >
-  </div>
-</section>
-
-<!-- PAYMENT CONFIRMATION FORM -->
-<section class="waitlist">
-  <h2>Confirm Your Payment</h2>
-
-  <p>
-    Once payment is complete, please fill in the form below.
-    We’ll verify your payment and confirm your seat on WhatsApp.
-  </p>
+  <img src="payment-qr.jpeg" class="qr">
 
   <form
     action="https://script.google.com/macros/s/AKfycbwcmZxo9kXvfVGn5Jv2JCOlmWmjbg5HTY1RCntPKHbTbFMgkoxRf4AeqXSaxooZJf_z/exec"
     method="POST"
     target="hidden_iframe"
-    style="max-width:620px;margin:32px auto;text-align:left;"
   >
+    <label>Name</label>
+    <input name="name" required>
 
-    <label>Full Name</label>
-    <input type="text" name="name" required>
-
-    <label>WhatsApp Number</label>
-    <input type="tel" name="whatsapp" required>
+    <label>WhatsApp</label>
+    <input name="whatsapp" required>
 
     <label>Dietary Preference</label>
-    <select name="dietary" required>
-      <option value="">Select one</option>
-      <option value="Egg in dessert OK">Egg in dessert OK</option>
-      <option value="Egg in dessert NOT OK">Egg in dessert NOT OK</option>
+    <select name="dietary">
+      <option>Egg OK</option>
+      <option>Egg Not OK</option>
     </select>
 
-    <label>Social Profile You’re Sharing</label>
-    <select name="social_platform" required>
-      <option value="">Select one</option>
-      <option value="Instagram">Instagram</option>
-      <option value="LinkedIn">LinkedIn</option>
-      <option value="X (Twitter)">X (Twitter)</option>
+    <label>Social Platform</label>
+    <select name="social_platform">
+      <option>Instagram</option>
+      <option>LinkedIn</option>
+      <option>X</option>
     </select>
 
-    <label>Username / Profile Handle</label>
-    <input type="text" name="social_username" required>
+    <label>Username</label>
+    <input name="social_username" required>
 
-    <label>Dinner Date You Paid For</label>
-    <select name="dinner_date" required>
-      <option value="">Select one</option>
-      <option value="3rd January">3rd January</option>
-      <option value="10th January">10th January</option>
+    <label>Dinner Date</label>
+    <select name="dinner_date">
+      <option>3rd January</option>
+      <option>10th January</option>
     </select>
 
-    <label>How did you hear about Not Just Dinner?</label>
-    <select name="source" required>
-      <option value="">Select one</option>
-      <option value="Instagram">Instagram</option>
-      <option value="X (Twitter)">X (Twitter)</option>
-      <option value="Friend / Previous Guest">Friend / Previous Guest</option>
+    <label>How did you hear about us?</label>
+    <select name="source">
+      <option>Instagram</option>
+      <option>X</option>
+      <option>Friend</option>
     </select>
 
-    <button type="submit" class="btn" style="width:100%;margin-top:24px;">
-      I’ve Paid – Confirm My Seat
-    </button>
+    <button class="btn">I’ve Paid – Confirm Seat</button>
   </form>
 
   <iframe name="hidden_iframe" style="display:none;"></iframe>
-
-  <p id="formMessage" style="display:none;text-align:center;margin-top:16px;">
-    Thank you ✨  
-    We’ve received your details and will confirm your seat on WhatsApp shortly.
-  </p>
 </section>
 
 <footer>
-  © 2024 Not Just Dinner · Koramangala, Bengaluru
+  © 2024 Not Just Dinner
 </footer>
-
-<script>
-  const form = document.querySelector("form");
-  const message = document.getElementById("formMessage");
-
-  form.addEventListener("submit", function () {
-    setTimeout(() => {
-      form.reset();
-      message.style.display = "block";
-    }, 800);
-  });
-</script>
 
 </body>
 </html>
