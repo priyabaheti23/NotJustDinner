@@ -348,3 +348,16 @@ footer {
   }
 }
 
+
+.error {
+  color: #a63a2d;
+  font-size: 13px;
+  margin-top: 4px;
+  display: none;
+}
+
+input.invalid, select.invalid {
+  border-color: #a63a2d;
+}
+
+
