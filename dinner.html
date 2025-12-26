@@ -102,4 +102,207 @@
     </strong>
   </p>
 
-  <div style="margin:32px 0;text-align:cent
+  <div style="margin:32px 0;text-align:center;">
+    <img src="assets/branding/payment-qr.jpeg" class="qr">
+
+    <p style="margin-top:16px;font-size:15px;">
+      <strong>UPI ID:</strong> <span id="upiId">bluewillow@upi</span>
+    </p>
+
+    <button type="button" class="btn" style="max-width:260px;margin-top:12px;" onclick="copyUPI()">
+      Copy UPI ID
+    </button>
+
+    <p id="copyMsg" style="font-size:14px;margin-top:8px;display:none;">
+      UPI ID copied ✓
+    </p>
+  </div>
+
+  <!-- FORM -->
+  <form
+    id="confirmationForm"
+    novalidate
+    action="https://script.google.com/macros/s/AKfycbwcmZxo9kXvfVGn5Jv2JCOlmWmjbg5HTY1RCntPKHbTbFMgkoxRf4AeqXSaxooZJf_z/exec"
+    method="POST"
+    target="hidden_iframe"
+    style="max-width:620px;margin:0 auto;text-align:left;"
+  >
+    <label>Full Name</label>
+    <input type="text" id="name" name="name">
+    <small class="error"></small>
+
+    <label>WhatsApp Number</label>
+    <input type="tel" id="whatsapp" name="whatsapp">
+    <small class="error"></small>
+
+    <label>Dietary Preference</label>
+    <select id="dietary" name="dietary">
+      <option value="">Select one</option>
+      <option>Egg in dessert OK</option>
+      <option>Egg in dessert NOT OK</option>
+    </select>
+    <small class="error"></small>
+
+    <label>Social Platform</label>
+    <select id="platform" name="social_platform">
+      <option value="">Select one</option>
+      <option>Instagram</option>
+      <option>LinkedIn</option>
+      <option>X (Twitter)</option>
+    </select>
+    <small class="error"></small>
+
+    <label>Username / Profile Handle</label>
+    <input type="text" id="social" name="social_username">
+    <small class="error"></small>
+
+    <label>How did you hear about us?</label>
+    <select id="source" name="source">
+      <option value="">Select one</option>
+      <option>Instagram</option>
+      <option>Twitter / X</option>
+      <option>Friend / Previous Guest</option>
+    </select>
+    <small class="error"></small>
+
+    <button type="submit" class="btn" id="submitBtn">
+      I’ve Paid – Confirm My Seat
+    </button>
+  </form>
+
+  <iframe name="hidden_iframe" style="display:none;"></iframe>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-contact">
+    <h3>Not Just Dinner</h3>
+    <div class="footer-links">
+      <a href="https://instagram.com/notjust.dinner" target="_blank" aria-label="Instagram">
+        <svg viewBox="0 0 24 24" fill="none">
+          <rect x="2" y="2" width="20" height="20" rx="5" stroke-width="1.5"/>
+          <circle cx="12" cy="12" r="4" stroke-width="1.5"/>
+          <circle cx="17.5" cy="6.5" r="1" fill="currentColor"/>
+        </svg>
+      </a>
+      <a href="https://x.com/notjustdinner" target="_blank" aria-label="Twitter">
+        <svg viewBox="0 0 24 24" fill="none">
+          <path d="M4 4L20 20M20 4L4 20" stroke-width="1.5"/>
+        </svg>
+      </a>
+    </div>
+  </div>
+  <p class="footer-copy">
+    © 2024 Not Just Dinner · Koramangala, Bengaluru
+  </p>
+</footer>
+
+<!-- SUCCESS MODAL -->
+<div id="successModal" style="
+  display:none;
+  position:fixed;
+  inset:0;
+  background:rgba(0,0,0,0.55);
+  align-items:center;
+  justify-content:center;
+  z-index:2000;">
+  <div style="
+    background:#fff;
+    padding:32px;
+    max-width:420px;
+    text-align:center;
+    border-radius:12px;">
+    <h3>Thank you ✨</h3>
+    <p style="margin-top:12px;">
+      We’ve received your details and will confirm your seat on WhatsApp shortly.
+    </p>
+    <button onclick="closeModal()" class="btn" style="margin-top:20px;">Okay</button>
+  </div>
+</div>
+
+<!-- JS -->
+<script>
+  function copyUPI() {
+    navigator.clipboard.writeText("bluewillow@upi");
+    document.getElementById("copyMsg").style.display = "block";
+    setTimeout(() => {
+      document.getElementById("copyMsg").style.display = "none";
+    }, 2000);
+  }
+
+  function showError(input, msg) {
+    input.classList.add("invalid");
+    const error = input.nextElementSibling;
+    error.innerText = msg;
+    error.style.display = "block";
+  }
+
+  function clearError(input) {
+    input.classList.remove("invalid");
+    const error = input.nextElementSibling;
+    error.innerText = "";
+    error.style.display = "none";
+  }
+
+  document.getElementById("name").addEventListener("blur", function () {
+    /^[A-Za-z ]{3,}$/.test(this.value.trim())
+      ? clearError(this)
+      : showError(this, "Please enter your full name");
+  });
+
+  document.getElementById("whatsapp").addEventListener("blur", function () {
+    /^[0-9]{10}$/.test(this.value.trim())
+      ? clearError(this)
+      : showError(this, "Enter a valid 10-digit WhatsApp number");
+  });
+
+  document.getElementById("social").addEventListener("blur", function () {
+    !this.value.includes(" ") && this.value.trim()
+      ? clearError(this)
+      : showError(this, "Username cannot contain spaces");
+  });
+
+  ["dietary", "platform", "source"].forEach(id => {
+    document.getElementById(id).addEventListener("change", function () {
+      this.value
+        ? clearError(this)
+        : showError(this, "This field is required");
+    });
+  });
+
+  const form = document.getElementById("confirmationForm");
+  const submitBtn = document.getElementById("submitBtn");
+  const modal = document.getElementById("successModal");
+
+  form.addEventListener("submit", function (e) {
+    let valid = true;
+    form.querySelectorAll("input, select").forEach(field => {
+      if (!field.value.trim()) {
+        showError(field, "This field is required");
+        valid = false;
+      }
+    });
+
+    if (!valid) {
+      e.preventDefault();
+      return;
+    }
+
+    submitBtn.disabled = true;
+    submitBtn.innerText = "Submitting...";
+
+    setTimeout(() => {
+      modal.style.display = "flex";
+      form.reset();
+      submitBtn.disabled = false;
+      submitBtn.innerText = "I’ve Paid – Confirm My Seat";
+    }, 1200);
+  });
+
+  function closeModal() {
+    modal.style.display = "none";
+  }
+</script>
+
+</body>
+</html>
