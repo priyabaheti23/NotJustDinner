@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Not Just Dinner | Event Details</title>
+  <title>Not Just Dinner | Supper Club</title>
   <link rel="stylesheet" href="style.css">
 </head>
 
@@ -24,27 +24,21 @@
 </header>
 
 <!-- ABOUT EVENT -->
-<section class="about">
+<section class="about" style="margin-top:32px;">
   <h2>About the Event</h2>
 
   <p>
-    This isn’t just dinner, it’s one of those evenings people talk about after.
-    A small, invite-only supper club in Bangalore, hosted by a Michelin-star-trained
-    chef and her best friend.
+    This isn’t just dinner — it’s one of those evenings people talk about after.
+    A small, invite-only supper club hosted in Bangalore.
   </p>
 
   <p>
-    What began as a shared dream has become an intimate table where strangers arrive
-    curious and leave feeling oddly familiar.
-  </p>
-
-  <p>
-    Picture warm lighting, soft music, playful ice-breakers, and conversations that
-    unfold as naturally as the courses themselves.
+    Strangers arrive curious and leave feeling oddly familiar,
+    brought together by thoughtful food and unforced conversations.
   </p>
 
   <p style="font-style:italic;">
-    Every dish carries a story — and for one night, you’re part of that narrative.
+    Every dish carries a story — and for one night, you’re part of it.
   </p>
 </section>
 
@@ -54,13 +48,13 @@
 
   <p>
     A thoughtfully crafted <strong>five-course, all-vegetarian menu</strong>
-    <em>(dessert contains egg)</em>, served in a space designed to feel less like a
-    restaurant and more like a beautifully hosted dinner party.
+    <em>(dessert contains egg)</em>, served in a space designed to feel
+    like a beautifully hosted home.
   </p>
 
   <p>
-    Cosy dinner-party energy, elevated food, and people you haven’t met yet —
-    but probably won’t forget.
+    Warm lighting, slow conversations, elevated food,
+    and people you haven’t met yet — but won’t forget.
   </p>
 </section>
 
@@ -69,7 +63,7 @@
   <h2>Event Details</h2>
 
   <p>
-    <strong>Saturday, 3rd January</strong><br>
+    <strong>Friday, 3rd January</strong><br>
     <strong>Time:</strong> 7:30 PM<br>
     <strong>Location:</strong> Koramangala, Bengaluru
   </p>
@@ -79,7 +73,7 @@
   </p>
 
   <p>
-    Only <strong>8 seats</strong> — once they’re gone, they’re gone.
+    Only <strong>8 seats</strong>. Limited, intimate, intentional.
   </p>
 </section>
 
@@ -87,7 +81,7 @@
 <section class="about">
   <h2>Moments from the Last Supper</h2>
 
-  <div class="gallery">
+  <div class="gallery" style="grid-template-columns:repeat(2,1fr);max-width:720px;margin:40px auto 0;">
     <img src="assets/supper-club/supper-1.jpg">
     <img src="assets/supper-club/supper-2.jpg">
     <img src="assets/supper-club/supper-3.jpg">
@@ -104,12 +98,8 @@
   </p>
 
   <p>
-    Includes a five-course dining experience, thoughtful hosting,
-    curated conversations, and an intimate evening at the table.
-  </p>
-
-  <p>
-    This is not a restaurant booking — it’s a hosted experience.
+    Includes the full five-course experience, hosting,
+    and an evening at a shared table.
   </p>
 </section>
 
@@ -118,20 +108,33 @@
   <h2>Payment & Confirmation</h2>
 
   <p>
-    Please complete the payment using the QR code below.
+    Please complete the payment using the <strong>Blue Willow QR code</strong>
+    or the <strong>UPI ID</strong> below.
   </p>
 
   <p>
     <strong>
-      Once you’ve completed the payment using the QR code above,
-      please fill the form below to complete your booking.
+      Post payment, please fill the form below to complete your booking.
     </strong>
   </p>
 
-  <div style="margin:32px 0;">
+  <div style="margin:32px 0;text-align:center;">
     <img src="assets/branding/payment-qr.jpeg" class="qr">
+
+    <p style="margin-top:16px;font-size:15px;">
+      <strong>UPI ID:</strong> <span id="upiId">bluewillow@upi</span>
+    </p>
+
+    <button class="btn" style="max-width:260px;margin-top:12px;" onclick="copyUPI()">
+      Copy UPI ID
+    </button>
+
+    <p id="copyMsg" style="font-size:14px;margin-top:8px;display:none;">
+      UPI ID copied ✓
+    </p>
   </div>
 
+  <!-- FORM -->
   <form
     id="confirmationForm"
     action="https://script.google.com/macros/s/AKfycbwcmZxo9kXvfVGn5Jv2JCOlmWmjbg5HTY1RCntPKHbTbFMgkoxRf4AeqXSaxooZJf_z/exec"
@@ -141,36 +144,42 @@
   >
 
     <label>Full Name</label>
-    <input type="text" name="name" required pattern="[A-Za-z ]{3,}">
+    <input type="text" id="name" name="name" required>
+    <small class="error"></small>
 
     <label>WhatsApp Number</label>
-    <input type="tel" name="whatsapp" required pattern="[0-9]{10}">
+    <input type="tel" id="whatsapp" name="whatsapp" required>
+    <small class="error"></small>
 
     <label>Dietary Preference</label>
-    <select name="dietary" required>
+    <select id="dietary" name="dietary" required>
       <option value="">Select one</option>
       <option>Egg in dessert OK</option>
       <option>Egg in dessert NOT OK</option>
     </select>
+    <small class="error"></small>
 
-    <label>Social Profile You’re Sharing</label>
-    <select name="social_platform" required>
+    <label>Social Platform</label>
+    <select id="platform" name="social_platform" required>
       <option value="">Select one</option>
       <option>Instagram</option>
       <option>LinkedIn</option>
       <option>X (Twitter)</option>
     </select>
+    <small class="error"></small>
 
     <label>Username / Profile Handle</label>
-    <input type="text" name="social_username" required pattern="^\S+$">
+    <input type="text" id="social" name="social_username" required>
+    <small class="error"></small>
 
     <label>How did you hear about us?</label>
-    <select name="source" required>
+    <select id="source" name="source" required>
       <option value="">Select one</option>
       <option>Instagram</option>
       <option>Twitter / X</option>
       <option>Friend / Previous Guest</option>
     </select>
+    <small class="error"></small>
 
     <button type="submit" class="btn" id="submitBtn">
       I’ve Paid – Confirm My Seat
@@ -180,69 +189,72 @@
   <iframe name="hidden_iframe" style="display:none;"></iframe>
 </section>
 
-<!-- CONTACT -->
-<section class="contact">
-  <h2>Contact Us</h2>
-
-  <div class="contact-links">
-    <a href="https://instagram.com/notjust.dinner" target="_blank">Instagram</a>
-    <a href="https://x.com/notjustdinner" target="_blank">Twitter</a>
-  </div>
-</section>
-
+<!-- FOOTER -->
 <footer>
-  © 2024 Not Just Dinner · Koramangala, Bengaluru
+  <div class="footer-contact">
+    <h3>Not Just Dinner</h3>
+
+    <div class="footer-links">
+      <a href="https://instagram.com/notjust.dinner" target="_blank" aria-label="Instagram">
+        <svg viewBox="0 0 24 24" fill="none">
+          <rect x="2" y="2" width="20" height="20" rx="5" stroke-width="1.5"/>
+          <circle cx="12" cy="12" r="4" stroke-width="1.5"/>
+          <circle cx="17.5" cy="6.5" r="1" fill="currentColor"/>
+        </svg>
+      </a>
+
+      <a href="https://x.com/notjustdinner" target="_blank" aria-label="Twitter">
+        <svg viewBox="0 0 24 24" fill="none">
+          <path d="M4 4L20 20M20 4L4 20" stroke-width="1.5"/>
+        </svg>
+      </a>
+    </div>
+  </div>
+
+  <p class="footer-copy">
+    © 2024 Not Just Dinner · Koramangala, Bengaluru
+  </p>
 </footer>
 
-<!-- SUCCESS MODAL -->
-<div id="successModal" style="
-  display:none;
-  position:fixed;
-  inset:0;
-  background:rgba(0,0,0,0.55);
-  align-items:center;
-  justify-content:center;
-  z-index:2000;
-">
-  <div style="
-    background:#fff;
-    padding:32px;
-    max-width:420px;
-    text-align:center;
-    border-radius:12px;
-  ">
-    <h3>Thank you ✨</h3>
-    <p style="margin-top:12px;">
-      We’ve received your details and will confirm your seat on WhatsApp shortly.
-    </p>
-    <button onclick="closeModal()" class="btn" style="margin-top:20px;">
-      Okay
-    </button>
-  </div>
-</div>
-
+<!-- JS -->
 <script>
-  const form = document.getElementById("confirmationForm");
-  const modal = document.getElementById("successModal");
-  const submitBtn = document.getElementById("submitBtn");
-
-  form.addEventListener("submit", function () {
-    submitBtn.disabled = true;
-    submitBtn.innerText = "Submitting...";
-
+  function copyUPI() {
+    navigator.clipboard.writeText("bluewillow@upi");
+    document.getElementById("copyMsg").style.display = "block";
     setTimeout(() => {
-      modal.style.display = "flex";
-      form.reset();
-      submitBtn.disabled = false;
-      submitBtn.innerText = "I’ve Paid – Confirm My Seat";
-    }, 900);
-  });
-
-  function closeModal() {
-    modal.style.display = "none";
+      document.getElementById("copyMsg").style.display = "none";
+    }, 2000);
   }
 
-  // 🔒 Seat limit logic will be added here later (8 seats)
+  function showError(input, msg) {
+    input.classList.add("invalid");
+    input.nextElementSibling.innerText = msg;
+    input.nextElementSibling.style.display = "block";
+  }
+
+  function clearError(input) {
+    input.classList.remove("invalid");
+    input.nextElementSibling.innerText = "";
+    input.nextElementSibling.style.display = "none";
+  }
+
+  document.getElementById("name").addEventListener("blur", function () {
+    /^[A-Za-z ]{3,}$/.test(this.value)
+      ? clearError(this)
+      : showError(this, "Enter your full name");
+  });
+
+  document.getElementById("whatsapp").addEventListener("blur", function () {
+    /^[0-9]{10}$/.test(this.value)
+      ? clearError(this)
+      : showError(this, "Enter a valid 10-digit number");
+  });
+
+  document.getElementById("social").addEventListener("blur", function () {
+    !this.value.includes(" ")
+      ? clearError(this)
+      : showError(this, "Username cannot contain spaces");
+  });
 </script>
 
 </body>
