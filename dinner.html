@@ -60,7 +60,7 @@
   <h2>Event Details</h2>
 
   <p>
-    <strong>Saturday, 3rd January</strong><br>
+    <strong>Saturday, 3rd January OR 10th January</strong><br>
     <strong>Time:</strong> 7:30 PM<br>
     <strong>Location:</strong> Koramangala, Bengaluru
   </p>
@@ -166,6 +166,15 @@
       <option>Egg in dessert NOT OK</option>
     </select>
     <small class="error"></small>
+
+    <label>
+  Which date are you booking for? <span style="color:#a63a2d">*</span></label>
+  <select id="event_date" name="event_date">
+    <option value="">Select a date</option>
+    <option value="3rd January">3rd January (Supper Club)</option>
+    <option value="10th January">10th January (Supper Club)</option>
+  </select>
+  <small class="error"></small>
 
     <label>Social Platform <span style="color:#a63a2d">*</span></label>
     <select id="platform" name="social_platform">
@@ -281,7 +290,7 @@
     });
   });
 
-  ["dietary","platform","source"].forEach(id => {
+  ["event_date","dietary","platform","source"].forEach(id => {
     document.getElementById(id).addEventListener("change", function () {
       this.value
         ? clearError(this)
@@ -326,4 +335,5 @@
 
 </body>
 </html>
+
 
