@@ -169,7 +169,7 @@
 
     <label>
   Which date are you booking for? <span style="color:#a63a2d">*</span></label>
-  <select id="event_date" name="event_date">
+  <select id="inner_date" name="inner_date">
     <option value="">Select a date</option>
     <option value="3rd January">3rd January (Supper Club)</option>
     <option value="10th January">10th January (Supper Club)</option>
@@ -290,7 +290,7 @@
     });
   });
 
-  ["event_date","dietary","platform","source"].forEach(id => {
+  ["inner_date","dietary","platform","source"].forEach(id => {
     document.getElementById(id).addEventListener("change", function () {
       this.value
         ? clearError(this)
@@ -335,5 +335,6 @@
 
 </body>
 </html>
+
 
 
