@@ -23,14 +23,17 @@
 <!-- ABOUT EVENT -->
 <section class="about" style="margin-top:32px;">
   <h2>About the Event</h2>
+
   <p>
     This isn’t just dinner — it’s one of those evenings people talk about after.
     A small, invite-only supper club hosted in Bangalore.
   </p>
+
   <p>
     Strangers arrive curious and leave feeling oddly familiar,
     brought together by thoughtful food and unforced conversations.
   </p>
+
   <p style="font-style:italic;">
     Every dish carries a story — and for one night, you’re part of it.
   </p>
@@ -39,11 +42,13 @@
 <!-- WHAT TO EXPECT -->
 <section class="about">
   <h2>What to Expect</h2>
+
   <p>
     A thoughtfully crafted <strong>five-course, all-vegetarian menu</strong>
-    <em>(dessert contains egg)</em>, served in a space designed to feel
-    like a beautifully hosted home.
+    <em>(dessert contains egg)</em>, served in a space designed
+    to feel like a beautifully hosted home.
   </p>
+
   <p>
     Warm lighting, slow conversations, elevated food,
     and people you haven’t met yet — but won’t forget.
@@ -53,14 +58,17 @@
 <!-- EVENT DETAILS -->
 <section class="about">
   <h2>Event Details</h2>
+
   <p>
     <strong>Friday, 3rd January</strong><br>
     <strong>Time:</strong> 7:30 PM<br>
     <strong>Location:</strong> Koramangala, Bengaluru
   </p>
+
   <p style="font-size:15px;">
     Exact location will be shared once your seat is confirmed.
   </p>
+
   <p>
     Only <strong>8 seats</strong>. Limited, intimate, intentional.
   </p>
@@ -69,6 +77,7 @@
 <!-- MOMENTS -->
 <section class="about">
   <h2>Moments from the Last Supper</h2>
+
   <div class="gallery" style="grid-template-columns:repeat(2,1fr);max-width:720px;margin:40px auto 0;">
     <img src="assets/supper-club/supper-1.jpg">
     <img src="assets/supper-club/supper-2.jpg">
@@ -80,7 +89,9 @@
 <!-- PRICING -->
 <section class="about">
   <h2>Pricing</h2>
+
   <p style="font-size:24px;font-weight:500;">₹1,999 per person</p>
+
   <p>
     Includes the complete five-course experience,
     thoughtful hosting, and an evening at a shared table.
@@ -105,16 +116,25 @@
   <div style="margin:32px 0;text-align:center;">
     <img src="assets/branding/payment-qr.jpeg" class="qr">
 
-    <p style="margin-top:16px;font-size:15px;">
-      <strong>UPI ID:</strong> <span id="upiId">bluewillow@upi</span>
+    <p style="margin-top:16px;font-size:15px;display:flex;justify-content:center;gap:10px;align-items:center;">
+      <strong>UPI ID:</strong>
+      <span id="upiId">bluewillow@upi</span>
+
+      <!-- Copy icon -->
+      <span
+        onclick="copyUPI()"
+        style="cursor:pointer;display:inline-flex;"
+        aria-label="Copy UPI ID"
+      >
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none">
+          <rect x="9" y="9" width="13" height="13" rx="2" stroke="currentColor" stroke-width="1.5"/>
+          <rect x="3" y="3" width="13" height="13" rx="2" stroke="currentColor" stroke-width="1.5"/>
+        </svg>
+      </span>
     </p>
 
-    <button type="button" class="btn" style="max-width:260px;margin-top:12px;" onclick="copyUPI()">
-      Copy UPI ID
-    </button>
-
-    <p id="copyMsg" style="font-size:14px;margin-top:8px;display:none;">
-      UPI ID copied ✓
+    <p id="copyMsg" style="font-size:13px;margin-top:6px;display:none;">
+      Copied ✓
     </p>
   </div>
 
@@ -127,11 +147,16 @@
     target="hidden_iframe"
     style="max-width:620px;margin:0 auto;text-align:left;"
   >
-    <label>Full Name</label>
+
+    <label>
+      Full Name <span style="color:#a63a2d;">*</span>
+    </label>
     <input type="text" id="name" name="name">
     <small class="error"></small>
 
-    <label>WhatsApp Number</label>
+    <label>
+      WhatsApp Number <span style="color:#a63a2d;">*</span>
+    </label>
     <input type="tel" id="whatsapp" name="whatsapp">
     <small class="error"></small>
 
@@ -177,6 +202,7 @@
 <footer>
   <div class="footer-contact">
     <h3>Not Just Dinner</h3>
+
     <div class="footer-links">
       <a href="https://instagram.com/notjust.dinner" target="_blank" aria-label="Instagram">
         <svg viewBox="0 0 24 24" fill="none">
@@ -185,6 +211,7 @@
           <circle cx="17.5" cy="6.5" r="1" fill="currentColor"/>
         </svg>
       </a>
+
       <a href="https://x.com/notjustdinner" target="_blank" aria-label="Twitter">
         <svg viewBox="0 0 24 24" fill="none">
           <path d="M4 4L20 20M20 4L4 20" stroke-width="1.5"/>
@@ -192,6 +219,7 @@
       </a>
     </div>
   </div>
+
   <p class="footer-copy">
     © 2024 Not Just Dinner · Koramangala, Bengaluru
   </p>
@@ -199,110 +227,4 @@
 
 <!-- SUCCESS MODAL -->
 <div id="successModal" style="
-  display:none;
-  position:fixed;
-  inset:0;
-  background:rgba(0,0,0,0.55);
-  align-items:center;
-  justify-content:center;
-  z-index:2000;">
-  <div style="
-    background:#fff;
-    padding:32px;
-    max-width:420px;
-    text-align:center;
-    border-radius:12px;">
-    <h3>Thank you ✨</h3>
-    <p style="margin-top:12px;">
-      We’ve received your details and will confirm your seat on WhatsApp shortly.
-    </p>
-    <button onclick="closeModal()" class="btn" style="margin-top:20px;">Okay</button>
-  </div>
-</div>
-
-<!-- JS -->
-<script>
-  function copyUPI() {
-    navigator.clipboard.writeText("bluewillow@upi");
-    document.getElementById("copyMsg").style.display = "block";
-    setTimeout(() => {
-      document.getElementById("copyMsg").style.display = "none";
-    }, 2000);
-  }
-
-  function showError(input, msg) {
-    input.classList.add("invalid");
-    const error = input.nextElementSibling;
-    error.innerText = msg;
-    error.style.display = "block";
-  }
-
-  function clearError(input) {
-    input.classList.remove("invalid");
-    const error = input.nextElementSibling;
-    error.innerText = "";
-    error.style.display = "none";
-  }
-
-  document.getElementById("name").addEventListener("blur", function () {
-    /^[A-Za-z ]{3,}$/.test(this.value.trim())
-      ? clearError(this)
-      : showError(this, "Please enter your full name");
-  });
-
-  document.getElementById("whatsapp").addEventListener("blur", function () {
-    /^[0-9]{10}$/.test(this.value.trim())
-      ? clearError(this)
-      : showError(this, "Enter a valid 10-digit WhatsApp number");
-  });
-
-  document.getElementById("social").addEventListener("blur", function () {
-    !this.value.includes(" ") && this.value.trim()
-      ? clearError(this)
-      : showError(this, "Username cannot contain spaces");
-  });
-
-  ["dietary", "platform", "source"].forEach(id => {
-    document.getElementById(id).addEventListener("change", function () {
-      this.value
-        ? clearError(this)
-        : showError(this, "This field is required");
-    });
-  });
-
-  const form = document.getElementById("confirmationForm");
-  const submitBtn = document.getElementById("submitBtn");
-  const modal = document.getElementById("successModal");
-
-  form.addEventListener("submit", function (e) {
-    let valid = true;
-    form.querySelectorAll("input, select").forEach(field => {
-      if (!field.value.trim()) {
-        showError(field, "This field is required");
-        valid = false;
-      }
-    });
-
-    if (!valid) {
-      e.preventDefault();
-      return;
-    }
-
-    submitBtn.disabled = true;
-    submitBtn.innerText = "Submitting...";
-
-    setTimeout(() => {
-      modal.style.display = "flex";
-      form.reset();
-      submitBtn.disabled = false;
-      submitBtn.innerText = "I’ve Paid – Confirm My Seat";
-    }, 1200);
-  });
-
-  function closeModal() {
-    modal.style.display = "none";
-  }
-</script>
-
-</body>
-</html>
+  d
