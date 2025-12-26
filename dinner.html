@@ -216,46 +216,73 @@
   </p>
 </footer>
 
-<!-- JS -->
 <script>
-  function copyUPI() {
-    navigator.clipboard.writeText("bluewillow@upi");
-    document.getElementById("copyMsg").style.display = "block";
-    setTimeout(() => {
-      document.getElementById("copyMsg").style.display = "none";
-    }, 2000);
-  }
-
   function showError(input, msg) {
     input.classList.add("invalid");
-    input.nextElementSibling.innerText = msg;
-    input.nextElementSibling.style.display = "block";
+    const error = input.nextElementSibling;
+    error.innerText = msg;
+    error.style.display = "block";
   }
 
   function clearError(input) {
     input.classList.remove("invalid");
-    input.nextElementSibling.innerText = "";
-    input.nextElementSibling.style.display = "none";
+    const error = input.nextElementSibling;
+    error.innerText = "";
+    error.style.display = "none";
   }
 
+  /* TEXT FIELD VALIDATIONS */
   document.getElementById("name").addEventListener("blur", function () {
-    /^[A-Za-z ]{3,}$/.test(this.value)
+    /^[A-Za-z ]{3,}$/.test(this.value.trim())
       ? clearError(this)
-      : showError(this, "Enter your full name");
+      : showError(this, "Please enter your full name");
   });
 
   document.getElementById("whatsapp").addEventListener("blur", function () {
-    /^[0-9]{10}$/.test(this.value)
+    /^[0-9]{10}$/.test(this.value.trim())
       ? clearError(this)
-      : showError(this, "Enter a valid 10-digit number");
+      : showError(this, "Enter a valid 10-digit WhatsApp number");
   });
 
   document.getElementById("social").addEventListener("blur", function () {
-    !this.value.includes(" ")
+    !this.value.includes(" ") && this.value.trim() !== ""
       ? clearError(this)
       : showError(this, "Username cannot contain spaces");
+  });
+
+  /* SELECT FIELD VALIDATIONS */
+  ["dietary", "platform", "source"].forEach(id => {
+    document.getElementById(id).addEventListener("change", function () {
+      this.value
+        ? clearError(this)
+        : showError(this, "This field is required");
+    });
+  });
+
+  /* FINAL SUBMIT SAFETY CHECK */
+  const form = document.getElementById("confirmationForm");
+  const submitBtn = document.getElementById("submitBtn");
+
+  form.addEventListener("submit", function (e) {
+    let valid = true;
+
+    form.querySelectorAll("input, select").forEach(field => {
+      if (!field.value.trim()) {
+        showError(field, "This field is required");
+        valid = false;
+      }
+    });
+
+    if (!valid) {
+      e.preventDefault(); // ⛔ stop submit
+      return;
+    }
+
+    submitBtn.disabled = true;
+    submitBtn.innerText = "Submitting...";
   });
 </script>
 
 </body>
 </html>
+
