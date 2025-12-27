@@ -11,7 +11,7 @@ body {
   background: #F3EEE8;
   color: #2A1E1A;
   line-height: 1.65;
-  padding-top: 88px;
+  padding-top: 80px; /* CHANGED: reduced slightly to match refined header */
 }
 
 h1, h2, h3 {
@@ -24,8 +24,8 @@ h1, h2, h3 {
   position: fixed;
   top: 0;
   width: 100%;
-  background: rgba(42,30,26,0.95);
-  backdrop-filter: blur(14px);
+  background: rgba(42,30,26,0.96); /* CHANGED: slightly more solid */
+  backdrop-filter: blur(12px);     /* CHANGED: softer blur */
   z-index: 1000;
 }
 
@@ -38,23 +38,29 @@ h1, h2, h3 {
   align-items: center;
 }
 
+/* LOGO */
 .logo-pill {
-  background: rgba(255,255,255,0.08);
+  background: rgba(255,255,255,0.06); /* CHANGED: subtler pill */
   padding: 6px 14px;
   border-radius: 999px;
 }
 
 .logo {
-  height: 34px;
+  height: 36px;     /* CHANGED: ideal for horizontal logo */
+  width: auto;
+  display: block;
 }
 
+/* CTA BUTTON */
 .header-cta.primary {
   background: #7C4A2C;
   color: #fff;
-  padding: 9px 18px;
-  border-radius: 999px;
+  padding: 10px 22px;        /* CHANGED: better balance */
+  border-radius: 22px;       /* CHANGED: less pill-like, more elegant */
   text-decoration: none;
   font-size: 13px;
+  font-weight: 500;          /* CHANGED: adds confidence */
+  letter-spacing: 0.3px;     /* CHANGED: premium feel */
 }
 
 /* SECTIONS */
@@ -156,8 +162,8 @@ section p + p {
 
 .gallery img {
   width: 100%;
-  aspect-ratio: 3 / 4;   /* portrait ratio like 3rd image */
-  object-fit: cover;    /* crop instead of stretch */
+  aspect-ratio: 3 / 4;
+  object-fit: cover;
   border-radius: 10px;
   transition: transform 0.3s ease;
 }
@@ -363,11 +369,14 @@ footer {
   section h2 {
     font-size: 32px;
   }
+
+  .logo {
+    height: 32px; /* CHANGED: mobile-perfect logo size */
+  }
 }
+
 @media (max-width: 768px) {
   .gallery {
     grid-template-columns: 1fr !important;
   }
 }
-
-
