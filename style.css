@@ -147,6 +147,26 @@ section p + p {
   fill: none;
 }
 
+/* ================= MOMENTS GALLERY ================= */
+
+.gallery {
+  display: grid;
+  gap: 16px;
+}
+
+.gallery img {
+  width: 100%;
+  height: auto;
+  border-radius: 10px;
+  object-fit: cover;
+  transition: transform 0.3s ease;
+}
+
+.gallery img:hover {
+  transform: scale(1.03);
+}
+
+
 /* PRICING */
 .pricing-box {
   max-width: 760px;
@@ -345,3 +365,9 @@ footer {
     font-size: 32px;
   }
 }
+@media (max-width: 768px) {
+  .gallery {
+    grid-template-columns: 1fr !important;
+  }
+}
+
