@@ -177,6 +177,7 @@ section p + p {
 
 .coupon-row {
   display: flex;
+  align-items: center;
   gap: 8px;
   margin-top: 8px;
 }
@@ -186,12 +187,18 @@ section p + p {
 }
 
 .coupon-row button {
-  padding: 0 14px;
-  border-radius: 6px;
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
   border: 1px solid rgba(124,74,44,0.35);
   background: #fff;
   cursor: pointer;
-  font-size: 13px;
+  font-size: 14px;
+  transition: background 0.2s ease;
+}
+
+.coupon-row button:hover {
+  background: rgba(124,74,44,0.08);
 }
 
 /* PAYMENT */
@@ -206,6 +213,7 @@ section p + p {
 .upi-line {
   display: flex;
   justify-content: center;
+  align-items: center;
   gap: 8px;
 }
 
@@ -213,6 +221,15 @@ section p + p {
   width: 18px;
   height: 18px;
   stroke: #2A1E1A;
+  cursor: pointer;
+}
+
+.copy-toast {
+  font-size: 13px;
+  color: #2a7a3b;
+  margin-left: 6px;
+  opacity: 0;
+  transition: opacity 0.3s ease;
 }
 
 /* FORM */
@@ -232,6 +249,17 @@ form select {
   padding: 12px 14px;
   border-radius: 6px;
   border: 1px solid rgba(124,74,44,0.35);
+}
+
+input.invalid {
+  border-color: #a63a2d;
+}
+
+.error {
+  display: none;
+  font-size: 12px;
+  color: #a63a2d;
+  margin-top: 4px;
 }
 
 .btn {
@@ -271,6 +299,14 @@ footer {
   text-align: center;
 }
 
+.footer-copy {
+  max-width: 520px;
+  margin: 0 auto 28px;
+  font-size: 14px;
+  line-height: 1.6;
+  color: rgba(255,255,255,0.7);
+}
+
 .footer-links {
   display: flex;
   justify-content: center;
@@ -293,11 +329,6 @@ footer {
   height: 18px;
   stroke: #fff;
   fill: none;
-}
-
-.footer-copy {
-  font-size: 13px;
-  color: rgba(255,255,255,0.45);
 }
 
 /* MOBILE */
