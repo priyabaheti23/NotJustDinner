@@ -99,6 +99,34 @@
     thoughtful hosting, and an evening at a shared table.
   </p>
 </section>
+  <section class="about">
+  <h2>Have a Coupon?</h2>
+
+  <p style="font-size:16px;">
+    Enter your coupon code below to see your discounted price.
+  </p>
+
+  <div style="max-width:360px;margin:24px auto;text-align:center;">
+    <input
+      type="text"
+      id="couponInput"
+      placeholder="Enter coupon code"
+      style="text-transform:uppercase;"
+    >
+
+    <button
+      type="button"
+      class="btn"
+      style="margin-top:12px;"
+      onclick="applyCoupon()"
+    >
+      Apply Coupon
+    </button>
+
+    <p id="couponMsg" style="margin-top:12px;font-size:15px;"></p>
+  </div>
+</section>
+
 
 <!-- PAYMENT & CONFIRMATION -->
 <section class="waitlist">
@@ -335,6 +363,7 @@
 
 </body>
 </html>
+
 
 
 
