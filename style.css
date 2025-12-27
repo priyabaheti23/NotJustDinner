@@ -147,7 +147,7 @@ section p + p {
   fill: none;
 }
 
-/* ================= MOMENTS GALLERY ================= */
+/* ================= MOMENTS GALLERY FIX ================= */
 
 .gallery {
   display: grid;
@@ -156,16 +156,15 @@ section p + p {
 
 .gallery img {
   width: 100%;
-  height: auto;
+  aspect-ratio: 3 / 4;   /* portrait ratio like 3rd image */
+  object-fit: cover;    /* crop instead of stretch */
   border-radius: 10px;
-  object-fit: cover;
   transition: transform 0.3s ease;
 }
 
 .gallery img:hover {
   transform: scale(1.03);
 }
-
 
 /* PRICING */
 .pricing-box {
@@ -370,4 +369,5 @@ footer {
     grid-template-columns: 1fr !important;
   }
 }
+
 
