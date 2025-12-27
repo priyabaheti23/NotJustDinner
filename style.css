@@ -11,7 +11,7 @@ body {
   background: #F3EEE8;
   color: #2A1E1A;
   line-height: 1.65;
-  padding-top: 96px;
+  padding-top: 88px;
 }
 
 h1, h2, h3 {
@@ -25,78 +25,80 @@ h1, h2, h3 {
   top: 0;
   left: 0;
   right: 0;
-  background: rgba(245, 241, 236, 0.92);
+  background: rgba(42, 30, 26, 0.95);
   backdrop-filter: blur(14px);
-  border-bottom: 1px solid rgba(0,0,0,0.06);
+  border-bottom: 1px solid rgba(255,255,255,0.08);
   z-index: 1000;
 }
 
 .header-inner {
   max-width: 1200px;
   margin: 0 auto;
-  padding: 14px 8%;
+  padding: 12px 8%;
   display: flex;
   align-items: center;
   justify-content: space-between;
 }
 
-.logo-wrap {
-  background: transparent;
-  padding: 0;
-  box-shadow: none;
+.logo-pill {
+  background: rgba(255,255,255,0.08);
+  padding: 6px 14px;
+  border-radius: 999px;
 }
 
 .logo {
-  height: 38px;
-  display: block;
+  height: 34px;
 }
 
-/* Minimal CTA */
-.header-cta {
-  background: transparent;
-  color: #2A1E1A;
-  border: 1px solid rgba(42,30,26,0.25);
-  text-decoration: none;
-  padding: 8px 16px;
-  font-size: 13px;
+/* CTA */
+.header-cta.primary {
+  background: #7C4A2C;
+  color: #fff;
+  padding: 9px 18px;
   border-radius: 999px;
+  text-decoration: none;
+  font-size: 13px;
   transition: all 0.25s ease;
 }
 
-.header-cta:hover {
-  background: rgba(42,30,26,0.06);
+.header-cta.primary:hover {
+  background: #6A3E25;
+  transform: translateY(-1px);
 }
 
 /* ================= SECTIONS ================= */
 section {
   max-width: 1200px;
-  margin: 64px auto;
-  padding: 64px 8%;
+  margin: 48px auto;
+  padding: 56px 8%;
+}
+
+.first-section {
+  margin-top: 24px;
 }
 
 .about,
 .waitlist,
-.contact,
 .hosts {
-  background: rgba(255, 255, 255, 0.55);
-  border: 1px solid rgba(124, 74, 44, 0.18);
+  background: rgba(255,255,255,0.6);
+  border: 1px solid rgba(124,74,44,0.18);
   border-radius: 12px;
 }
 
 /* ================= HEADINGS ================= */
 section h2 {
-  font-size: 42px;
+  font-size: 40px;
   text-align: center;
-  margin-bottom: 28px;
+  margin-bottom: 24px;
 }
 
 section h2::after {
   content: "";
   display: block;
-  width: 48px;
+  width: 44px;
   height: 1px;
-  background: rgba(124, 74, 44, 0.6);
-  margin: 18px auto 0;
+  background: rgba(124,74,44,0.6);
+  margin: 16px auto 0;
 }
 
 /* ================= TEXT ================= */
@@ -109,7 +111,7 @@ section p {
 }
 
 section p + p {
-  margin-top: 18px;
+  margin-top: 16px;
 }
 
 /* ================= HOSTS ================= */
@@ -134,47 +136,117 @@ section p + p {
 }
 
 .host-img {
-  width: 180px;
-  height: 180px;
-  object-fit: cover;
+  width: 170px;
+  height: 170px;
   border-radius: 50%;
-  margin-bottom: 18px;
-}
-
-.link-card {
-  text-decoration: none;
-  color: inherit;
-}
-
-/* ================= GALLERY ================= */
-.gallery {
-  display: grid;
-  grid-template-columns: repeat(4, 1fr);
-  gap: 14px;
-  margin-top: 40px;
-}
-
-.gallery img {
-  width: 100%;
-  aspect-ratio: 3 / 4;
   object-fit: cover;
-  border-radius: 8px;
-  transition: transform 0.3s ease;
 }
 
-.gallery img:hover {
-  transform: scale(1.04);
+/* Social icons */
+.social-icon,
+.footer-links a {
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  border: 1px solid rgba(124,74,44,0.35);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  margin-top: 18px;
+  transition: all 0.25s ease;
 }
 
-/* ================= FORMS ================= */
+.social-icon svg,
+.footer-links svg {
+  width: 18px;
+  height: 18px;
+  stroke: currentColor;
+  fill: none;
+}
+
+.social-icon:hover,
+.footer-links a:hover {
+  background: rgba(124,74,44,0.12);
+  transform: translateY(-2px);
+}
+
+/* ================= PRICING ================= */
+.pricing-box {
+  max-width: 760px;
+  margin: 0 auto 40px;
+  text-align: center;
+}
+
+.price {
+  font-size: 36px;
+  font-weight: 500;
+}
+
+.price span {
+  font-size: 16px;
+  color: rgba(42,30,26,0.7);
+}
+
+.pricing-note {
+  font-size: 17px;
+  margin: 12px 0 24px;
+}
+
+/* Coupon */
+.coupon-box {
+  max-width: 360px;
+  margin: 0 auto 24px;
+}
+
+.coupon-box input {
+  margin-top: 8px;
+  text-align: center;
+  text-transform: uppercase;
+}
+
+#couponMsg {
+  margin-top: 8px;
+  font-size: 14px;
+}
+
+/* Payment */
+.qr {
+  width: 220px;
+  margin: 24px auto;
+  padding: 12px;
+  background: #fff;
+  border-radius: 10px;
+  border: 1px solid rgba(124,74,44,0.25);
+}
+
+.upi-line {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 8px;
+}
+
+.copy-icon {
+  cursor: pointer;
+}
+
+#copyMsg {
+  display: none;
+  font-size: 13px;
+  color: #2a7a3b;
+  margin-top: 6px;
+}
+
+/* ================= FORM ================= */
 form {
-  margin-top: 32px;
+  max-width: 620px;
+  margin: 40px auto 0;
 }
 
 form label {
   display: block;
-  font-size: 14px;
   margin: 18px 0 6px;
+  font-size: 14px;
 }
 
 form input,
@@ -183,7 +255,6 @@ form select {
   padding: 12px 14px;
   border-radius: 6px;
   border: 1px solid rgba(124,74,44,0.35);
-  font-size: 14px;
 }
 
 form input:focus,
@@ -192,13 +263,11 @@ form select:focus {
   border-color: #7C4A2C;
 }
 
-/* ================= BUTTON ================= */
 .btn {
-  margin-top: 24px;
-  padding: 16px 44px;
+  margin-top: 28px;
+  padding: 16px;
   background: #7C4A2C;
   color: #fff;
-  font-size: 15px;
   border-radius: 6px;
   border: none;
   cursor: pointer;
@@ -208,64 +277,25 @@ form select:focus {
 
 .btn:hover {
   background: #6A3E25;
-  transform: translateY(-2px);
-}
-
-/* ================= QR ================= */
-.qr {
-  width: 220px;
-  display: block;
-  margin: 24px auto;
-  padding: 12px;
-  background: #fff;
-  border-radius: 10px;
-  border: 1px solid rgba(124,74,44,0.25);
 }
 
 /* ================= FOOTER ================= */
 footer {
   background: #2A1E1A;
-  color: rgba(255,255,255,0.7);
-  text-align: center;
   padding: 56px 8% 40px;
-  margin-top: 80px;
-}
-
-.footer-contact h3 {
-  font-family: Georgia, "Times New Roman", serif;
-  font-size: 26px;
-  margin-bottom: 24px;
-  color: #fff;
+  text-align: center;
 }
 
 .footer-links {
   display: flex;
   justify-content: center;
-  gap: 22px;
-  margin-bottom: 28px;
+  gap: 18px;
+  margin-bottom: 24px;
 }
 
 .footer-links a {
-  width: 44px;
-  height: 44px;
-  border-radius: 50%;
-  border: 1px solid rgba(255,255,255,0.35);
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
   color: #fff;
-  transition: all 0.25s ease;
-}
-
-.footer-links a:hover {
-  background: rgba(255,255,255,0.12);
-  transform: translateY(-2px);
-}
-
-.footer-links svg {
-  width: 18px;
-  height: 18px;
-  stroke: currentColor;
+  border-color: rgba(255,255,255,0.35);
 }
 
 .footer-copy {
@@ -273,41 +303,17 @@ footer {
   color: rgba(255,255,255,0.45);
 }
 
-/* ================= ERRORS ================= */
-.error {
-  color: #a63a2d;
-  font-size: 13px;
-  margin-top: 4px;
-  display: none;
-}
-
-input.invalid, select.invalid {
-  border-color: #a63a2d;
-}
-
 /* ================= MOBILE ================= */
 @media (max-width: 768px) {
-  .header-inner {
-    padding: 12px 5%;
-  }
-
-  .logo {
-    height: 34px;
-  }
-
   section {
-    padding: 48px 5%;
+    padding: 44px 5%;
   }
 
   .hosts-grid {
     grid-template-columns: 1fr;
   }
 
-  .gallery {
-    grid-template-columns: 1fr;
-  }
-
-  .footer-links {
-    flex-direction: row;
+  section h2 {
+    font-size: 32px;
   }
 }
