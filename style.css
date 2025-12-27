@@ -40,9 +40,8 @@ h1, h2, h3 {
 
 /* LOGO */
 .logo-pill {
-  background: rgba(255,255,255,0.06); /* CHANGED: subtler pill */
-  padding: 6px 14px;
-  border-radius: 999px;
+  padding: 0;          /* no background */
+  background: none;
 }
 
 .logo {
@@ -380,3 +379,4 @@ footer {
     grid-template-columns: 1fr !important;
   }
 }
+
