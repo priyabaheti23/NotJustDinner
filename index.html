@@ -25,12 +25,10 @@
 <!-- ABOUT -->
 <section class="about first-section">
   <h2>About Not Just Dinner</h2>
-
   <p>
     Not Just Dinner is a community-led supper club built around
     food, conversation, and shared moments.
   </p>
-
   <p>
     It’s an intimate dining experience where strangers arrive curious
     and leave feeling connected — brought together by thoughtful food
@@ -41,15 +39,12 @@
 <!-- EVENT DETAILS -->
 <section class="about">
   <h2>Event Details</h2>
-
   <p><strong>Dates:</strong> 3rd January & 10th January</p>
   <p><strong>Time:</strong> 7:30 PM</p>
   <p><strong>Location:</strong> Koramangala, Bengaluru</p>
-
   <p style="font-size:15px;">
     Exact location will be shared once your seat is confirmed.
   </p>
-
   <p>
     <strong>Only 8 seats per date</strong><br>
     5-course all-vegetarian menu <em>(dessert contains egg)</em>
@@ -61,12 +56,13 @@
   <h2>Meet Your Hosts</h2>
 
   <div class="hosts-grid">
+
     <div class="host-card">
       <img src="assets/branding/host-kiran.jpg" class="host-img">
       <h3>Kiran</h3>
       <p>Michelin-star trained chef crafting thoughtful vegetarian menus.</p>
-
       <a href="https://www.instagram.com/frenchhalwai" target="_blank" class="social-icon">
+        <!-- Instagram -->
         <svg viewBox="0 0 24 24">
           <rect x="2" y="2" width="20" height="20" rx="5"/>
           <circle cx="12" cy="12" r="4"/>
@@ -79,8 +75,8 @@
       <img src="assets/branding/host-priya.jpg" class="host-img">
       <h3>Priya</h3>
       <p>Product professional focused on hosting and flow.</p>
-
       <a href="https://www.linkedin.com/in/priyabaheti/" target="_blank" class="social-icon">
+        <!-- LinkedIn -->
         <svg viewBox="0 0 24 24">
           <rect x="2" y="2" width="20" height="20" rx="4"/>
           <rect x="6" y="9" width="2" height="8"/>
@@ -89,6 +85,7 @@
         </svg>
       </a>
     </div>
+
   </div>
 </section>
 
@@ -98,7 +95,6 @@
 
   <div class="pricing-box">
     <p class="price">₹1,999 <span>per person</span></p>
-
     <p class="pricing-note">
       Includes a five-course dinner, intentional hosting,
       and an intimate evening at a shared table.
@@ -106,15 +102,18 @@
 
     <!-- STEPS -->
     <div class="steps">
-      <p><strong>Step 1:</strong> Complete payment via QR code or UPI</p>
-      <p><strong>Step 2:</strong> Fill the confirmation form below</p>
-      <p><strong>Step 3:</strong> Receive exact location on WhatsApp</p>
+      <p><strong>Step 1:</strong> Complete payment via QR or UPI</p>
+      <p><strong>Step 2:</strong> Apply coupon if you have one</p>
+      <p><strong>Step 3:</strong> Fill the confirmation form below</p>
     </div>
 
     <!-- COUPON -->
     <div class="coupon-box">
       <label>Have a coupon?</label>
-      <input type="text" id="couponInput" placeholder="Enter code">
+      <div class="coupon-row">
+        <input type="text" id="couponInput" placeholder="Enter code">
+        <button type="button" id="applyCoupon">Apply</button>
+      </div>
       <p id="couponMsg"></p>
     </div>
 
@@ -191,7 +190,7 @@
   <iframe name="hidden_iframe" style="display:none;"></iframe>
 </section>
 
-<!-- SUCCESS POPUP -->
+<!-- SUCCESS MODAL -->
 <div id="successModal" class="modal-overlay">
   <div class="modal-box">
     <h3>Seat Confirmed 🎉</h3>
@@ -207,10 +206,36 @@
 <!-- FOOTER -->
 <footer>
   <div class="footer-links">
-    <a href="https://instagram.com/notjust.dinner" target="_blank">IG</a>
-    <a href="https://x.com/notjustdinner" target="_blank">X</a>
-    <a href="https://chat.whatsapp.com/YOUR_COMMUNITY_LINK" target="_blank">WA</a>
-    <a href="mailto:notjustdinner@gmail.com">@</a>
+    <!-- Instagram -->
+    <a href="https://instagram.com/notjust.dinner" target="_blank">
+      <svg viewBox="0 0 24 24">
+        <rect x="2" y="2" width="20" height="20" rx="5"/>
+        <circle cx="12" cy="12" r="4"/>
+        <circle cx="17.5" cy="6.5" r="1.2"/>
+      </svg>
+    </a>
+
+    <!-- X -->
+    <a href="https://x.com/notjustdinner" target="_blank">
+      <svg viewBox="0 0 24 24">
+        <path d="M4 4l16 16M20 4L4 20"/>
+      </svg>
+    </a>
+
+    <!-- WhatsApp -->
+    <a href="https://chat.whatsapp.com/YOUR_COMMUNITY_LINK" target="_blank">
+      <svg viewBox="0 0 24 24">
+        <path d="M12 2a10 10 0 0 0-8.94 14.5L2 22l5.7-1.9A10 10 0 1 0 12 2z"/>
+      </svg>
+    </a>
+
+    <!-- Email -->
+    <a href="mailto:notjustdinner@gmail.com">
+      <svg viewBox="0 0 24 24">
+        <rect x="2" y="4" width="20" height="16" rx="2"/>
+        <path d="M2 6l10 7 10-7"/>
+      </svg>
+    </a>
   </div>
 
   <p class="footer-copy">
@@ -220,40 +245,52 @@
 
 <!-- JS -->
 <script>
-/* Coupon */
+/* Coupon logic */
 const COUPON = "NJD10";
-document.getElementById("couponInput").addEventListener("blur", function () {
+
+document.getElementById("applyCoupon").addEventListener("click", applyCoupon);
+document.getElementById("couponInput").addEventListener("keydown", function(e){
+  if(e.key === "Enter"){
+    e.preventDefault();
+    applyCoupon();
+  }
+});
+
+function applyCoupon(){
+  const input = document.getElementById("couponInput");
   const msg = document.getElementById("couponMsg");
-  if (this.value.trim().toUpperCase() === COUPON) {
+
+  if(input.value.trim().toUpperCase() === COUPON){
     msg.style.color = "#2a7a3b";
     msg.innerText = "Coupon applied. Please pay ₹1,799.";
-  } else if (this.value.trim() !== "") {
+  } else if(input.value.trim() !== ""){
     msg.style.color = "#a63a2d";
     msg.innerText = "Invalid coupon code.";
   } else {
     msg.innerText = "";
   }
-});
+}
 
 /* Copy UPI */
-function copyUPI() {
+function copyUPI(){
   navigator.clipboard.writeText("baheti.priya@yescred");
   const msg = document.getElementById("copyMsg");
   msg.style.display = "block";
   setTimeout(() => msg.style.display = "none", 2000);
 }
 
-/* Submit + Popup (same as experience.html) */
+/* Submit + popup */
 const form = document.getElementById("confirmationForm");
 const modal = document.getElementById("successModal");
 const submitBtn = document.getElementById("submitBtn");
 
-form.addEventListener("submit", function () {
+form.addEventListener("submit", function(){
   submitBtn.disabled = true;
   submitBtn.innerText = "Submitting...";
 
   setTimeout(() => {
-    openModal();
+    modal.style.display = "flex";
+    document.body.style.overflow = "hidden";
     form.reset();
     submitBtn.disabled = false;
     submitBtn.innerText = "I’ve Paid – Confirm My Seat";
@@ -261,12 +298,7 @@ form.addEventListener("submit", function () {
   }, 900);
 });
 
-function openModal() {
-  modal.style.display = "flex";
-  document.body.style.overflow = "hidden";
-}
-
-function closeModal() {
+function closeModal(){
   modal.style.display = "none";
   document.body.style.overflow = "auto";
 }
