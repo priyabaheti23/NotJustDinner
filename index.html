@@ -149,15 +149,17 @@
 
   <!-- FORM -->
   <form
-    action="https://script.google.com/macros/s/AKfycbw_MO48-U0Nr_S3PxwrDWr1LahqJqJ7wgCo8GroQoFW9Zz6e85OhGpoxwgNtN2_RXJj/exec"
+    id="confirmationForm"
+    action="PASTE_YOUR_EXEC_URL_HERE"
     method="POST"
     target="hidden_iframe"
+    onsubmit="handleSubmit()"
   >
     <label>Full Name *</label>
     <input type="text" name="name" required>
 
     <label>WhatsApp Number *</label>
-    <input type="tel" name="whatsapp" required pattern="[0-9]{10}">
+    <input type="tel" name="whatsapp" required>
 
     <label>Dietary Preference *</label>
     <select name="dietary" required>
@@ -197,8 +199,23 @@
     </button>
   </form>
 
-  <iframe name="hidden_iframe" style="display:none;"></iframe>
+  <iframe name="hidden_iframe" id="hidden_iframe" style="display:none;"></iframe>
 </section>
+
+<!-- SUCCESS MODAL -->
+<div id="successModal" class="modal-overlay">
+  <div class="modal-box">
+    <h3>Seat Confirmed 🎉</h3>
+    <p>
+      Thank you for confirming your seat at <strong>Not Just Dinner</strong>.<br>
+      We’ll share the exact location with you on WhatsApp shortly.
+    </p>
+
+    <button onclick="closeModal()" class="btn modal-btn">
+      Done
+    </button>
+  </div>
+</div>
 
 <!-- FOOTER -->
 <footer>
@@ -262,6 +279,19 @@ function copyUPI() {
   const msg = document.getElementById("copyMsg");
   msg.style.display = "block";
   setTimeout(() => msg.style.display = "none", 2000);
+}
+
+function handleSubmit() {
+  setTimeout(() => {
+    document.getElementById("successModal").style.display = "flex";
+    document.getElementById("confirmationForm").reset();
+    document.getElementById("couponMsg").innerText = "";
+  }, 1200);
+  return true;
+}
+
+function closeModal() {
+  document.getElementById("successModal").style.display = "none";
 }
 </script>
 
