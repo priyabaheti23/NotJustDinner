@@ -22,9 +22,7 @@ h1, h2, h3 {
 /* ================= HEADER ================= */
 .site-header {
   position: fixed;
-  top: 0;
-  left: 0;
-  right: 0;
+  inset: 0 0 auto 0;
   background: rgba(42, 30, 26, 0.95);
   backdrop-filter: blur(14px);
   border-bottom: 1px solid rgba(255,255,255,0.08);
@@ -58,12 +56,6 @@ h1, h2, h3 {
   border-radius: 999px;
   text-decoration: none;
   font-size: 13px;
-  transition: all 0.25s ease;
-}
-
-.header-cta.primary:hover {
-  background: #6A3E25;
-  transform: translateY(-1px);
 }
 
 /* ================= SECTIONS ================= */
@@ -128,11 +120,6 @@ section p + p {
   padding: 44px 32px;
   text-align: center;
   border-radius: 10px;
-  transition: all 0.3s ease;
-}
-
-.host-card:hover {
-  transform: translateY(-4px);
 }
 
 .host-img {
@@ -153,21 +140,6 @@ section p + p {
   align-items: center;
   justify-content: center;
   margin-top: 18px;
-  transition: all 0.25s ease;
-}
-
-.social-icon svg,
-.footer-links svg {
-  width: 18px;
-  height: 18px;
-  stroke: currentColor;
-  fill: none;
-}
-
-.social-icon:hover,
-.footer-links a:hover {
-  background: rgba(124,74,44,0.12);
-  transform: translateY(-2px);
 }
 
 /* ================= PRICING ================= */
@@ -187,15 +159,15 @@ section p + p {
   color: rgba(42,30,26,0.7);
 }
 
-.pricing-note {
-  font-size: 17px;
-  margin: 12px 0 24px;
+.steps p {
+  font-size: 16px;
+  margin-top: 8px;
 }
 
 /* Coupon */
 .coupon-box {
   max-width: 360px;
-  margin: 0 auto 24px;
+  margin: 24px auto;
 }
 
 .coupon-box input {
@@ -216,25 +188,16 @@ section p + p {
   padding: 12px;
   background: #fff;
   border-radius: 10px;
-  border: 1px solid rgba(124,74,44,0.25);
 }
 
 .upi-line {
   display: flex;
   justify-content: center;
-  align-items: center;
   gap: 8px;
 }
 
 .copy-icon {
   cursor: pointer;
-}
-
-#copyMsg {
-  display: none;
-  font-size: 13px;
-  color: #2a7a3b;
-  margin-top: 6px;
 }
 
 /* ================= FORM ================= */
@@ -246,7 +209,6 @@ form {
 form label {
   display: block;
   margin: 18px 0 6px;
-  font-size: 14px;
 }
 
 form input,
@@ -257,12 +219,6 @@ form select {
   border: 1px solid rgba(124,74,44,0.35);
 }
 
-form input:focus,
-form select:focus {
-  outline: none;
-  border-color: #7C4A2C;
-}
-
 .btn {
   margin-top: 28px;
   padding: 16px;
@@ -270,13 +226,27 @@ form select:focus {
   color: #fff;
   border-radius: 6px;
   border: none;
-  cursor: pointer;
-  transition: all 0.25s ease;
   width: 100%;
 }
 
-.btn:hover {
-  background: #6A3E25;
+/* ================= MODAL ================= */
+.modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(42,30,26,0.6);
+  display: none;
+  align-items: center;
+  justify-content: center;
+  z-index: 9999;
+}
+
+.modal-box {
+  background: #fff;
+  padding: 36px 32px;
+  max-width: 420px;
+  width: 90%;
+  border-radius: 14px;
+  text-align: center;
 }
 
 /* ================= FOOTER ================= */
@@ -295,7 +265,6 @@ footer {
 
 .footer-links a {
   color: #fff;
-  border-color: rgba(255,255,255,0.35);
 }
 
 .footer-copy {
