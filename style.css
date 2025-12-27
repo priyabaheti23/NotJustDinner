@@ -1,11 +1,11 @@
-/* ================= RESET ================= */
+/* RESET */
 * {
   margin: 0;
   padding: 0;
   box-sizing: border-box;
 }
 
-/* ================= BASE ================= */
+/* BASE */
 body {
   font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
   background: #F3EEE8;
@@ -19,13 +19,13 @@ h1, h2, h3 {
   font-weight: 300;
 }
 
-/* ================= HEADER ================= */
+/* HEADER */
 .site-header {
   position: fixed;
-  inset: 0 0 auto 0;
-  background: rgba(42, 30, 26, 0.95);
+  top: 0;
+  width: 100%;
+  background: rgba(42,30,26,0.95);
   backdrop-filter: blur(14px);
-  border-bottom: 1px solid rgba(255,255,255,0.08);
   z-index: 1000;
 }
 
@@ -34,8 +34,8 @@ h1, h2, h3 {
   margin: 0 auto;
   padding: 12px 8%;
   display: flex;
-  align-items: center;
   justify-content: space-between;
+  align-items: center;
 }
 
 .logo-pill {
@@ -48,7 +48,6 @@ h1, h2, h3 {
   height: 34px;
 }
 
-/* CTA */
 .header-cta.primary {
   background: #7C4A2C;
   color: #fff;
@@ -58,7 +57,7 @@ h1, h2, h3 {
   font-size: 13px;
 }
 
-/* ================= SECTIONS ================= */
+/* SECTIONS */
 section {
   max-width: 1200px;
   margin: 48px auto;
@@ -77,7 +76,7 @@ section {
   border-radius: 12px;
 }
 
-/* ================= HEADINGS ================= */
+/* HEADINGS */
 section h2 {
   font-size: 40px;
   text-align: center;
@@ -93,7 +92,7 @@ section h2::after {
   margin: 16px auto 0;
 }
 
-/* ================= TEXT ================= */
+/* TEXT */
 section p {
   max-width: 720px;
   margin: 0 auto;
@@ -106,7 +105,7 @@ section p + p {
   margin-top: 16px;
 }
 
-/* ================= HOSTS ================= */
+/* HOSTS */
 .hosts-grid {
   display: grid;
   grid-template-columns: repeat(2, 1fr);
@@ -129,9 +128,7 @@ section p + p {
   object-fit: cover;
 }
 
-/* Social icons */
-.social-icon,
-.footer-links a {
+.social-icon {
   width: 44px;
   height: 44px;
   border-radius: 50%;
@@ -140,9 +137,17 @@ section p + p {
   align-items: center;
   justify-content: center;
   margin-top: 18px;
+  background: #fff;
 }
 
-/* ================= PRICING ================= */
+.social-icon svg {
+  width: 20px;
+  height: 20px;
+  stroke: #2A1E1A;
+  fill: none;
+}
+
+/* PRICING */
 .pricing-box {
   max-width: 760px;
   margin: 0 auto 40px;
@@ -164,24 +169,32 @@ section p + p {
   margin-top: 8px;
 }
 
-/* Coupon */
+/* COUPON */
 .coupon-box {
   max-width: 360px;
   margin: 24px auto;
 }
 
-.coupon-box input {
+.coupon-row {
+  display: flex;
+  gap: 8px;
   margin-top: 8px;
-  text-align: center;
-  text-transform: uppercase;
 }
 
-#couponMsg {
-  margin-top: 8px;
-  font-size: 14px;
+.coupon-row input {
+  flex: 1;
 }
 
-/* Payment */
+.coupon-row button {
+  padding: 0 14px;
+  border-radius: 6px;
+  border: 1px solid rgba(124,74,44,0.35);
+  background: #fff;
+  cursor: pointer;
+  font-size: 13px;
+}
+
+/* PAYMENT */
 .qr {
   width: 220px;
   margin: 24px auto;
@@ -196,11 +209,13 @@ section p + p {
   gap: 8px;
 }
 
-.copy-icon {
-  cursor: pointer;
+.copy-icon svg {
+  width: 18px;
+  height: 18px;
+  stroke: #2A1E1A;
 }
 
-/* ================= FORM ================= */
+/* FORM */
 form {
   max-width: 620px;
   margin: 40px auto 0;
@@ -229,7 +244,7 @@ form select {
   width: 100%;
 }
 
-/* ================= MODAL ================= */
+/* MODAL */
 .modal-overlay {
   position: fixed;
   inset: 0;
@@ -243,13 +258,13 @@ form select {
 .modal-box {
   background: #fff;
   padding: 36px 32px;
+  border-radius: 14px;
   max-width: 420px;
   width: 90%;
-  border-radius: 14px;
   text-align: center;
 }
 
-/* ================= FOOTER ================= */
+/* FOOTER */
 footer {
   background: #2A1E1A;
   padding: 56px 8% 40px;
@@ -264,7 +279,20 @@ footer {
 }
 
 .footer-links a {
-  color: #fff;
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  border: 1px solid rgba(255,255,255,0.35);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.footer-links svg {
+  width: 18px;
+  height: 18px;
+  stroke: #fff;
+  fill: none;
 }
 
 .footer-copy {
@@ -272,7 +300,7 @@ footer {
   color: rgba(255,255,255,0.45);
 }
 
-/* ================= MOBILE ================= */
+/* MOBILE */
 @media (max-width: 768px) {
   section {
     padding: 44px 5%;
