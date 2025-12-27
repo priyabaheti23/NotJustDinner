@@ -25,10 +25,12 @@
 <!-- ABOUT -->
 <section class="about first-section">
   <h2>About Not Just Dinner</h2>
+
   <p>
     Not Just Dinner is a community-led supper club built around
     food, conversation, and shared moments.
   </p>
+
   <p>
     It’s an intimate dining experience where strangers arrive curious
     and leave feeling connected — brought together by thoughtful food
@@ -39,12 +41,15 @@
 <!-- EVENT DETAILS -->
 <section class="about">
   <h2>Event Details</h2>
+
   <p><strong>Dates:</strong> 3rd January & 10th January</p>
   <p><strong>Time:</strong> 7:30 PM</p>
   <p><strong>Location:</strong> Koramangala, Bengaluru</p>
+
   <p style="font-size:15px;">
     Exact location will be shared once your seat is confirmed.
   </p>
+
   <p>
     <strong>Only 8 seats per date</strong><br>
     5-course all-vegetarian menu <em>(dessert contains egg)</em>
@@ -60,6 +65,7 @@
       <img src="assets/branding/host-kiran.jpg" class="host-img">
       <h3>Kiran</h3>
       <p>Michelin-star trained chef crafting thoughtful vegetarian menus.</p>
+
       <a href="https://www.instagram.com/frenchhalwai" target="_blank" class="social-icon">
         <svg viewBox="0 0 24 24">
           <rect x="2" y="2" width="20" height="20" rx="5"/>
@@ -73,6 +79,7 @@
       <img src="assets/branding/host-priya.jpg" class="host-img">
       <h3>Priya</h3>
       <p>Product professional focused on hosting and flow.</p>
+
       <a href="https://www.linkedin.com/in/priyabaheti/" target="_blank" class="social-icon">
         <svg viewBox="0 0 24 24">
           <rect x="2" y="2" width="20" height="20" rx="4"/>
@@ -91,9 +98,18 @@
 
   <div class="pricing-box">
     <p class="price">₹1,999 <span>per person</span></p>
+
     <p class="pricing-note">
-      Includes a five-course dinner and an intentionally hosted evening.
+      Includes a five-course dinner, intentional hosting,
+      and an intimate evening at a shared table.
     </p>
+
+    <!-- STEPS -->
+    <div class="steps">
+      <p><strong>Step 1:</strong> Complete payment via QR code or UPI</p>
+      <p><strong>Step 2:</strong> Fill the confirmation form below</p>
+      <p><strong>Step 3:</strong> Receive exact location on WhatsApp</p>
+    </div>
 
     <!-- COUPON -->
     <div class="coupon-box">
@@ -102,6 +118,7 @@
       <p id="couponMsg"></p>
     </div>
 
+    <!-- PAYMENT -->
     <div class="payment-box">
       <img src="assets/branding/payment-qr.jpeg" class="qr">
 
@@ -115,6 +132,7 @@
           </svg>
         </span>
       </p>
+
       <p id="copyMsg">Copied ✓</p>
     </div>
   </div>
@@ -122,7 +140,7 @@
   <!-- FORM -->
   <form
     id="confirmationForm"
-    action="PASTE_YOUR_EXEC_URL_HERE"
+    action="https://script.google.com/macros/s/AKfycbw_MO48-U0Nr_S3PxwrDWr1LahqJqJ7wgCo8GroQoFW9Zz6e85OhGpoxwgNtN2_RXJj/exec"
     method="POST"
     target="hidden_iframe"
   >
@@ -173,15 +191,16 @@
   <iframe name="hidden_iframe" style="display:none;"></iframe>
 </section>
 
-<!-- SUCCESS MODAL -->
+<!-- SUCCESS POPUP -->
 <div id="successModal" class="modal-overlay">
   <div class="modal-box">
     <h3>Seat Confirmed 🎉</h3>
     <p>
-      We’ve received your details.<br>
-      Location will be shared on WhatsApp shortly.
+      Thank you for confirming your seat at
+      <strong>Not Just Dinner</strong>.<br>
+      We’ll share the exact location with you on WhatsApp shortly.
     </p>
-    <button onclick="closeModal()" class="btn modal-btn">Okay</button>
+    <button onclick="closeModal()" class="btn modal-btn">Done</button>
   </div>
 </div>
 
@@ -193,7 +212,10 @@
     <a href="https://chat.whatsapp.com/YOUR_COMMUNITY_LINK" target="_blank">WA</a>
     <a href="mailto:notjustdinner@gmail.com">@</a>
   </div>
-  <p class="footer-copy">© 2024 Not Just Dinner · Bengaluru</p>
+
+  <p class="footer-copy">
+    © 2024 Not Just Dinner · Bengaluru
+  </p>
 </footer>
 
 <!-- JS -->
@@ -221,7 +243,7 @@ function copyUPI() {
   setTimeout(() => msg.style.display = "none", 2000);
 }
 
-/* Submit logic (same as experience.html) */
+/* Submit + Popup (same as experience.html) */
 const form = document.getElementById("confirmationForm");
 const modal = document.getElementById("successModal");
 const submitBtn = document.getElementById("submitBtn");
@@ -231,7 +253,7 @@ form.addEventListener("submit", function () {
   submitBtn.innerText = "Submitting...";
 
   setTimeout(() => {
-    modal.style.display = "flex";
+    openModal();
     form.reset();
     submitBtn.disabled = false;
     submitBtn.innerText = "I’ve Paid – Confirm My Seat";
@@ -239,8 +261,14 @@ form.addEventListener("submit", function () {
   }, 900);
 });
 
+function openModal() {
+  modal.style.display = "flex";
+  document.body.style.overflow = "hidden";
+}
+
 function closeModal() {
   modal.style.display = "none";
+  document.body.style.overflow = "auto";
 }
 </script>
 
