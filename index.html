@@ -31,11 +31,11 @@
 <!-- EVENT DETAILS -->
 <section class="about">
   <h2>Event Details</h2>
-  <p><strong>Dates:</strong> 17 & 24 January</p>
+  <p><strong>Dates:</strong> 17th & 24th January</p>
   <p><strong>Time:</strong> 7:30 PM</p>
   <p><strong>Location:</strong> Koramangala, Bengaluru</p> 
   <p style="font-size:15px;">Exact location will be shared once your seat is confirmed.</p>
-  <p><strong>Only 8 seats per date</strong><br>5-course all-vegetarian menu <em>(dessert contains egg)</em></p>
+  <p><strong>Only 8 seats per date</strong><br>5-course all-vegetarian menu</p>
 </section>
 
 <!-- HOSTS -->
@@ -57,9 +57,11 @@
       <img src="assets/branding/host-priya.jpg" class="host-img">
       <h3>Priya</h3>
       <p>Priya looks after the <strong>“Not Just”</strong> part of Not Just Dinner.</p>
-      <p>She focuses on the flow, atmosphere, and hosting experience beyond the food.</p>
+      <p>She makes sure the vibe is right, the flow feels effortless, and that the evening feels warm & intentional.</p>
       <a href="https://www.linkedin.com/in/priyabaheti/" target="_blank" class="social-icon">
-        <svg viewBox="0 0 24 24"><rect x="2" y="2" width="20" height="20" rx="4"/><rect x="6" y="9" width="2" height="8"/><rect x="10" y="9" width="2" height="8"/><circle cx="7" cy="6.5" r="1"/></svg>
+         <svg viewBox="0 0 24 24">
+          <path d="M4.98 3.5C4.98 4.88 3.88 6 2.5 6S0 4.88 0 3.5 1.12 1 2.5 1 4.98 2.12 4.98 3.5zM0 8h5v16H0zM8 8h4.8v2.2h.07c.67-1.27 2.3-2.6 4.73-2.6C22 7.6 24 10 24 14.5V24h-5v-8.4c0-2-.03-4.6-2.8-4.6-2.8 0-3.2 2.2-3.2 4.4V24H8z"/>
+        </svg>
       </a>
     </div>
 
@@ -86,18 +88,8 @@
     <p class="price">₹1,999 <span>per person</span></p>
 
     <div class="steps">
-      <p><strong>Step 1:</strong> Complete payment via QR or UPI</p>
-      <p><strong>Step 2:</strong> Apply coupon if you have one</p>
-      <p><strong>Step 3:</strong> Fill the confirmation form below</p>
-    </div>
-
-    <div class="coupon-box">
-      <label>Have a coupon?</label>
-      <div class="coupon-row">
-        <input type="text" id="couponInput" placeholder="Enter code">
-        <button type="button" id="applyCoupon">✓</button>
-      </div>
-      <p id="couponMsg"></p>
+     <p><strong>Step 1:</strong> Complete payment via UPI / QR</p>
+      <p><strong>Step 2:</strong> Fill the confirmation form below — no login, it’s that easy</p>
     </div>
 
     <img src="assets/branding/payment-qr.jpeg" class="qr">
@@ -178,7 +170,7 @@
 <!-- FOOTER -->
 <footer>
   <p class="footer-copy">
-    Questions about the experience or upcoming dinners?<br>
+    Questions about the upcoming dinners?<br>
     Reach out to us on the platforms below or join our WhatsApp Community for updates.
   </p>
 
@@ -192,17 +184,6 @@
 </footer>
 
 <script>
-/* Coupon */
-const COUPON = "NJD10";
-document.getElementById("applyCoupon").onclick = applyCoupon;
-document.getElementById("couponInput").onkeydown = e => { if(e.key==="Enter"){e.preventDefault();applyCoupon();} };
-
-function applyCoupon(){
-  const i=document.getElementById("couponInput"),m=document.getElementById("couponMsg");
-  if(i.value.trim().toUpperCase()===COUPON){m.style.color="#2a7a3b";m.innerText="Coupon applied. Please pay ₹1,799.";}
-  else if(i.value.trim()) {m.style.color="#a63a2d";m.innerText="Invalid coupon code.";}
-  else m.innerText="";
-}
 
 /* Copy */
 function copyUPI(){
@@ -232,12 +213,3 @@ function closeModal(){m.style.display="none";document.body.style.overflow="auto"
 
 </body>
 </html>
-
-
-
-
-
-
-
-
-
