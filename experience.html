@@ -198,7 +198,7 @@
 let ingredients = [];
 const units = { g:1, kg:1000, ml:1, l:1000, tsp:5, tbsp:15, cup:240, unit:1 };
 
-const MASTER_URL = "PASTE_YOUR_APPS_SCRIPT_URL_HERE";
+const MASTER_URL = "https://script.google.com/macros/s/AKfycbzLCxi1z6t5jJriUHIJ177MZ-Of7c5hJ77SlOx3VWIFfjSEoSrh2FozW3XvDKDSbpg_vw/exec";
 let MASTER = {};
 
 fetch(MASTER_URL).then(r=>r.json()).then(d=>MASTER=d);
@@ -271,3 +271,4 @@ function exportToCSV(){
 </script>
 </body>
 </html>
+
