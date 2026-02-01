@@ -1,797 +1,219 @@
-import { useState, useCallback, useMemo, useEffect } from "react";
-
-// ─────────────────────────────────────────────────────────────────
-// CONFIG
-// ─────────────────────────────────────────────────────────────────
-const APPS_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbxpzZ54GHl2gjSOf1tsU9Vsj7a0zWiYXCNcdKB5laCcTIIYuI45kdS6nfjlR59I6HrwZw/exec";
-
-// ─────────────────────────────────────────────────────────────────
-// COST ENGINE
-// Everything is normalised to GRAMS internally.
-// A price entry means: "I paid ₹X for Y grams".
-// Per-gram rate = price / quantityInGrams
-// Line cost = recipeGrams × perGramRate
-// ─────────────────────────────────────────────────────────────────
-function toGrams(qty, unit) {
-  if (unit === "kg") return qty * 1000;
-  return qty; // g
-}
-
-function calcLineCost(recipeQty, recipeUnit, costPrice, costQty, costUnit) {
-  // costPrice = what was paid, costQty + costUnit = for how much
-  var perGram = costPrice / toGrams(costQty, costUnit);
-  var recipeGrams = toGrams(recipeQty, recipeUnit);
-  return recipeGrams * perGram;
-}
-
-// ─────────────────────────────────────────────────────────────────
-// FRACTION PARSER
-// ─────────────────────────────────────────────────────────────────
-var FRAC = {"½":0.5,"¼":0.25,"¾":0.75,"⅓":0.333,"⅔":0.667,"⅛":0.125,"⅜":0.375,"⅝":0.625,"⅞":0.875};
-function parseFraction(str) {
-  var s = str.trim();
-  if (FRAC[s] !== undefined) return FRAC[s];
-  var m;
-  if ((m = s.match(/^(\d+)\s*([½¼¾⅓⅔⅛⅜⅝⅞])$/))) return +m[1] + FRAC[m[2]];
-  if ((m = s.match(/^(\d+)\s+(\d+)\s*\/\s*(\d+)$/))) return +m[1] + m[2] / m[3];
-  if ((m = s.match(/^(\d+)\s*\/\s*(\d+)$/))) return m[1] / m[2];
-  var p = parseFloat(s);
-  return isNaN(p) ? null : p;
-}
-
-// ─────────────────────────────────────────────────────────────────
-// LINE PARSER  (extracts qty + unit, normalises unit to g/kg)
-// ─────────────────────────────────────────────────────────────────
-var UNIT_ALIASES = {
-  g:1,gram:1,grams:1,gm:1,
-  kg:1000,kilogram:1000,kilograms:1000,
-  // volume / count aliases → we just grab the number, unit defaults to "g"
-  ml:null,l:null,liter:null,litre:null,
-  tsp:null,tbsp:null,teaspoon:null,tablespoon:null,
-  cup:null,cups:null,
-  piece:null,pieces:null,pcs:null,
-  pinch:null,whole:null,clove:null,cloves:null,
-  can:null,cans:null,
-};
-var UNIT_KEYS = Object.keys(UNIT_ALIASES).sort(function(a,b){ return b.length-a.length; });
-var UNIT_RE = new RegExp("^("+UNIT_KEYS.map(function(u){return u.replace(/\./g,"\\."); }).join("|")+")\\b","i");
-
-function parseLine(line) {
-  var raw = line.trim();
-  if (!raw || raw.startsWith("//") || raw.startsWith("#")) return null;
-  raw = raw.replace(/^[-•*]\s*/, "").replace(/^\d+\.\s*/, "");
-
-  var qtyPat = /^(\d+[.\d]*\s*[½¼¾⅓⅔⅛⅜⅝⅞]?|\d+\s+\d+\s*\/\s*\d+|\d+\s*\/\s*\d+|[½¼¾⅓⅔⅛⅜⅝⅞])/;
-  var qty = null, rest = raw;
-  var qm = raw.match(qtyPat);
-  if (qm) { qty = parseFraction(qm[1]); rest = raw.slice(qm[0].length).trim(); }
-
-  var unit = "g"; // default
-  var um = rest.match(UNIT_RE);
-  if (um) {
-    var key = um[1].toLowerCase();
-    // if alias maps to a gram-multiplier (g / kg), use it
-    if (UNIT_ALIASES[key] === 1) unit = "g";
-    else if (UNIT_ALIASES[key] === 1000) unit = "kg";
-    else unit = "g"; // non-weight units default to g
-    rest = rest.slice(um[0].length).trim();
-  }
-
-  rest = rest.replace(/^[,\-–—:]\s*/, "").replace(/^of\s+/i, "").trim();
-  var name = rest.replace(/\s+/g, " ").trim().replace(/\b\w/g, function(c){ return c.toUpperCase(); });
-  if (!name) return null;
-  return { name: name, quantity: qty, unit: unit };
-}
-
-// ─────────────────────────────────────────────────────────────────
-// MOCK DATABASE  (each entry: ingredient, costPrice, costQty, costUnit)
-// Means: "Flour costs ₹120 for 1 kg"
-// ─────────────────────────────────────────────────────────────────
-var MOCK_DB = [
-  {ingredient:"Flour",costPrice:120,costQty:1,costUnit:"kg"},
-  {ingredient:"Sugar",costPrice:250,costQty:1,costUnit:"kg"},
-  {ingredient:"Butter",costPrice:480,costQty:1,costUnit:"kg"},
-  {ingredient:"Eggs",costPrice:35,costQty:100,costUnit:"g"},
-  {ingredient:"Milk",costPrice:22,costQty:500,costUnit:"g"},
-  {ingredient:"Vanilla Extract",costPrice:600,costQty:100,costUnit:"g"},
-  {ingredient:"Baking Powder",costPrice:350,costQty:1,costUnit:"kg"},
-  {ingredient:"Salt",costPrice:30,costQty:1,costUnit:"kg"},
-  {ingredient:"Olive Oil",costPrice:850,costQty:1,costUnit:"kg"},
-  {ingredient:"Chicken Breast",costPrice:360,costQty:500,costUnit:"g"},
-  {ingredient:"Garlic",costPrice:200,costQty:100,costUnit:"g"},
-  {ingredient:"Onion",costPrice:60,costQty:1,costUnit:"kg"},
-  {ingredient:"Tomatoes",costPrice:140,costQty:500,costUnit:"g"},
-  {ingredient:"Cheese",costPrice:450,costQty:500,costUnit:"g"},
-  {ingredient:"Cream",costPrice:160,costQty:500,costUnit:"g"},
-  {ingredient:"Honey",costPrice:700,costQty:500,costUnit:"g"},
-  {ingredient:"Cocoa Powder",costPrice:550,costQty:500,costUnit:"g"},
-  {ingredient:"Chocolate",costPrice:750,costQty:500,costUnit:"g"},
-  {ingredient:"Almonds",costPrice:900,costQty:500,costUnit:"g"},
-  {ingredient:"Cinnamon",costPrice:440,costQty:200,costUnit:"g"},
-  {ingredient:"Yeast",costPrice:80,costQty:100,costUnit:"g"},
-  {ingredient:"Brown Sugar",costPrice:140,costQty:500,costUnit:"g"},
-  {ingredient:"Vegetable Oil",costPrice:275,costQty:500,costUnit:"g"},
-  {ingredient:"Mushrooms",costPrice:325,costQty:500,costUnit:"g"},
-  {ingredient:"Basil",costPrice:120,costQty:100,costUnit:"g"},
-];
-
-// ─────────────────────────────────────────────────────────────────
-// NETWORK
-// ─────────────────────────────────────────────────────────────────
-async function fetchPrices() {
-  try {
-    var res = await fetch(APPS_SCRIPT_URL + "?action=getPrices");
-    var text = await res.text();
-    var clean = text.replace(/^[\s\S]*?\(/, "").replace(/\);?\s*$/, "");
-    var data = JSON.parse(clean);
-    if (Array.isArray(data) && data.length > 0) return { data: data, live: true };
-    return { data: MOCK_DB, live: false };
-  } catch (e) {
-    return { data: MOCK_DB, live: false };
-  }
-}
-
-async function pushLog(payload) {
-  try {
-    var params = new URLSearchParams({
-      action: "logRecipe",
-      recipeName: payload.recipeName || "",
-      date: payload.date || new Date().toISOString().split("T")[0],
-      batchYield: String(payload.batchYield || 1),
-      totalCost: String(payload.totalCost || "0"),
-      costPerItem: String(payload.costPerItem || "0"),
-      ingredientCount: String(payload.ingredientCount || 0),
-      summary: payload.summary || "",
-    });
-    await fetch(APPS_SCRIPT_URL + "?" + params.toString());
-    return { success: true };
-  } catch (e) {
-    return { success: true };
-  }
-}
-
-// ─────────────────────────────────────────────────────────────────
-// FUZZY MATCH
-// ─────────────────────────────────────────────────────────────────
-function fuzzyMatch(input, candidates) {
-  var norm = function(s) { return s.toLowerCase().replace(/[^a-z0-9]/g, ""); };
-  var iN = norm(input);
-  var best = null, bestScore = 0;
-  for (var i = 0; i < candidates.length; i++) {
-    var c = candidates[i];
-    var cN = norm(c.ingredient);
-    if (cN.includes(iN) || iN.includes(cN)) {
-      var score = Math.min(cN.length, iN.length) / Math.max(cN.length, iN.length);
-      if (score > bestScore) { bestScore = score; best = c; }
-    }
-  }
-  return bestScore >= 0.5 ? best : null;
-}
-
-// ─────────────────────────────────────────────────────────────────
-// INDIAN NUMBER FORMAT  ₹1,23,456.78
-// ─────────────────────────────────────────────────────────────────
-function fmtINR(n) {
-  var parts = n.toFixed(2).split(".");
-  var intPart = parts[0];
-  var dec = parts[1];
-  // Indian grouping: last 3 digits, then groups of 2
-  var reversed = intPart.split("").reverse();
-  var groups = [];
-  for (var i = 0; i < reversed.length; i += (i === 0 ? 3 : 2)) {
-    groups.push(reversed.slice(i, i + (i === 0 ? 3 : 2)).reverse().join(""));
-  }
-  return "₹" + groups.reverse().join(",") + "." + dec;
-}
-
-// ─────────────────────────────────────────────────────────────────
-// ICONS
-// ─────────────────────────────────────────────────────────────────
-function Icon({ name, size }) {
-  size = size || 18;
-  var paths = {
-    check: <path d="M5 13l4 4L19 7" strokeLinecap="round" strokeLinejoin="round" />,
-    warning: <><path d="M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z" strokeLinejoin="round" /><line x1="12" y1="9" x2="12" y2="13" /><line x1="12" y1="17" x2="12.01" y2="17" /></>,
-    cloud: <><path d="M16.36 14c-.08 2.53-2.08 4.5-4.57 4.5S7.56 16.53 7.49 14" /><path d="M20.94 11A5 5 0 0016 9c-.46-2.42-2.6-4.24-5.17-4.24A5.22 5.22 0 006 6.61 4.5 4.5 0 007 15h9a5 5 0 006.94-4z" /></>,
-    trash: <><polyline points="3,6 5,6 21,6" /><path d="M19 6l-1 14a2 2 0 01-2 2H8a2 2 0 01-2-2L5 6" /><path d="M10 11v6" /><path d="M14 11v6" /><polyline points="9,6 9,4 15,4 15,6" /></>,
-    download: <><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4" /><polyline points="7,10 12,15 17,10" /><line x1="12" y1="15" x2="12" y2="3" /></>,
-    sparkle: <><path d="M12 2l2.09 6.26L20 10l-5.91 1.74L12 18l-2.09-6.26L4 10l5.91-1.74z" /><path d="M19 8l.9 2.7L23 12l-3.1 1.3L19 16l-.9-2.7L15 12l3.1-1.3z" strokeWidth="1.2" /><path d="M5 18l.5 1.5L7 21l-1.5.5L5 23l-.5-1.5L3 21l1.5-.5z" strokeWidth="1" /></>,
-    refresh: <><path d="M23 4v6h-6" /><path d="M1 20v-6h6" /><path d="M3.51 9a9 9 0 0114.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0020.49 15" /></>,
-    plus: <><line x1="12" y1="5" x2="12" y2="19" /><line x1="5" y1="12" x2="19" y2="12" /></>,
-    info: <><circle cx="12" cy="12" r="10" /><line x1="12" y1="16" x2="12" y2="12" /><line x1="12" y1="8" x2="12.01" y2="8" /></>,
-    x: <><line x1="18" y1="6" x2="6" y2="18" /><line x1="6" y1="6" x2="18" y2="18" /></>,
-  };
-  return <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">{paths[name]}</svg>;
-}
-
-// ─────────────────────────────────────────────────────────────────
-// UNIT DROPDOWN
-// ─────────────────────────────────────────────────────────────────
-function UnitSelect({ value, onChange }) {
-  return (
-    <select
-      value={value}
-      onChange={function(e) { onChange(e.target.value); }}
-      style={S.selectIn}
-    >
-      <option value="g">g</option>
-      <option value="kg">kg</option>
-    </select>
-  );
-}
-
-// ─────────────────────────────────────────────────────────────────
-// SETUP GUIDE MODAL
-// ─────────────────────────────────────────────────────────────────
-function SetupModal({ open, onClose }) {
-  if (!open) return null;
-  return (
-    <div style={S.modalBg} onClick={onClose}>
-      <div style={S.modalBox} onClick={function(e){ e.stopPropagation(); }}>
-        <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 20 }}>
-          <h2 style={{ margin: 0, fontSize: 18, fontWeight: 700, color: "#fff" }}>Google Sheet Setup</h2>
-          <button style={S.btnDel} onClick={onClose}><Icon name="x" size={18} /></button>
-        </div>
-
-        {/* Tab 1 — Sheet structure */}
-        <div style={S.modalSection}>
-          <div style={S.modalSectionTitle}>📄 Sheet Structure</div>
-          <p style={S.modalText}>Create a Google Sheet with <strong style={{color:"#f5c771"}}>two tabs</strong>:</p>
-
-          <div style={S.codeBlock}>
-            <div style={S.codeTitle}>Tab 1 — "Master"</div>
-            <table style={S.setupTable}>
-              <thead><tr>
-                <th style={S.setupTh}>A</th>
-                <th style={S.setupTh}>B</th>
-                <th style={S.setupTh}>C</th>
-                <th style={S.setupTh}>D</th>
-              </tr></thead>
-              <tbody>
-                <tr><td style={S.setupTd}>ingredient</td><td style={S.setupTd}>costPrice</td><td style={S.setupTd}>costQty</td><td style={S.setupTd}>costUnit</td></tr>
-                <tr><td style={S.setupTd2}>Flour</td><td style={S.setupTd2}>120</td><td style={S.setupTd2}>1</td><td style={S.setupTd2}>kg</td></tr>
-                <tr><td style={S.setupTd2}>Chicken Breast</td><td style={S.setupTd2}>360</td><td style={S.setupTd2}>500</td><td style={S.setupTd2}>g</td></tr>
-                <tr><td style={S.setupTd2}>Cheese</td><td style={S.setupTd2}>450</td><td style={S.setupTd2}>500</td><td style={S.setupTd2}>g</td></tr>
-              </tbody>
-            </table>
-            <p style={S.codeNote}>
-              Row 1 = headers (exact names above). Each row after = one ingredient.<br/>
-              <strong style={{color:"#f5c771"}}>costPrice</strong> = what you paid in ₹ &nbsp;|&nbsp;
-              <strong style={{color:"#f5c771"}}>costQty</strong> = quantity you bought &nbsp;|&nbsp;
-              <strong style={{color:"#f5c771"}}>costUnit</strong> = g or kg
-            </p>
-          </div>
-
-          <div style={S.codeBlock}>
-            <div style={S.codeTitle}>Tab 2 — "Log"</div>
-            <table style={S.setupTable}>
-              <thead><tr>
-                <th style={S.setupTh}>A</th><th style={S.setupTh}>B</th><th style={S.setupTh}>C</th>
-                <th style={S.setupTh}>D</th><th style={S.setupTh}>E</th><th style={S.setupTh}>F</th><th style={S.setupTh}>G</th>
-              </tr></thead>
-              <tbody>
-                <tr>
-                  <td style={S.setupTd}>recipeName</td><td style={S.setupTd}>date</td><td style={S.setupTd}>batchYield</td>
-                  <td style={S.setupTd}>totalCost</td><td style={S.setupTd}>costPerItem</td><td style={S.setupTd}>ingredientCount</td><td style={S.setupTd}>summary</td>
-                </tr>
-                <tr>
-                  <td style={S.setupTd2}>Choco Cake</td><td style={S.setupTd2}>2025-01-15</td><td style={S.setupTd2}>12</td>
-                  <td style={S.setupTd2}>845.00</td><td style={S.setupTd2}>70.42</td><td style={S.setupTd2}>6</td><td style={S.setupTd2}>250 g Flour; ...</td>
-                </tr>
-              </tbody>
-            </table>
-            <p style={S.codeNote}>Row 1 = headers. The app auto-appends rows when you click "Save to Cloud".</p>
-          </div>
-        </div>
-
-        {/* Tab 2 — Apps Script */}
-        <div style={S.modalSection}>
-          <div style={S.modalSectionTitle}>⚙️ Apps Script Code</div>
-          <p style={S.modalText}>Go to <strong style={{color:"#f5c771"}}>Extensions → Apps Script</strong> in your Sheet. Replace all code with:</p>
-          <div style={S.codeBlock}>
-            <pre style={S.pre}>{`function doGet(e) {
-  var action = e.parameter.action;
-  var sheet = SpreadsheetApp.getActiveSpreadsheet();
-
-  if (action === "getPrices") {
-    var master = sheet.getSheetByName("Master");
-    var data = master.getDataRange().getValues();
-    var headers = data[0];
-    var rows = data.slice(1);
-    var result = rows.map(function(row) {
-      var obj = {};
-      headers.forEach(function(h, i) { obj[h] = row[i]; });
-      return obj;
-    });
-    return ContentService
-      .createTextOutput(JSON.stringify(result))
-      .setMimeType(ContentService.MIME_TYPE.JSON);
-  }
-
-  if (action === "logRecipe") {
-    var log = sheet.getSheetByName("Log");
-    log.appendRow([
-      e.parameter.recipeName || "",
-      e.parameter.date || "",
-      e.parameter.batchYield || "",
-      e.parameter.totalCost || "",
-      e.parameter.costPerItem || "",
-      e.parameter.ingredientCount || "",
-      e.parameter.summary || ""
-    ]);
-    return ContentService
-      .createTextOutput(JSON.stringify({ success: true }))
-      .setMimeType(ContentService.MIME_TYPE.JSON);
-  }
-
-  return ContentService
-    .createTextOutput(JSON.stringify({ error: "Unknown action" }))
-    .setMimeType(ContentService.MIME_TYPE.JSON);
-}`}</pre>
-          </div>
-          <p style={S.modalText} style2={{}}>Then click <strong style={{color:"#6ee7b7"}}>Deploy → New deployment → Web app</strong>. Set <em>"Execute as: Me"</em> and <em>"Who has access: Anyone"</em>. Copy the URL and paste it in the app's <code style={S.inlineCode}>APPS_SCRIPT_URL</code> constant (top of the source file).</p>
-        </div>
-
-        <button style={{ ...S.btnPrimary, marginTop: 8, justifySelf: "flex-end" }} onClick={onClose}>Got it</button>
-      </div>
-    </div>
-  );
-}
-
-// ─────────────────────────────────────────────────────────────────
-// APP
-// ─────────────────────────────────────────────────────────────────
-export default function App() {
-  var [recipeName, setRecipeName] = useState("");
-  var [batchYield, setBatchYield] = useState(1);
-  var [rawText, setRawText] = useState("");
-  var [rows, setRows] = useState([]);
-  var [db, setDb] = useState([]);
-  var [live, setLive] = useState(null);
-  var [phase, setPhase] = useState("idle");
-  var [analysed, setAnalysed] = useState(false);
-  var [savedLog, setSavedLog] = useState([]);
-  var [showSetup, setShowSetup] = useState(false);
-
-  // manual-add form state
-  var [addName, setAddName] = useState("");
-  var [addQty, setAddQty] = useState("");
-  var [addUnit, setAddUnit] = useState("g");
-  var [addCostPrice, setAddCostPrice] = useState("");
-  var [addCostQty, setAddCostQty] = useState("");
-  var [addCostUnit, setAddCostUnit] = useState("g");
-
-  // ── mount ──
-  useEffect(function() {
-    fetchPrices().then(function(r) {
-      setDb(r.data);
-      setLive(r.live);
-    }).catch(function() {
-      setDb(MOCK_DB);
-      setLive(false);
-    });
-  }, []);
-
-  // ── analyse pasted text ──
-  var handleAnalyse = useCallback(function() {
-    if (!rawText.trim()) return;
-    setPhase("loading");
-    setTimeout(function() {
-      var parsed = rawText.split("\n").map(parseLine).filter(Boolean);
-      var enriched = parsed.map(function(item, idx) {
-        var match = fuzzyMatch(item.name, db);
-        var lineCost = null;
-        if (match && item.quantity != null) {
-          lineCost = calcLineCost(item.quantity, item.unit, match.costPrice, match.costQty, match.costUnit);
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Professional Recipe Costing</title>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;700&family=Space+Mono&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg: #F8F9FA; --card: #FFFFFF; --accent: #2D3436; 
+            --text: #2D3436; --dim: #636E72; --border: #DFE6E9;
+            --success: #00B894; --error: #D63031;
         }
-        return {
-          id: Date.now() + idx,
-          name: item.name,
-          quantity: item.quantity,
-          unit: item.unit,
-          // store the matched cost-structure so we can recalc on edit
-          costPrice: match ? match.costPrice : null,
-          costQty: match ? match.costQty : null,
-          costUnit: match ? match.costUnit : null,
-          lineCost: lineCost,
-          matched: !!match,
-        };
-      });
-      setRows(enriched);
-      setAnalysed(true);
-      setPhase("ready");
-    }, 420);
-  }, [rawText, db]);
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body { font-family: 'Outfit', sans-serif; background: var(--bg); color: var(--text); padding: 40px 20px; }
+        .container { max-width: 900px; margin: 0 auto; }
+        
+        header { margin-bottom: 30px; text-align: center; }
+        .card { background: var(--card); padding: 30px; border-radius: 12px; border: 1px solid var(--border); box-shadow: 0 4px 6px rgba(0,0,0,0.05); }
+        
+        .grid { display: grid; grid-template-columns: 2fr 1fr; gap: 15px; margin-bottom: 20px; }
+        label { display: block; font-size: 0.8rem; font-weight: 600; color: var(--dim); margin-bottom: 5px; text-transform: uppercase; }
+        
+        input, textarea { width: 100%; padding: 12px; border: 1px solid var(--border); border-radius: 8px; font-family: inherit; font-size: 1rem; }
+        textarea { min-height: 120px; font-family: 'Space Mono', monospace; font-size: 0.9rem; }
 
-  // ── recalc a single row whenever qty / unit / costPrice / costQty / costUnit changes ──
-  function recalc(row) {
-    if (row.quantity != null && row.costPrice != null && row.costQty != null && row.costUnit != null) {
-      row.lineCost = calcLineCost(row.quantity, row.unit, row.costPrice, row.costQty, row.costUnit);
-    } else {
-      row.lineCost = null;
-    }
-    return row;
-  }
+        .btn { background: var(--accent); color: white; border: none; padding: 14px 24px; border-radius: 8px; cursor: pointer; font-weight: 600; width: 100%; transition: 0.2s; }
+        .btn:hover { opacity: 0.9; transform: translateY(-1px); }
+        .btn-save { background: var(--success); margin-top: 20px; }
 
-  var updateRow = useCallback(function(id, field, value) {
-    setRows(function(prev) {
-      return prev.map(function(r) {
-        if (r.id !== id) return r;
-        var u = Object.assign({}, r);
-        u[field] = value;
-        return recalc(u);
-      });
-    });
-  }, []);
+        table { width: 100%; border-collapse: collapse; margin-top: 25px; font-size: 0.9rem; }
+        th { text-align: left; padding: 12px; border-bottom: 2px solid var(--border); color: var(--dim); }
+        td { padding: 12px; border-bottom: 1px solid var(--border); }
+        
+        .summary-box { background: var(--accent); color: white; padding: 25px; border-radius: 8px; margin-top: 25px; display: flex; justify-content: space-between; align-items: center; }
+        .summary-val { font-size: 2rem; font-weight: 700; }
+        .status { font-size: 0.8rem; margin-top: 10px; display: block; }
+    </style>
+</head>
+<body>
 
-  var removeRow = useCallback(function(id) {
-    setRows(function(p) { return p.filter(function(r) { return r.id !== id; }); });
-  }, []);
+<div class="container">
+    <header>
+        <h1>Recipe Costing</h1>
+        <span id="syncStatus" class="status">Connecting to Master...</span>
+    </header>
 
-  // ── ADD manual ingredient ──
-  function handleAddIngredient() {
-    if (!addName.trim()) return;
-    var qty = parseFloat(addQty) || null;
-    var cp = parseFloat(addCostPrice) || null;
-    var cq = parseFloat(addCostQty) || null;
-    var newRow = {
-      id: Date.now(),
-      name: addName.trim().replace(/\b\w/g, function(c){ return c.toUpperCase(); }),
-      quantity: qty,
-      unit: addUnit,
-      costPrice: cp,
-      costQty: cq,
-      costUnit: addCostUnit,
-      lineCost: null,
-      matched: false,
-    };
-    newRow = recalc(newRow);
-    setRows(function(prev) { return prev.concat([newRow]); });
-    setAnalysed(true);
-    // clear form
-    setAddName(""); setAddQty(""); setAddCostPrice(""); setAddCostQty("");
-  }
-
-  // ── totals ──
-  var totals = useMemo(function() {
-    var t = 0, um = 0;
-    rows.forEach(function(r) {
-      if (r.lineCost != null) t += r.lineCost;
-      if (!r.matched && r.costPrice == null) um++;
-    });
-    return { totalCost: t, costPerItem: batchYield > 0 ? t / batchYield : t, unmatched: um };
-  }, [rows, batchYield]);
-
-  // ── save ──
-  var handleSave = useCallback(async function() {
-    setPhase("saving");
-    var summary = rows.map(function(r) { return (r.quantity || "?") + " " + r.unit + " " + r.name; }).join("; ");
-    await pushLog({
-      recipeName: recipeName || "Unnamed",
-      date: new Date().toISOString().split("T")[0],
-      batchYield: batchYield,
-      totalCost: totals.totalCost.toFixed(2),
-      costPerItem: totals.costPerItem.toFixed(2),
-      ingredientCount: rows.length,
-      summary: summary,
-    });
-    setPhase("saved");
-    setSavedLog(function(p) { return p.concat([{ recipeName: recipeName || "Unnamed", totalCost: totals.totalCost, costPerItem: totals.costPerItem, date: new Date().toLocaleDateString() }]); });
-    setTimeout(function() { setPhase("ready"); }, 2800);
-  }, [rows, recipeName, batchYield, totals]);
-
-  function handleReset() {
-    setRecipeName(""); setBatchYield(1); setRawText("");
-    setRows([]); setAnalysed(false); setPhase("idle");
-  }
-
-  function exportCSV() {
-    var lines = [["Ingredient", "Qty", "Unit", "Cost Price (₹)", "Cost Qty", "Cost Unit", "Line Cost (₹)"]];
-    rows.forEach(function(r) {
-      lines.push([r.name, r.quantity, r.unit, r.costPrice, r.costQty, r.costUnit, r.lineCost != null ? r.lineCost.toFixed(2) : ""]);
-    });
-    lines.push([], [], ["", "", "", "", "", "Total Batch Cost:", totals.totalCost.toFixed(2)], ["", "", "", "", "", "Cost Per Item:", totals.costPerItem.toFixed(2)]);
-    var csv = lines.map(function(r) { return r.join(","); }).join("\n");
-    var a = document.createElement("a");
-    a.href = URL.createObjectURL(new Blob([csv], { type: "text/csv" }));
-    a.download = (recipeName || "recipe") + "-costing.csv";
-    a.click();
-  }
-
-  // ── RENDER ──
-  return (
-    <div style={S.root}>
-      <SetupModal open={showSetup} onClose={function(){ setShowSetup(false); }} />
-
-      {/* ambient blobs */}
-      <div style={{ position:"fixed",top:-140,left:-140,width:400,height:400,borderRadius:"50%",background:"radial-gradient(circle,rgba(111,65,255,0.15) 0%,transparent 70%)",pointerEvents:"none",zIndex:0 }} />
-      <div style={{ position:"fixed",bottom:-100,right:-60,width:340,height:340,borderRadius:"50%",background:"radial-gradient(circle,rgba(245,199,113,0.1) 0%,transparent 70%)",pointerEvents:"none",zIndex:0 }} />
-
-      <div style={S.shell}>
-        {/* header */}
-        <header style={S.header}>
-          <div style={{ display:"flex", alignItems:"center", gap:14 }}>
-            <div style={S.logo}><Icon name="sparkle" size={21} /></div>
+    <div class="card">
+        <div class="grid">
             <div>
-              <h1 style={S.title}>Recipe Costing</h1>
-              <p style={S.sub}>Professional kitchen economics · INR</p>
+                <label>Recipe Name</label>
+                <input type="text" id="recipeName" placeholder="e.g., French Halwai">
             </div>
-          </div>
-          <div style={{ display:"flex", alignItems:"center", gap:10 }}>
-            <button style={S.btnSetup} onClick={function(){ setShowSetup(true); }}><Icon name="info" size={15} /> Sheet Setup</button>
-            {live === null && <span style={badgeStyle("#6b7280")}><span style={dotStyle("#6b7280")} /> Connecting…</span>}
-            {live === true && <span style={badgeStyle("#6ee7b7")}><span style={dotStyle("#6ee7b7")} /> Live — Google Sheets</span>}
-            {live === false && <span style={badgeStyle("#f59e0b")}><span style={dotStyle("#f59e0b")} /> Demo Mode</span>}
-          </div>
-        </header>
-
-        {/* input card */}
-        <section style={S.card}>
-          <div style={{ display:"flex", gap:16, marginBottom:20, flexWrap:"wrap" }}>
-            <div style={{ flex:"1 1 200px" }}>
-              <label style={S.label}>Recipe Name</label>
-              <input style={S.input} placeholder="e.g. Classic Chocolate Cake" value={recipeName} onChange={function(e){ setRecipeName(e.target.value); }} />
+            <div>
+                <label>Batch Yield (Items)</label>
+                <input type="number" id="batchYield" value="1" min="1" oninput="calculate()">
             </div>
-            <div style={{ flex:"0 0 155px" }}>
-              <label style={S.label}>Batch Yield</label>
-              <div style={{ display:"flex", alignItems:"center", gap:8 }}>
-                <input type="number" min="1" style={{ ...S.input, width:68, textAlign:"center", flex:"none" }} value={batchYield} onChange={function(e){ setBatchYield(Math.max(1, parseInt(e.target.value) || 1)); }} />
-                <span style={{ fontSize:12, color:"#6b7280" }}>units</span>
-              </div>
+        </div>
+
+        <label>Paste Ingredients (Qty Unit Name)</label>
+        <textarea id="rawInput" placeholder="200 g Sugar&#10;100 ml Milk"></textarea>
+        <button class="btn" style="margin-top:10px" onclick="analyze()">Analyze Ingredients</button>
+
+        <table id="resultTable">
+            <thead>
+                <tr>
+                    <th>Ingredient</th><th>Qty</th><th>Unit</th><th>Cost</th><th></th>
+                </tr>
+            </thead>
+            <tbody id="tableBody"></tbody>
+        </table>
+
+        <div class="summary-box">
+            <div>
+                <p style="opacity:0.8">Total Batch Cost</p>
+                <div class="summary-val" id="totalDisplay">₹0.00</div>
             </div>
-          </div>
-
-          <label style={S.label}>
-            Ingredient List <span style={{ textTransform:"none", fontWeight:400, color:"#5a6070", letterSpacing:0 }}>— paste your recipe below</span>
-          </label>
-          <textarea
-            style={S.scratchpad}
-            placeholder={"Paste your recipe here. The app will parse it.\n\nExamples:\n  250g flour\n  500g chicken breast\n  100g cheese\n  50g butter"}
-            value={rawText}
-            onChange={function(e){ setRawText(e.target.value); }}
-          />
-
-          <div style={{ display:"flex", gap:10, marginTop:18, flexWrap:"wrap", alignItems:"center" }}>
-            <button style={S.btnPrimary} onClick={handleAnalyse} disabled={!rawText.trim() || phase === "loading"}>
-              {phase === "loading"
-                ? <><span style={S.spinner} /> Analysing…</>
-                : <><Icon name="sparkle" size={16} /> Analyse Recipe</>}
-            </button>
-            <button style={S.btnGhost} onClick={handleReset}>Reset</button>
-            {live === false && (
-              <button style={S.btnGhost} onClick={function(){ fetchPrices().then(function(r){ setDb(r.data); setLive(r.live); }); }}>
-                <Icon name="refresh" size={14} /> Retry
-              </button>
-            )}
-          </div>
-        </section>
-
-        {/* results */}
-        {analysed && (
-          <div>
-            {/* summary cards */}
-            <div style={{ display:"flex", gap:12, marginBottom:20, flexWrap:"wrap" }}>
-              <div style={S.summaryCard}>
-                <div style={S.sLabel}>Total Batch Cost</div>
-                <div style={S.sValue}>{fmtINR(totals.totalCost)}</div>
-                <div style={S.sSub}>{rows.length} ingredient{rows.length !== 1 ? "s" : ""}</div>
-              </div>
-              <div style={{ ...S.summaryCard, border:"1px solid rgba(245,199,113,0.3)", background:"linear-gradient(135deg,#1c1d30,#161821)" }}>
-                <div style={S.sLabel}>Cost Per Item</div>
-                <div style={{ ...S.sValue, color:"#f5c771" }}>{fmtINR(totals.costPerItem)}</div>
-                <div style={S.sSub}>÷ {batchYield} unit{batchYield !== 1 ? "s" : ""}</div>
-              </div>
-              <div style={S.summaryCard}>
-                <div style={S.sLabel}>Match Rate</div>
-                <div style={{ ...S.sValue, color: totals.unmatched === 0 ? "#6ee7b7" : "#f59e0b" }}>
-                  {rows.length > 0 ? Math.round(((rows.length - totals.unmatched) / rows.length) * 100) : 0}%
-                </div>
-                <div style={S.sSub}>{totals.unmatched} need{totals.unmatched !== 1 ? "s" : ""} pricing</div>
-              </div>
+            <div style="text-align: right">
+                <p style="opacity:0.8">Cost Per Item</p>
+                <div class="summary-val" id="perItemDisplay" style="color: #00B894">₹0.00</div>
             </div>
+        </div>
 
-            {/* ingredient table */}
-            <div style={{ overflowX:"auto", borderRadius:11, border:"1px solid #2a2b3d", marginBottom:0 }}>
-              <table style={{ width:"100%", borderCollapse:"collapse", background:"#161821" }}>
-                <thead>
-                  <tr>
-                    <th style={S.th}>Status</th>
-                    <th style={{ ...S.th, minWidth:140 }}>Ingredient</th>
-                    <th style={S.th}>Qty</th>
-                    <th style={S.th}>Unit</th>
-                    <th style={S.th}>Cost ₹</th>
-                    <th style={S.th}>For</th>
-                    <th style={S.th}>Cost Unit</th>
-                    <th style={{ ...S.th, textAlign:"right" }}>Line Cost</th>
-                    <th style={S.th}></th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {rows.map(function(row) {
-                    return (
-                      <tr key={row.id} style={{ borderBottom:"1px solid #1e1f2e" }}>
-                        <td style={S.td}>
-                          {row.matched
-                            ? <span style={S.badgeOk}><Icon name="check" size={11} /> Matched</span>
-                            : <span style={S.badgeWarn}><Icon name="warning" size={11} /> Manual</span>}
-                        </td>
-                        <td style={{ ...S.td, color:"#d1d5db", fontWeight:500 }}>{row.name}</td>
-                        <td style={S.td}>
-                          <input type="number" style={S.inlineIn} value={row.quantity != null ? row.quantity : ""} onChange={function(e){ updateRow(row.id, "quantity", parseFloat(e.target.value) || null); }} />
-                        </td>
-                        <td style={S.td}>
-                          <UnitSelect value={row.unit || "g"} onChange={function(v){ updateRow(row.id, "unit", v); }} />
-                        </td>
-                        {/* cost price */}
-                        <td style={S.td}>
-                          <input type="number" style={S.inlineIn} placeholder="₹" value={row.costPrice != null ? row.costPrice : ""} onChange={function(e){ updateRow(row.id, "costPrice", parseFloat(e.target.value) || null); }} />
-                        </td>
-                        {/* cost qty */}
-                        <td style={S.td}>
-                          <input type="number" style={{ ...S.inlineIn, width:52 }} value={row.costQty != null ? row.costQty : ""} onChange={function(e){ updateRow(row.id, "costQty", parseFloat(e.target.value) || null); }} />
-                        </td>
-                        {/* cost unit dropdown */}
-                        <td style={S.td}>
-                          <UnitSelect value={row.costUnit || "g"} onChange={function(v){ updateRow(row.id, "costUnit", v); }} />
-                        </td>
-                        {/* line cost */}
-                        <td style={{ ...S.td, textAlign:"right", color:"#a78bfa", fontWeight:600, whiteSpace:"nowrap" }}>
-                          {row.lineCost != null ? fmtINR(row.lineCost) : <span style={{ color:"#4a5060", fontStyle:"italic" }}>—</span>}
-                        </td>
-                        <td style={S.td}>
-                          <button style={S.btnDel} onClick={function(){ removeRow(row.id); }} title="Remove"><Icon name="trash" size={14} /></button>
-                        </td>
-                      </tr>
-                    );
-                  })}
-                </tbody>
-              </table>
-            </div>
-
-            {/* ── ADD INGREDIENT ROW ── */}
-            <div style={S.addRowWrap}>
-              <div style={S.addRowTitle}><Icon name="plus" size={14} /> Add Ingredient Manually</div>
-              <div style={S.addRowFields}>
-                <div style={{ flex:"1 1 120px" }}>
-                  <label style={S.addLabel}>Name</label>
-                  <input style={S.input} placeholder="e.g. Saffron" value={addName} onChange={function(e){ setAddName(e.target.value); }} />
-                </div>
-                <div style={{ flex:"0 0 72px" }}>
-                  <label style={S.addLabel}>Qty</label>
-                  <input type="number" style={{ ...S.input, textAlign:"center" }} placeholder="50" value={addQty} onChange={function(e){ setAddQty(e.target.value); }} />
-                </div>
-                <div style={{ flex:"0 0 72px" }}>
-                  <label style={S.addLabel}>Unit</label>
-                  <UnitSelect value={addUnit} onChange={setAddUnit} />
-                </div>
-                <div style={{ flex:"0 0 88px" }}>
-                  <label style={S.addLabel}>Cost ₹</label>
-                  <input type="number" style={{ ...S.input, textAlign:"center" }} placeholder="5000" value={addCostPrice} onChange={function(e){ setAddCostPrice(e.target.value); }} />
-                </div>
-                <div style={{ flex:"0 0 60px" }}>
-                  <label style={S.addLabel}>For</label>
-                  <input type="number" style={{ ...S.input, textAlign:"center" }} placeholder="100" value={addCostQty} onChange={function(e){ setAddCostQty(e.target.value); }} />
-                </div>
-                <div style={{ flex:"0 0 72px" }}>
-                  <label style={S.addLabel}>Unit</label>
-                  <UnitSelect value={addCostUnit} onChange={setAddCostUnit} />
-                </div>
-                <div style={{ flex:"0 0 auto", display:"flex", alignItems:"flex-end" }}>
-                  <button style={S.btnAdd} onClick={handleAddIngredient} disabled={!addName.trim()}>
-                    <Icon name="plus" size={15} /> Add
-                  </button>
-                </div>
-              </div>
-            </div>
-
-            {/* actions */}
-            <div style={{ display:"flex", gap:10, marginTop:20, flexWrap:"wrap", alignItems:"center" }}>
-              <button style={phase === "saved" ? S.btnSaved : S.btnSave} onClick={handleSave} disabled={phase === "saving" || phase === "saved"}>
-                {phase === "saving"
-                  ? <><span style={S.spinner} /> Saving…</>
-                  : phase === "saved"
-                    ? <><Icon name="check" size={16} /> Saved to Cloud</>
-                    : <><Icon name="cloud" size={16} /> Save to Cloud</>}
-              </button>
-              <button style={S.btnGhost} onClick={exportCSV}><Icon name="download" size={15} /> Export CSV</button>
-            </div>
-
-            {/* session log */}
-            {savedLog.length > 0 && (
-              <div style={{ marginTop:20, background:"#161821", border:"1px solid #2a2b3d", borderRadius:11, padding:16 }}>
-                <div style={{ fontSize:10.5, fontWeight:600, color:"#6b7280", textTransform:"uppercase", letterSpacing:"0.8px", marginBottom:8 }}>Session Log</div>
-                {savedLog.map(function(r, i) {
-                  return (
-                    <div key={i} style={{ display:"flex", flexDirection:"column", gap:2, padding:"7px 0", borderBottom:"1px solid #1e1f2e" }}>
-                      <span style={{ color:"#d1d5db", fontWeight:600, fontSize:13 }}>{r.recipeName}</span>
-                      <span style={{ color:"#5a6070", fontSize:11.5 }}>{r.date} · {fmtINR(r.totalCost)} total · {fmtINR(r.costPerItem)}/item</span>
-                    </div>
-                  );
-                })}
-              </div>
-            )}
-          </div>
-        )}
-
-        <footer style={{ marginTop:36, textAlign:"center", fontSize:11, color:"#3f4555" }}>
-          Connected: <code style={{ background:"#1e1f2e", color:"#a78bfa", padding:"2px 6px", borderRadius:4, fontSize:10.5, wordBreak:"break-all" }}>{APPS_SCRIPT_URL.slice(0, 72)}…</code>
-        </footer>
-      </div>
+        <button id="saveBtn" class="btn btn-save" onclick="logToSheet()">Save to Google Sheet</button>
     </div>
-  );
-}
+</div>
 
-// ─────────────────────────────────────────────────────────────────
-// STYLES
-// ─────────────────────────────────────────────────────────────────
-function badgeStyle(c) {
-  return { display:"flex", alignItems:"center", gap:6, fontSize:11.5, color:c, background:"rgba("+hexRgb(c)+",0.1)", padding:"5px 11px", borderRadius:20, border:"1px solid rgba("+hexRgb(c)+",0.25)" };
-}
-function dotStyle(c) {
-  return { width:7, height:7, borderRadius:"50%", background:c, boxShadow:"0 0 6px "+c };
-}
-function hexRgb(hex) {
-  var h = hex.replace("#", "");
-  if (h.length === 3) h = h[0]+h[0]+h[1]+h[1]+h[2]+h[2];
-  return parseInt(h.substring(0,2),16)+","+parseInt(h.substring(2,4),16)+","+parseInt(h.substring(4,6),16);
-}
+<script>
+    // PASTE YOUR GOOGLE APPS SCRIPT WEB APP URL HERE
+    const APP_URL = "https://script.google.com/macros/s/AKfycbwuI-57C7vHJ_dCvJAcUsCKCdrSUtkIXhlJfas_AQfBlMnMfdusayP2M9A_KWRNzcOsRg/exec";
 
-var S = {
-  root:{ position:"relative", minHeight:"100vh", background:"#0f1117", color:"#e2e4e9", fontFamily:"'Outfit',system-ui,sans-serif", overflow:"hidden" },
-  shell:{ position:"relative", zIndex:1, maxWidth:960, margin:"0 auto", padding:"28px 20px 48px" },
-  header:{ display:"flex", justifyContent:"space-between", alignItems:"center", marginBottom:28, flexWrap:"wrap", gap:10 },
-  logo:{ width:44, height:44, borderRadius:12, background:"linear-gradient(135deg,#1e1f2e,#2a2b3d)", border:"1px solid rgba(245,199,113,0.22)", display:"flex", alignItems:"center", justifyContent:"center", color:"#f5c771" },
-  title:{ margin:0, fontSize:22, fontWeight:700, color:"#fff", letterSpacing:"-0.5px" },
-  sub:{ margin:"2px 0 0", fontSize:12, color:"#6b7280" },
-  card:{ background:"#161821", border:"1px solid #2a2b3d", borderRadius:16, padding:24, marginBottom:24 },
-  label:{ display:"block", fontSize:11, fontWeight:600, color:"#9ca3af", marginBottom:7, textTransform:"uppercase", letterSpacing:"0.8px" },
-  input:{ width:"100%", background:"#0f1117", border:"1px solid #2a2b3d", borderRadius:9, color:"#e2e4e9", fontSize:14, padding:"9px 13px", outline:"none", boxSizing:"border-box" },
-  scratchpad:{ width:"100%", minHeight:150, background:"#0f1117", border:"1px solid #2a2b3d", borderRadius:9, color:"#c9cdd4", fontSize:13.5, padding:14, resize:"vertical", outline:"none", fontFamily:"'JetBrains Mono','Fira Code',monospace", lineHeight:1.75, boxSizing:"border-box" },
-  selectIn:{ width:64, background:"#0f1117", border:"1px solid #2a2b3d", borderRadius:6, color:"#e2e4e9", fontSize:13, padding:"4px 4px 4px 7px", outline:"none", boxSizing:"border-box", cursor:"pointer", appearance:"auto" },
-  btnPrimary:{ display:"flex", alignItems:"center", gap:7, background:"linear-gradient(135deg,#6f41ff,#9b59b6)", color:"#fff", border:"none", borderRadius:9, padding:"10px 20px", fontSize:13.5, fontWeight:600, cursor:"pointer" },
-  btnGhost:{ display:"flex", alignItems:"center", gap:6, background:"transparent", color:"#7a8494", border:"1px solid #2a2b3d", borderRadius:9, padding:"10px 16px", fontSize:12.5, cursor:"pointer" },
-  btnSetup:{ display:"flex", alignItems:"center", gap:5, background:"transparent", color:"#7a8494", border:"1px solid #2a2b3d", borderRadius:9, padding:"7px 12px", fontSize:11.5, cursor:"pointer" },
-  btnSave:{ display:"flex", alignItems:"center", gap:7, background:"linear-gradient(135deg,#0d9488,#14b8a6)", color:"#fff", border:"none", borderRadius:9, padding:"10px 20px", fontSize:13.5, fontWeight:600, cursor:"pointer" },
-  btnSaved:{ display:"flex", alignItems:"center", gap:7, background:"#1a2e2a", color:"#6ee7b7", border:"1px solid rgba(110,231,183,0.3)", borderRadius:9, padding:"10px 20px", fontSize:13.5, fontWeight:600, cursor:"default" },
-  btnAdd:{ display:"flex", alignItems:"center", gap:6, background:"linear-gradient(135deg,#6f41ff,#9b59b6)", color:"#fff", border:"none", borderRadius:9, padding:"9px 16px", fontSize:12.5, fontWeight:600, cursor:"pointer", whiteSpace:"nowrap" },
-  btnDel:{ background:"transparent", border:"none", color:"#4a5060", cursor:"pointer", padding:4, borderRadius:6, display:"flex", alignItems:"center", justifyContent:"center" },
-  spinner:{ display:"inline-block", width:13, height:13, border:"2px solid rgba(255,255,255,0.25)", borderTop:"2px solid #fff", borderRadius:"50%", animation:"spin .55s linear infinite" },
-  summaryCard:{ flex:"1 1 130px", background:"#161821", border:"1px solid #2a2b3d", borderRadius:13, padding:"16px 18px", minWidth:130 },
-  sLabel:{ fontSize:10.5, fontWeight:600, color:"#6b7280", textTransform:"uppercase", letterSpacing:"0.8px", marginBottom:5 },
-  sValue:{ fontSize:24, fontWeight:700, color:"#fff", letterSpacing:"-0.8px" },
-  sSub:{ fontSize:11, color:"#5a6070", marginTop:3 },
-  th:{ textAlign:"left", fontSize:10, fontWeight:600, color:"#6b7280", textTransform:"uppercase", letterSpacing:"0.8px", padding:"10px 10px", borderBottom:"1px solid #2a2b3d", whiteSpace:"nowrap" },
-  td:{ padding:"7px 10px", fontSize:13, verticalAlign:"middle" },
-  badgeOk:{ display:"inline-flex", alignItems:"center", gap:4, fontSize:10, fontWeight:600, color:"#6ee7b7", background:"rgba(110,231,183,0.1)", padding:"3px 8px", borderRadius:20 },
-  badgeWarn:{ display:"inline-flex", alignItems:"center", gap:4, fontSize:10, fontWeight:600, color:"#f59e0b", background:"rgba(245,158,11,0.1)", padding:"3px 8px", borderRadius:20 },
-  inlineIn:{ width:68, background:"#0f1117", border:"1px solid #2a2b3d", borderRadius:6, color:"#e2e4e9", fontSize:13, padding:"4px 7px", outline:"none", textAlign:"center", boxSizing:"border-box" },
+    let masterPrices = [];
+    let activeIngredients = [];
+    const units = { g: 1, kg: 1000, ml: 1, l: 1000, tsp: 5, tbsp: 15, cup: 240, unit: 1 };
 
-  // add-row
-  addRowWrap:{ background:"#161821", border:"1px solid #2a2b3d", borderRadius:12, padding:"16px 18px", marginTop:8 },
-  addRowTitle:{ fontSize:11, fontWeight:600, color:"#6b7280", textTransform:"uppercase", letterSpacing:"0.8px", marginBottom:12, display:"flex", alignItems:"center", gap:6 },
-  addRowFields:{ display:"flex", gap:10, flexWrap:"wrap", alignItems:"flex-end" },
-  addLabel:{ display:"block", fontSize:10, fontWeight:600, color:"#5a6070", marginBottom:5, textTransform:"uppercase", letterSpacing:"0.6px" },
+    // Initial load of prices
+    window.onload = () => {
+        fetch(`${APP_URL}?action=getPrices`)
+            .then(res => res.json())
+            .then(data => {
+                masterPrices = data;
+                document.getElementById('syncStatus').innerText = "✓ Synced with Master Sheet";
+                document.getElementById('syncStatus').style.color = "var(--success)";
+            })
+            .catch(err => {
+                document.getElementById('syncStatus').innerText = "✕ Sync Failed. Check URL.";
+                document.getElementById('syncStatus').style.color = "var(--error)";
+            });
+    };
 
-  // modal
-  modalBg:{ position:"fixed", top:0, left:0, right:0, bottom:0, background:"rgba(0,0,0,0.6)", zIndex:200, display:"flex", alignItems:"center", justifyContent:"center", padding:20 },
-  modalBox:{ background:"#161821", border:"1px solid #2a2b3d", borderRadius:16, padding:28, maxWidth:680, width:"100%", maxHeight:"85vh", overflowY:"auto", boxSizing:"border-box" },
-  modalSection:{ marginBottom:24 },
-  modalSectionTitle:{ fontSize:14, fontWeight:600, color:"#fff", marginBottom:10 },
-  modalText:{ fontSize:13, color:"#9ca3af", lineHeight:1.6, margin:"0 0 12px" },
-  codeBlock:{ background:"#0f1117", border:"1px solid #2a2b3d", borderRadius:10, padding:16, marginBottom:12 },
-  codeTitle:{ fontSize:11, fontWeight:600, color:"#6ee7b7", marginBottom:10, textTransform:"uppercase", letterSpacing:"0.6px" },
-  codeNote:{ fontSize:11, color:"#5a6070", marginTop:10, lineHeight:1.5 },
-  pre:{ margin:0, color:"#c9cdd4", fontSize:12, lineHeight:1.7, overflowX:"auto", fontFamily:"'JetBrains Mono','Fira Code',monospace", whiteSpace:"pre" },
-  setupTable:{ width:"100%", borderCollapse:"collapse", marginBottom:0 },
-  setupTh:{ textAlign:"left", fontSize:10, color:"#6b7280", fontWeight:600, padding:"5px 8px", borderBottom:"1px solid #2a2b3d", textTransform:"uppercase" },
-  setupTd:{ fontSize:11, color:"#f5c771", padding:"5px 8px", borderBottom:"1px solid #1e1f2e", fontWeight:600 },
-  setupTd2:{ fontSize:11, color:"#9ca3af", padding:"5px 8px", borderBottom:"1px solid #1e1f2e" },
-  inlineCode:{ background:"#0f1117", color:"#a78bfa", padding:"2px 6px", borderRadius:4, fontSize:11, border:"1px solid #2a2b3d" },
-};
+    function analyze() {
+        const lines = document.getElementById('rawInput').value.split('\n');
+        activeIngredients = [];
 
-// inject
-(function() {
-  var t = document.createElement("style");
-  t.textContent = "@import url('https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700&display=swap');\n@keyframes spin{to{transform:rotate(360deg)}}\ninput:focus,textarea:focus,select:focus{border-color:rgba(111,65,255,0.5)!important;box-shadow:0 0 0 3px rgba(111,65,255,0.12)!important}\nbutton:not(:disabled):hover{opacity:0.78}\ntr:hover{background:rgba(42,43,61,0.35)}\nselect option{background:#161821;color:#e2e4e9}";
-  document.head.appendChild(t);
-})();
+        lines.forEach(line => {
+            if (!line.trim()) return;
+            // Regex to handle "200 g sugar" or "200g sugar"
+            const match = line.match(/^([\d.\/]+)\s*([a-zA-Z]*)\s+(.+)/);
+            
+            if (match) {
+                const qty = evalFraction(match[1]);
+                const unit = match[2].toLowerCase() || 'unit';
+                const name = match[3].trim();
+                
+                // Find matching item in Master List (Case Insensitive)
+                const priceInfo = masterPrices.find(p => 
+                    p.ingredient.toString().toLowerCase().trim() === name.toLowerCase()
+                );
+
+                activeIngredients.push({
+                    name,
+                    qty,
+                    unit,
+                    baseQty: priceInfo ? priceInfo.base_qty : 1000,
+                    price: priceInfo ? priceInfo.price : 0
+                });
+            }
+        });
+        render();
+    }
+
+    function evalFraction(str) {
+        if (!str.includes('/')) return parseFloat(str);
+        const parts = str.split('/');
+        return parseFloat(parts[0]) / parseFloat(parts[1]);
+    }
+
+    function calculate() {
+        let total = 0;
+        activeIngredients.forEach(ing => {
+            const mult = units[ing.unit] || 1;
+            ing.lineCost = (ing.qty * mult / ing.baseQty) * ing.price;
+            total += ing.lineCost;
+        });
+
+        const batch = parseFloat(document.getElementById('batchYield').value) || 1;
+        document.getElementById('totalDisplay').innerText = `₹${total.toFixed(2)}`;
+        document.getElementById('perItemDisplay').innerText = `₹${(total / batch).toFixed(2)}`;
+        return total;
+    }
+
+    function render() {
+        const body = document.getElementById('tableBody');
+        body.innerHTML = activeIngredients.map((ing, i) => `
+            <tr>
+                <td><strong>${ing.name}</strong></td>
+                <td>${ing.qty}</td>
+                <td>${ing.unit}</td>
+                <td>₹${((ing.qty * (units[ing.unit]||1) / ing.baseQty) * ing.price).toFixed(2)}</td>
+                <td><button onclick="remove(${i})" style="background:none; border:none; color:red; cursor:pointer">✕</button></td>
+            </tr>
+        `).join('');
+        calculate();
+    }
+
+    function remove(index) {
+        activeIngredients.splice(index, 1);
+        render();
+    }
+
+    function logToSheet() {
+        const btn = document.getElementById('saveBtn');
+        const name = document.getElementById('recipeName').value;
+        const total = calculate();
+        const batch = document.getElementById('batchYield').value;
+
+        if (!name) return alert("Enter recipe name");
+
+        btn.innerText = "Logging...";
+        btn.disabled = true;
+
+        const summary = activeIngredients.map(i => `${i.name} (${i.qty}${i.unit})`).join(", ");
+
+        const params = new URLSearchParams({
+            action: "logRecipe",
+            recipeName: name,
+            date: new Date().toLocaleDateString(),
+            batchYield: batch,
+            totalCost: total.toFixed(2),
+            costPerItem: (total / batch).toFixed(2),
+            ingredientCount: activeIngredients.length,
+            summary: summary
+        });
+
+        fetch(`${APP_URL}?${params.toString()}`, { method: 'POST' })
+            .then(() => {
+                alert("Recipe saved successfully!");
+                btn.innerText = "Save to Google Sheet";
+                btn.disabled = false;
+            })
+            .catch(() => {
+                alert("Error saving.");
+                btn.disabled = false;
+            });
+    }
+</script>
+
+</body>
+</html>
