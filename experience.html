@@ -188,7 +188,7 @@
     <div class="display-row total-row"><span>Cost per Item</span><span id="perItem">₹0</span></div>
 </div>
 
-<button class="btn btn-success" onclick="exportToCSV()">Export to Google Sheets</button>
+<button class="btn btn-success" onclick="exportToCSV()">Export to CSV</button>
 <button class="btn btn-secondary" onclick="location.reload()">Reset</button>
 
 </div>
@@ -198,77 +198,128 @@
 let ingredients = [];
 const units = { g:1, kg:1000, ml:1, l:1000, tsp:5, tbsp:15, cup:240, unit:1 };
 
-const MASTER_URL = "https://script.google.com/macros/s/AKfycbzLCxi1z6t5jJriUHIJ177MZ-Of7c5hJ77SlOx3VWIFfjSEoSrh2FozW3XvDKDSbpg_vw/exec";
+// UPDATED URL
+const MASTER_URL = "https://script.google.com/macros/s/AKfycbwuI-57C7vHJ_dCvJAcUsCKCdrSUtkIXhlJfas_AQfBlMnMfdusayP2M9A_KWRNzcOsRg/exec";
 let MASTER = {};
 
-fetch(MASTER_URL).then(r=>r.json()).then(d=>MASTER=d);
+// Improved fetch with error handling to prevent button freeze
+fetch(MASTER_URL)
+    .then(r => r.json())
+    .then(d => {
+        MASTER = d;
+        console.log("Master Data Loaded:", MASTER);
+    })
+    .catch(e => console.error("Could not load Google Sheet data:", e));
 
-function calculateCost(q,u,b,p){
-    return ((q||0)*(units[u]||1)/(b||1))*(p||0);
+function calculateCost(q, u, b, p) {
+    let qty = parseFloat(q) || 0;
+    let base = parseFloat(b) || 1;
+    let price = parseFloat(p) || 0;
+    let unitMultiplier = units[u.toLowerCase()] || 1;
+    
+    return (qty * unitMultiplier / base) * price;
 }
 
-function extractIngredients(){
-    ingredients=[];
-    recipeInput.value.split('\n').forEach((l,i)=>{
-        const m=l.match(/^([\d.\/½¼¾]+)\s*([a-zA-Z]*)\s+(.+)/);
-        if(!m) return;
-        const key=m[3].toLowerCase();
-        const master=MASTER[key];
-        ingredients.push({
-            id:Date.now()+i,
-            name:m[3],
-            qty:m[1],
-            unit:m[2]||'unit',
-            bQty: master?master.baseQty:1,
-            price: master?master.price:0,
-            locked: !!master
-        });
+function extractIngredients() {
+    ingredients = [];
+    const lines = document.getElementById('recipeInput').value.split('\n');
+    
+    lines.forEach((l, i) => {
+        if (!l.trim()) return;
+        
+        // Regex to handle: 200 g sugar OR 200g sugar
+        const m = l.match(/^([\d.\/½¼¾]+)\s*([a-zA-Z]*)\s+(.+)/);
+        
+        if (m) {
+            const name = m[3].trim();
+            const key = name.toLowerCase();
+            const master = MASTER[key];
+
+            ingredients.push({
+                id: Date.now() + i,
+                name: name,
+                qty: m[1],
+                unit: m[2] || 'unit',
+                bQty: master ? master.baseQty : 1,
+                price: master ? master.price : 0,
+                locked: !!master
+            });
+        }
     });
     render();
 }
 
-function render(){
-    tableBody.innerHTML=ingredients.map(i=>{
-        const cost=calculateCost(i.qty,i.unit,i.bQty,i.price);
+function render() {
+    const tableBody = document.getElementById('tableBody');
+    tableBody.innerHTML = ingredients.map(i => {
+        const cost = calculateCost(i.qty, i.unit, i.bQty, i.price);
         return `<tr>
         <td><b>${i.name}</b></td>
         <td><input value="${i.qty}" onchange="upd(${i.id},'qty',this.value)"></td>
         <td><input value="${i.unit}" onchange="upd(${i.id},'unit',this.value)"></td>
         <td><input value="${i.bQty}" onchange="upd(${i.id},'bQty',this.value)"></td>
-        <td><input type="number" value="${i.price}" ${i.locked?'disabled style="background:#eee"':''}
+        <td><input type="number" value="${i.price}" ${i.locked ? 'disabled style="background:#eee"' : ''} 
             onchange="upd(${i.id},'price',this.value)"></td>
         <td>₹${cost.toFixed(2)}</td>
-        <td><button onclick="del(${i.id})">×</button></td>
+        <td><button onclick="del(${i.id})" style="border:none; background:none; cursor:pointer; color:var(--error); font-weight:bold;">×</button></td>
         </tr>`;
     }).join('');
     calculateTotal();
 }
 
-function upd(id,f,v){ingredients.find(x=>x.id===id)[f]=v; render();}
-function del(id){ingredients=ingredients.filter(x=>x.id!==id); render();}
-
-function addManual(){
-    ingredients.push({id:Date.now(),name:newIng.value,qty:newQty.value||1,unit:'unit',bQty:1,price:newPrice.value||0});
+function upd(id, f, v) {
+    const item = ingredients.find(x => x.id === id);
+    if (item) item[f] = v;
     render();
 }
 
-function calculateTotal(){
-    const t=ingredients.reduce((s,i)=>s+calculateCost(i.qty,i.unit,i.bQty,i.price),0);
-    totalCost.innerText=`₹${t.toFixed(2)}`;
-    perItem.innerText=`₹${(t/(itemsPerBatch.value||1)).toFixed(2)}`;
+function del(id) {
+    ingredients = ingredients.filter(x => x.id !== id);
+    render();
 }
 
-function exportToCSV(){
-    let csv="Ingredient,Qty,Unit,Cost\n";
-    ingredients.forEach(i=>{
-        csv+=`${i.name},${i.qty},${i.unit},${calculateCost(i.qty,i.unit,i.bQty,i.price)}\n`;
+function addManual() {
+    const name = document.getElementById('newIng').value;
+    const qty = document.getElementById('newQty').value;
+    const price = document.getElementById('newPrice').value;
+    
+    if (!name) return;
+
+    ingredients.push({
+        id: Date.now(),
+        name: name,
+        qty: qty || 1,
+        unit: 'unit',
+        bQty: 1,
+        price: price || 0,
+        locked: false
     });
-    const a=document.createElement('a');
-    a.href=URL.createObjectURL(new Blob([csv],{type:'text/csv'}));
-    a.download='recipe_costing.csv';
+    
+    document.getElementById('newIng').value = '';
+    document.getElementById('newQty').value = '';
+    document.getElementById('newPrice').value = '';
+    render();
+}
+
+function calculateTotal() {
+    const batchSize = parseFloat(document.getElementById('itemsPerBatch').value) || 1;
+    const total = ingredients.reduce((sum, i) => sum + calculateCost(i.qty, i.unit, i.bQty, i.price), 0);
+    
+    document.getElementById('totalCost').innerText = `₹${total.toFixed(2)}`;
+    document.getElementById('perItem').innerText = `₹${(total / batchSize).toFixed(2)}`;
+}
+
+function exportToCSV() {
+    if (ingredients.length === 0) return alert("No data to export");
+    let csv = "Ingredient,Qty,Unit,Cost\n";
+    ingredients.forEach(i => {
+        csv += `${i.name},${i.qty},${i.unit},${calculateCost(i.qty, i.unit, i.bQty, i.price).toFixed(2)}\n`;
+    });
+    const a = document.createElement('a');
+    a.href = URL.createObjectURL(new Blob([csv], { type: 'text/csv' }));
+    a.download = `${document.getElementById('recipeName').value || 'recipe'}_costing.csv`;
     a.click();
 }
 </script>
 </body>
 </html>
-
