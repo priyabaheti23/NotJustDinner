@@ -22,6 +22,7 @@
         textarea { min-height: 120px; font-family: 'Space Mono', monospace; }
         .btn { background: var(--accent); color: #fff; border: none; padding: .9rem 2rem; border-radius: 8px; font-weight: 600; cursor: pointer; width: 100%; margin-top: .75rem; }
         .btn:hover { background: var(--accent-dark); }
+        .btn:disabled { background: var(--text-dim); cursor: not-allowed; }
         table { width: 100%; border-collapse: collapse; font-family: 'Space Mono', monospace; font-size: .9rem; margin-top: 2rem;}
         th, td { padding: .75rem; border-bottom: 1px solid var(--border); text-align: left; }
         th { background: var(--surface-light); color: var(--accent); font-size: .75rem; }
@@ -36,7 +37,7 @@
 <div class="container">
     <header>
         <h1>Recipe Cost Calculator</h1>
-        <p style="color:var(--text-dim)">Sheet Connected: FrenchHalwai</p>
+        <p style="color:var(--text-dim)">Connected to Google Sheets</p>
     </header>
 
     <div class="calculator-card">
@@ -71,27 +72,33 @@
             <div class="display-row total-row"><span>Cost per Item</span><span id="perItem">₹0</span></div>
         </div>
 
-        <button class="btn" style="background:#5d7a61; margin-top: 2rem;" onclick="exportToCSV()">Download CSV</button>
+        <button id="saveBtn" class="btn" style="background:#5d7a61; margin-top: 2rem;" onclick="saveToSheet()">Save to Google Sheet</button>
+        <button class="btn" style="background:transparent; border: 1px solid var(--border); color: var(--text); font-size: 0.7rem;" onclick="location.reload()">Reset Calculator</button>
     </div>
 </div>
 
 <script>
-    const MASTER_URL = "https://script.google.com/macros/s/AKfycbwuI-57C7vHJ_dCvJAcUsCKCdrSUtkIXhlJfas_AQfBlMnMfdusayP2M9A_KWRNzcOsRg/exec";
+    // YOUR UPDATED URL
+    const MASTER_URL = "https://script.google.com/macros/s/AKfycbzjtR9vVZaMA4LnZBHm8d-xgbq7MCMX5y3s4igyfSToUgqSizt0YPEaKV6Oh-xhkeesQg/exec";
+    
     let MASTER = {};
     let ingredients = [];
     const units = { g:1, kg:1000, ml:1, l:1000, tsp:5, tbsp:15, cup:240, unit:1 };
 
-    // Fetch Master Data
+    // Initial Fetch
     fetch(MASTER_URL)
         .then(r => r.json())
-        .then(d => { MASTER = d; console.log("Data Loaded"); })
-        .catch(e => console.error("Sheet Sync Failed"));
+        .then(d => { 
+            MASTER = d; 
+            console.log("Master Pricing Data Loaded"); 
+        })
+        .catch(e => console.error("Could not sync with Google Sheets"));
 
     function calculateCost(q, u, b, p) {
         const qty = parseFloat(q) || 0;
         const base = parseFloat(b) || 1;
         const price = parseFloat(p) || 0;
-        const mult = units[u.toLowerCase()] || 1;
+        const mult = units[u.toLowerCase().trim()] || 1;
         return (qty * mult / base) * price;
     }
 
@@ -102,7 +109,6 @@
 
         lines.forEach((line, index) => {
             if (!line.trim()) return;
-            // Matches: "200 g sugar" or "200g sugar" or "1 unit egg"
             const match = line.match(/^([\d.\/½¼¾]+)\s*([a-zA-Z]*)\s*(.+)/);
             
             if (match) {
@@ -135,7 +141,7 @@
                 <td><input value="${i.bQty}" onchange="upd(${i.id},'bQty',this.value)"></td>
                 <td><input type="number" value="${i.price}" ${i.locked ? 'disabled style="background:#eee"' : ''} onchange="upd(${i.id},'price',this.value)"></td>
                 <td>₹${cost.toFixed(2)}</td>
-                <td><button onclick="del(${i.id})" style="cursor:pointer; border:none; background:none; color:red;">✕</button></td>
+                <td><button onclick="del(${i.id})" style="cursor:pointer; border:none; background:none; color:red; font-weight:bold;">✕</button></td>
             </tr>`;
         }).join('');
         calculateTotal();
@@ -177,18 +183,42 @@
         document.getElementById('perItem').innerText = `₹${(total / batch).toFixed(2)}`;
     }
 
-    function exportToCSV() {
-        let csv = "Ingredient,Qty,Unit,Cost\n";
-        ingredients.forEach(i => {
-            const c = calculateCost(i.qty, i.unit, i.bQty, i.price);
-            csv += `${i.name},${i.qty},${i.unit},${c.toFixed(2)}\n`;
+    function saveToSheet() {
+        const saveBtn = document.getElementById('saveBtn');
+        const recipeName = document.getElementById('recipeName').value;
+        const totalCost = document.getElementById('totalCost').innerText;
+        
+        if (!recipeName) return alert("Please enter a Recipe Name!");
+        if (ingredients.length === 0) return alert("Add ingredients first!");
+
+        saveBtn.innerText = "Saving to Cloud...";
+        saveBtn.disabled = true;
+
+        const summary = ingredients.map(i => `${i.name} (${i.qty}${i.unit})`).join(", ");
+
+        const payload = {
+            recipeName: recipeName,
+            totalCost: totalCost,
+            ingredientsSummary: summary
+        };
+
+        // Sending data via POST to Google Apps Script
+        fetch(MASTER_URL, {
+            method: "POST",
+            mode: "no-cors", // Required for Apps Script POST
+            cache: "no-cache",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(payload)
+        })
+        .then(() => {
+            alert("Success! Recipe logged in Recipes_Log tab.");
+            saveBtn.innerText = "Save to Google Sheet";
+            saveBtn.disabled = false;
+        })
+        .catch(err => {
+            alert("Error saving data. Check if Script is deployed as 'Anyone'.");
+            saveBtn.disabled = false;
         });
-        const blob = new Blob([csv], { type: 'text/csv' });
-        const url = window.URL.createObjectURL(blob);
-        const a = document.createElement('a');
-        a.setAttribute('href', url);
-        a.setAttribute('download', 'costing.csv');
-        a.click();
     }
 </script>
 </body>
