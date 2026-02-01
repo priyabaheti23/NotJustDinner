@@ -3,124 +3,119 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Recipe Cost Calculator</title>
+    <title>Professional Recipe Costing</title>
     <link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=Outfit:wght@300;400;600;700&display=swap" rel="stylesheet">
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
         :root {
-            --bg: #FAF8F5; --surface: #FFFFFF; --surface-light: #F5F1EB;
-            --accent: #8B7355; --accent-dark: #6B5644; --text: #3E3028;
-            --text-dim: #9B8B7E; --success: #7A6F5D; --error: #B8856A; --border: #E8DFD4;
+            --bg: #FDFCFB; --surface: #FFFFFF; --surface-light: #F9F7F4;
+            --accent: #5D4037; --accent-dark: #3E2723; --text: #2C2420;
+            --text-dim: #8D817A; --success: #455A64; --border: #E0D7D0;
         }
-        body { font-family: 'Outfit', sans-serif; background: var(--bg); color: var(--text); min-height: 100vh; padding: 2rem; }
-        .container { max-width: 1100px; margin: 0 auto; }
-        header { text-align: center; margin-bottom: 2.5rem; }
-        .calculator-card { background: var(--surface); border-radius: 16px; padding: 2.5rem; box-shadow: 0 1px 3px rgba(0,0,0,.08); border: 1px solid var(--border); }
-        .section-label { font-size: .85rem; color: var(--text-dim); text-transform: uppercase; letter-spacing: .1em; margin-bottom: .75rem; font-weight: 600; }
-        .recipe-meta { display: grid; grid-template-columns: 2fr 1fr; gap: 1rem; margin-bottom: 1.5rem; }
-        input, textarea { width: 100%; padding: .8rem; background: var(--surface-light); border: 1px solid var(--border); border-radius: 6px; font-family: inherit; }
-        textarea { min-height: 120px; font-family: 'Space Mono', monospace; }
-        .btn { background: var(--accent); color: #fff; border: none; padding: .9rem 2rem; border-radius: 8px; font-weight: 600; cursor: pointer; width: 100%; margin-top: .75rem; }
-        .btn:hover { background: var(--accent-dark); }
-        .btn:disabled { background: var(--text-dim); cursor: not-allowed; }
-        table { width: 100%; border-collapse: collapse; font-family: 'Space Mono', monospace; font-size: .9rem; margin-top: 2rem;}
-        th, td { padding: .75rem; border-bottom: 1px solid var(--border); text-align: left; }
-        th { background: var(--surface-light); color: var(--accent); font-size: .75rem; }
-        .calculator-display { background: var(--surface-light); border-radius: 8px; padding: 1.5rem; border: 1px solid var(--border); margin-top: 2rem; }
-        .display-row { display: flex; justify-content: space-between; padding: .5rem 0; }
-        .total-row { border-top: 2px solid var(--accent); font-size: 1.5rem; font-weight: 700; padding-top: 1rem; }
-        .add-row { display: flex; gap: .5rem; margin-top: 1rem; }
-        .add-btn { background: var(--success); color: white; border: none; padding: 0 1.5rem; border-radius: 6px; cursor: pointer; }
+        body { font-family: 'Outfit', sans-serif; background: var(--bg); color: var(--text); padding: 2rem; line-height: 1.5; }
+        .container { max-width: 1000px; margin: 0 auto; }
+        header { text-align: left; margin-bottom: 2rem; border-bottom: 2px solid var(--accent); padding-bottom: 1rem; }
+        .calculator-card { background: var(--surface); border-radius: 12px; padding: 2rem; border: 1px solid var(--border); box-shadow: 0 4px 20px rgba(0,0,0,0.05); }
+        .section-label { font-size: .75rem; color: var(--text-dim); text-transform: uppercase; letter-spacing: .15em; margin-bottom: 1rem; font-weight: 700; display: block; }
+        .recipe-meta { display: grid; grid-template-columns: 2fr 1fr; gap: 1.5rem; margin-bottom: 2rem; }
+        input, textarea { width: 100%; padding: .8rem; background: var(--surface-light); border: 1px solid var(--border); border-radius: 6px; font-family: inherit; font-size: 1rem; }
+        textarea { min-height: 150px; font-family: 'Space Mono', monospace; border: 2px dashed var(--border); }
+        .btn { background: var(--accent); color: #fff; border: none; padding: 1rem; border-radius: 6px; font-weight: 600; cursor: pointer; transition: 0.2s; width: 100%; }
+        .btn:hover { background: var(--accent-dark); transform: translateY(-1px); }
+        table { width: 100%; border-collapse: collapse; margin-top: 2rem; font-family: 'Space Mono', monospace; }
+        th { background: var(--surface-light); color: var(--accent); font-size: .7rem; padding: 1rem; text-align: left; border-bottom: 2px solid var(--border); }
+        td { padding: 1rem; border-bottom: 1px solid var(--border); }
+        .calculator-display { background: var(--accent); color: white; border-radius: 8px; padding: 1.5rem; margin-top: 2rem; }
+        .display-row { display: flex; justify-content: space-between; margin-bottom: 0.5rem; opacity: 0.9; }
+        .total-row { font-size: 1.8rem; font-weight: 700; border-top: 1px solid rgba(255,255,255,0.2); padding-top: 1rem; opacity: 1; }
+        .add-row { display: grid; grid-template-columns: 2fr 1fr 1fr 50px; gap: .5rem; margin-top: 1rem; }
     </style>
 </head>
 <body>
+
 <div class="container">
     <header>
-        <h1>Recipe Cost Calculator</h1>
-        <p style="color:var(--text-dim)">Connected to Google Sheets</p>
+        <h1>Recipe Costing Master</h1>
+        <p style="color:var(--text-dim)">Synced with: Ingredient_Master</p>
     </header>
 
     <div class="calculator-card">
-        <div class="section-label">Recipe Identity</div>
+        <span class="section-label">1. Recipe Basic Info</span>
         <div class="recipe-meta">
-            <input id="recipeName" placeholder="Recipe name">
-            <input id="itemsPerBatch" type="number" value="1" min="1" oninput="calculateTotal()">
+            <input id="recipeName" placeholder="Enter Recipe Name (e.g. French Halwai)">
+            <input id="itemsPerBatch" type="number" value="1" min="1" oninput="calculateTotal()" placeholder="Yield / Batch Qty">
         </div>
 
-        <div class="section-label">Paste Ingredients</div>
-        <textarea id="recipeInput" placeholder="Example: 200 g sugar"></textarea>
-        <button class="btn" onclick="extractIngredients()">Extract & Analyze</button>
+        <span class="section-label">2. Ingredient Input (Qty Unit Name)</span>
+        <textarea id="recipeInput" placeholder="200 g sugar&#10;500 ml milk&#10;100 g butter"></textarea>
+        <button class="btn" onclick="extractIngredients()">Analyze Ingredients & Prices</button>
 
         <table id="ingTable">
             <thead>
                 <tr>
-                    <th>Ingredient</th><th>Qty</th><th>Unit</th><th>Base</th><th>Price</th><th>Cost</th><th></th>
+                    <th>Ingredient</th><th>Qty</th><th>Unit</th><th>Base(g/ml)</th><th>Price(₹)</th><th>Cost(₹)</th><th></th>
                 </tr>
             </thead>
             <tbody id="tableBody"></tbody>
         </table>
 
         <div class="add-row">
-            <input id="newIng" placeholder="Name">
+            <input id="newIng" placeholder="Manual Add Name">
             <input id="newQty" placeholder="Qty">
             <input id="newPrice" placeholder="Price">
-            <button class="add-btn" onclick="addManual()">+</button>
+            <button class="btn" style="padding:0" onclick="addManual()">+</button>
         </div>
 
         <div class="calculator-display">
-            <div class="display-row"><span>Total Batch Cost</span><span id="totalCost">₹0</span></div>
-            <div class="display-row total-row"><span>Cost per Item</span><span id="perItem">₹0</span></div>
+            <div class="display-row"><span>Total Batch Cost</span><span id="totalCost">₹0.00</span></div>
+            <div class="display-row"><span>Total Yield</span><span id="yieldDisplay">1 Item</span></div>
+            <div class="display-row total-row"><span>Cost Per Item</span><span id="perItem">₹0.00</span></div>
         </div>
 
-        <button id="saveBtn" class="btn" style="background:#5d7a61; margin-top: 2rem;" onclick="saveToSheet()">Save to Google Sheet</button>
-        <button class="btn" style="background:transparent; border: 1px solid var(--border); color: var(--text); font-size: 0.7rem;" onclick="location.reload()">Reset Calculator</button>
+        <button id="saveBtn" class="btn" style="background:#2E7D32; margin-top: 2rem;" onclick="saveToSheet()">Save Final Costing to Sheet</button>
     </div>
 </div>
 
 <script>
-    // YOUR UPDATED URL
-    const MASTER_URL = "https://script.google.com/macros/s/AKfycbzjtR9vVZaMA4LnZBHm8d-xgbq7MCMX5y3s4igyfSToUgqSizt0YPEaKV6Oh-xhkeesQg/exec";
+    const MASTER_URL = "PASTE_YOUR_NEW_DEPLOYED_URL_HERE";
     
     let MASTER = {};
     let ingredients = [];
-    const units = { g:1, kg:1000, ml:1, l:1000, tsp:5, tbsp:15, cup:240, unit:1 };
+    const units = { g:1, kg:1000, ml:1, l:1000, tsp:5, tbsp:15, cup:240, unit:1, piece:1 };
 
-    // Initial Fetch
-    fetch(MASTER_URL)
-        .then(r => r.json())
-        .then(d => { 
-            MASTER = d; 
-            console.log("Master Pricing Data Loaded"); 
-        })
-        .catch(e => console.error("Could not sync with Google Sheets"));
+    // Load Prices from Sheet
+    fetch(MASTER_URL).then(r => r.json()).then(d => { MASTER = d; console.log("Database Ready"); });
 
-    function calculateCost(q, u, b, p) {
-        const qty = parseFloat(q) || 0;
-        const base = parseFloat(b) || 1;
-        const price = parseFloat(p) || 0;
-        const mult = units[u.toLowerCase().trim()] || 1;
-        return (qty * mult / base) * price;
+    function parseFraction(val) {
+        const fracs = { '½': 0.5, '¼': 0.25, '¾': 0.75 };
+        if (fracs[val]) return fracs[val];
+        if (val.includes('/')) {
+            const [num, den] = val.split('/');
+            return parseFloat(num) / parseFloat(den);
+        }
+        return parseFloat(val);
     }
 
     function extractIngredients() {
-        const input = document.getElementById('recipeInput').value;
-        const lines = input.split('\n');
+        const lines = document.getElementById('recipeInput').value.split('\n');
         ingredients = [];
 
         lines.forEach((line, index) => {
             if (!line.trim()) return;
+            // Best extraction logic: handles decimals, fractions, and units
             const match = line.match(/^([\d.\/½¼¾]+)\s*([a-zA-Z]*)\s*(.+)/);
             
             if (match) {
+                const qty = parseFraction(match[1]);
+                const unit = match[2].toLowerCase() || 'g';
                 const name = match[3].trim();
-                const key = name.toLowerCase();
-                const sheetData = MASTER[key];
+                const sheetData = MASTER[name.toLowerCase()];
 
                 ingredients.push({
                     id: Date.now() + index,
                     name: name,
-                    qty: match[1],
-                    unit: match[2] || 'g',
+                    qty: qty,
+                    unit: unit,
                     bQty: sheetData ? sheetData.baseQty : 1000,
                     price: sheetData ? sheetData.price : 0,
                     locked: !!sheetData
@@ -130,94 +125,72 @@
         render();
     }
 
+    function calculateTotal() {
+        const batch = parseFloat(document.getElementById('itemsPerBatch').value) || 1;
+        let total = 0;
+        
+        ingredients.forEach(i => {
+            const mult = units[i.unit.toLowerCase()] || 1;
+            const cost = (parseFloat(i.qty) * mult / parseFloat(i.bQty)) * parseFloat(i.price);
+            total += cost;
+        });
+
+        document.getElementById('totalCost').innerText = `₹${total.toFixed(2)}`;
+        document.getElementById('yieldDisplay').innerText = `${batch} Item(s)`;
+        document.getElementById('perItem').innerText = `₹${(total / batch).toFixed(2)}`;
+    }
+
     function render() {
         const body = document.getElementById('tableBody');
         body.innerHTML = ingredients.map(i => {
-            const cost = calculateCost(i.qty, i.unit, i.bQty, i.price);
+            const mult = units[i.unit.toLowerCase()] || 1;
+            const cost = (parseFloat(i.qty) * mult / parseFloat(i.bQty)) * parseFloat(i.price);
             return `<tr>
                 <td><b>${i.name}</b></td>
                 <td><input value="${i.qty}" onchange="upd(${i.id},'qty',this.value)"></td>
                 <td><input value="${i.unit}" onchange="upd(${i.id},'unit',this.value)"></td>
                 <td><input value="${i.bQty}" onchange="upd(${i.id},'bQty',this.value)"></td>
-                <td><input type="number" value="${i.price}" ${i.locked ? 'disabled style="background:#eee"' : ''} onchange="upd(${i.id},'price',this.value)"></td>
+                <td><input type="number" value="${i.price}" ${i.locked ? 'style="background:#eee" readonly' : ''} onchange="upd(${i.id},'price',this.value)"></td>
                 <td>₹${cost.toFixed(2)}</td>
-                <td><button onclick="del(${i.id})" style="cursor:pointer; border:none; background:none; color:red; font-weight:bold;">✕</button></td>
+                <td><button onclick="del(${i.id})" style="border:none;background:none;cursor:pointer;color:red">✕</button></td>
             </tr>`;
         }).join('');
         calculateTotal();
     }
 
-    function upd(id, field, val) {
-        const item = ingredients.find(x => x.id === id);
-        if (item) item[field] = val;
-        render();
-    }
-
-    function del(id) {
-        ingredients = ingredients.filter(x => x.id !== id);
-        render();
-    }
-
+    function upd(id, f, v) { const item = ingredients.find(x => x.id === id); if(item) item[f]=v; render(); }
+    function del(id) { ingredients = ingredients.filter(x => x.id !== id); render(); }
+    
     function addManual() {
-        const n = document.getElementById('newIng').value;
-        if (!n) return;
-        ingredients.push({
-            id: Date.now(),
-            name: n,
-            qty: document.getElementById('newQty').value || 1,
-            unit: 'g',
-            bQty: 1000,
-            price: document.getElementById('newPrice').value || 0,
-            locked: false
-        });
+        ingredients.push({ id: Date.now(), name: document.getElementById('newIng').value, qty: document.getElementById('newQty').value || 1, unit: 'unit', bQty: 1, price: document.getElementById('newPrice').value || 0 });
         render();
-        document.getElementById('newIng').value = '';
-        document.getElementById('newQty').value = '';
-        document.getElementById('newPrice').value = '';
     }
 
-    function calculateTotal() {
-        const batch = parseFloat(document.getElementById('itemsPerBatch').value) || 1;
-        const total = ingredients.reduce((sum, i) => sum + calculateCost(i.qty, i.unit, i.bQty, i.price), 0);
-        document.getElementById('totalCost').innerText = `₹${total.toFixed(2)}`;
-        document.getElementById('perItem').innerText = `₹${(total / batch).toFixed(2)}`;
-    }
+    async function saveToSheet() {
+        const btn = document.getElementById('saveBtn');
+        const name = document.getElementById('recipeName').value;
+        if (!name) return alert("Please enter Recipe Name");
 
-    function saveToSheet() {
-        const saveBtn = document.getElementById('saveBtn');
-        const recipeName = document.getElementById('recipeName').value;
-        const totalCost = document.getElementById('totalCost').innerText;
-        
-        if (!recipeName) return alert("Please enter a Recipe Name!");
-        if (ingredients.length === 0) return alert("Add ingredients first!");
+        btn.innerText = "Processing...";
+        btn.disabled = true;
 
-        saveBtn.innerText = "Saving to Cloud...";
-        saveBtn.disabled = true;
-
-        const summary = ingredients.map(i => `${i.name} (${i.qty}${i.unit})`).join(", ");
-
+        const summary = ingredients.map(i => `${i.name}: ${i.qty}${i.unit}`).join(" | ");
         const payload = {
-            recipeName: recipeName,
-            totalCost: totalCost,
+            recipeName: name,
+            batchSize: document.getElementById('itemsPerBatch').value,
+            totalCost: document.getElementById('totalCost').innerText,
+            costPerItem: document.getElementById('perItem').innerText,
             ingredientsSummary: summary
         };
 
-        // Sending data via POST to Google Apps Script
-        fetch(MASTER_URL, {
-            method: "POST",
-            mode: "no-cors", // Required for Apps Script POST
-            cache: "no-cache",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify(payload)
-        })
+        fetch(MASTER_URL, { method: "POST", body: JSON.stringify(payload) })
         .then(() => {
-            alert("Success! Recipe logged in Recipes_Log tab.");
-            saveBtn.innerText = "Save to Google Sheet";
-            saveBtn.disabled = false;
-        })
-        .catch(err => {
-            alert("Error saving data. Check if Script is deployed as 'Anyone'.");
-            saveBtn.disabled = false;
+            alert("Saved successfully!");
+            btn.innerText = "Save Final Costing to Sheet";
+            btn.disabled = false;
+        }).catch(() => {
+            alert("Error saving. Check Script Permissions.");
+            btn.disabled = false;
         });
     }
 </script>
