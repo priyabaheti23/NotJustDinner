@@ -1,248 +1,273 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Not Just Dinner | Make Your Own Pizza</title>
-  <link rel="stylesheet" href="style.css">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Recipe Cost Calculator</title>
+
+    <link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=Outfit:wght@300;400;600;700&display=swap" rel="stylesheet">
+
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        :root {
+            --bg: #FAF8F5; --surface: #FFFFFF; --surface-light: #F5F1EB;
+            --accent: #8B7355; --accent-dark: #6B5644; --text: #3E3028;
+            --text-dim: #9B8B7E; --success: #7A6F5D; --error: #B8856A; --border: #E8DFD4;
+        }
+        body { font-family: 'Outfit', sans-serif; background: var(--bg); color: var(--text); min-height: 100vh; padding: 2rem; }
+        .container { max-width: 1100px; margin: 0 auto; }
+        header { text-align: center; margin-bottom: 2.5rem; }
+        h1 { font-size: 2.5rem; font-weight: 700; }
+
+        .calculator-card {
+            background: var(--surface);
+            border-radius: 16px;
+            padding: 2.5rem;
+            box-shadow: 0 1px 3px rgba(0,0,0,.08);
+            border: 1px solid var(--border);
+        }
+
+        .section-label {
+            font-size: .85rem;
+            color: var(--text-dim);
+            text-transform: uppercase;
+            letter-spacing: .1em;
+            margin-bottom: .75rem;
+            font-weight: 600;
+        }
+
+        .recipe-meta {
+            display: grid;
+            grid-template-columns: 2fr 1fr;
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .recipe-meta input, textarea {
+            width: 100%;
+            padding: .8rem;
+            background: var(--surface-light);
+            border: 1px solid var(--border);
+            border-radius: 6px;
+            font-family: inherit;
+        }
+
+        textarea { min-height: 120px; font-family: 'Space Mono', monospace; }
+
+        .btn {
+            background: var(--accent);
+            color: #fff;
+            border: none;
+            padding: .9rem 2rem;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            width: 100%;
+            margin-top: .75rem;
+        }
+
+        .btn:hover { background: var(--accent-dark); }
+
+        .btn-secondary {
+            background: transparent;
+            border: 1px solid var(--border);
+            color: var(--text);
+            margin-top: .5rem;
+            font-size: .7rem;
+        }
+
+        .btn-success { background: #5d7a61; margin-top: 2rem; }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            font-family: 'Space Mono', monospace;
+            font-size: .9rem;
+        }
+
+        th, td {
+            padding: .75rem;
+            border-bottom: 1px solid var(--border);
+        }
+
+        th {
+            background: var(--surface-light);
+            font-size: .75rem;
+            color: var(--accent);
+            text-align: left;
+        }
+
+        td input {
+            width: 100%;
+            padding: .4rem;
+            border: 1px solid var(--border);
+            border-radius: 4px;
+        }
+
+        .calculator-display {
+            background: var(--surface-light);
+            border-radius: 8px;
+            padding: 1.5rem;
+            border: 1px solid var(--border);
+            margin-top: 2rem;
+        }
+
+        .display-row {
+            display: flex;
+            justify-content: space-between;
+            padding: .5rem 0;
+        }
+
+        .total-row {
+            border-top: 2px solid var(--accent);
+            font-size: 1.5rem;
+            font-weight: 700;
+            padding-top: 1rem;
+        }
+
+        .add-row {
+            display: flex;
+            gap: .5rem;
+            margin-top: 1rem;
+        }
+
+        .add-row input {
+            padding: .6rem;
+            border: 1px solid var(--border);
+            border-radius: 6px;
+        }
+
+        .add-btn {
+            background: var(--success);
+            color: white;
+            border: none;
+            padding: 0 1.5rem;
+            border-radius: 6px;
+            cursor: pointer;
+        }
+    </style>
 </head>
 
 <body>
-
-<header class="site-header">
-  <div class="header-inner">
-    <div class="logo-wrap">
-      <a href="index.html">
-        <img src="assets/branding/logo.png" alt="Not Just Dinner" class="logo">
-      </a>
-    </div>
-
-    <a href="index.html" class="header-cta">
-      Back to Home
-    </a>
-  </div>
+<div class="container">
+<header>
+    <h1>Recipe Cost Calculator</h1>
+    <p style="color:var(--text-dim)">Auto pricing from Google Sheets</p>
 </header>
 
-<!-- EVENT INTRO -->
-<section class="about">
-  <h2>Make Your Own Pizza Party 🍕</h2>
+<div class="calculator-card">
 
-  <p>
-    We’re hosting a <strong>Make Your Own Pizza Party</strong> on
-    <strong>31st December</strong> — a hands-on, festive experience to
-    close the year on a delicious note.
-  </p>
-
-  <p>
-    You’ll make your own pizza from scratch using fresh dough and
-    curated toppings, enjoy a fun New Year’s Eve vibe,
-    and end the year around good food and easy conversations.
-  </p>
-
-  <p>
-    The event is hosted at our apartment, where we regularly host
-    curated, small-group experiences.
-  </p>
-
-  <p>
-    Drinks will be available to purchase at the venue during the event.
-  </p>
-
-  <p style="font-style:italic;">
-    Seats are limited and filling up fast — it’s an NYE special ✨
-  </p>
-</section>
-
-<!-- EVENT DETAILS -->
-<section class="about">
-  <h2>Event Details</h2>
-
-  <p>
-    <strong>Date:</strong> 31st December<br>
-    <strong>Time:</strong> 7:30 PM onwards<br>
-    <strong>Location:</strong> Koramangala
-    <em>(exact location will be shared after payment)</em>
-  </p>
-
-  <p>
-    This is a small-group, hosted experience.
-  </p>
-</section>
-
-<!-- PRICING -->
-<section class="about">
-  <h2>Pricing</h2>
-
-  <p style="font-size:24px;font-weight:500;">
-    ₹999 per person
-  </p>
-
-  <p>
-    Includes all ingredients, step-by-step guidance,
-    pizza-making from scratch, oven time,
-    and one-time hosting.
-  </p>
-
-  <p>
-    Drinks can be purchased separately at the venue.
-  </p>
-</section>
-
-<!-- PAYMENT & CONFIRMATION -->
-<section class="waitlist">
-  <h2>Payment & Confirmation</h2>
-
-  <p>
-    Please make the payment using the QR code below.
-  </p>
-
-  <p>
-    <strong>
-      Once you’ve completed the payment, please fill the form below
-      to confirm your spot.
-    </strong>
-  </p>
-
-  <div style="margin:32px 0;">
-    <img src="assets/branding/payment-qr.jpeg" alt="Payment QR" class="qr">
-  </div>
-
-  <form
-    id="pizzaForm"
-    action="https://script.google.com/macros/library/d/1Y7ta8iVrwl6fsZxDzjRMD9kB49DVsc4Jhk2G7OtEkaHB0huBdb0rpu_9/8"
-    method="POST"
-    target="hidden_iframe"
-    style="max-width:620px;margin:0 auto;text-align:left;"
-  >
-
-    <label>Full Name</label>
-    <input type="text" id="name" name="name" required>
-    <small class="error"></small>
-
-    <label>WhatsApp Number</label>
-    <input type="tel" id="whatsapp" name="whatsapp" required>
-    <small class="error"></small>
-
-    <label>Number of People Joining</label>
-    <input type="number" name="guests" min="1" max="6" required>
-
-    <label>Social Profile You’d Like to Share</label>
-    <select name="social_platform" required>
-      <option value="">Select one</option>
-      <option>Instagram</option>
-      <option>LinkedIn</option>
-      <option>X (Twitter)</option>
-    </select>
-
-    <label>Username / Profile Handle</label>
-    <input type="text" id="social_username" name="social_username" required>
-    <small class="error"></small>
-
-    <button type="submit" class="btn" id="submitBtn">
-      I’ve Paid – Confirm My Spot
-    </button>
-  </form>
-
-  <iframe name="hidden_iframe" style="display:none;"></iframe>
-</section>
-
-<!-- FOOTER -->
-<footer>
-  <div class="footer-contact">
-    <h3>Contact Us</h3>
-
-    <div class="footer-links">
-      <a href="https://instagram.com/notjust.dinner" target="_blank">Instagram</a>
-      <a href="https://x.com/notjustdinner" target="_blank">Twitter</a>
-    </div>
-  </div>
-
-  <p class="footer-copy">
-    © 2024 Not Just Dinner · Koramangala, Bengaluru
-  </p>
-</footer>
-
-<!-- SUCCESS MODAL -->
-<div id="successModal" style="
-  display:none;
-  position:fixed;
-  inset:0;
-  background:rgba(0,0,0,0.55);
-  align-items:center;
-  justify-content:center;
-  z-index:2000;
-">
-  <div style="
-    background:#fff;
-    padding:32px;
-    max-width:420px;
-    text-align:center;
-    border-radius:12px;
-  ">
-    <h3>You’re In 🎉</h3>
-    <p style="margin-top:12px;">
-      We’ve received your details and will share the
-      exact location on WhatsApp soon.
-    </p>
-    <button onclick="closeModal()" class="btn" style="margin-top:20px;">
-      Okay
-    </button>
-  </div>
+<div class="section-label">Recipe Identity</div>
+<div class="recipe-meta">
+    <input id="recipeName" placeholder="Recipe name">
+    <input id="itemsPerBatch" type="number" value="1" min="1" oninput="calculateTotal()">
 </div>
 
-<!-- LIVE VALIDATION + SUBMIT HANDLING -->
+<div class="section-label">Paste Ingredients</div>
+<textarea id="recipeInput" placeholder="200 g sugar"></textarea>
+<button class="btn" onclick="extractIngredients()">Extract & Analyze</button>
+
+<table style="margin-top:2rem">
+<thead>
+<tr>
+<th>Ingredient</th><th>Qty</th><th>Unit</th><th>Base Qty</th><th>Price ₹</th><th>Cost</th><th></th>
+</tr>
+</thead>
+<tbody id="tableBody"></tbody>
+</table>
+
+<div class="add-row">
+    <input id="newIng" placeholder="Ingredient">
+    <input id="newQty" placeholder="Qty">
+    <input id="newPrice" placeholder="Price">
+    <button class="add-btn" onclick="addManual()">+</button>
+</div>
+
+<div class="calculator-display">
+    <div class="display-row"><span>Total Batch Cost</span><span id="totalCost">₹0</span></div>
+    <div class="display-row total-row"><span>Cost per Item</span><span id="perItem">₹0</span></div>
+</div>
+
+<button class="btn btn-success" onclick="exportToCSV()">Export to Google Sheets</button>
+<button class="btn btn-secondary" onclick="location.reload()">Reset</button>
+
+</div>
+</div>
+
 <script>
-  function showError(input, message) {
-    input.classList.add("invalid");
-    input.nextElementSibling.innerText = message;
-    input.nextElementSibling.style.display = "block";
-  }
+let ingredients = [];
+const units = { g:1, kg:1000, ml:1, l:1000, tsp:5, tbsp:15, cup:240, unit:1 };
 
-  function clearError(input) {
-    input.classList.remove("invalid");
-    input.nextElementSibling.innerText = "";
-    input.nextElementSibling.style.display = "none";
-  }
+const MASTER_URL = "PASTE_YOUR_APPS_SCRIPT_URL_HERE";
+let MASTER = {};
 
-  document.getElementById("name").addEventListener("blur", function () {
-    /^[A-Za-z ]{3,}$/.test(this.value)
-      ? clearError(this)
-      : showError(this, "Please enter your full name");
-  });
+fetch(MASTER_URL).then(r=>r.json()).then(d=>MASTER=d);
 
-  document.getElementById("whatsapp").addEventListener("blur", function () {
-    /^[0-9]{10}$/.test(this.value)
-      ? clearError(this)
-      : showError(this, "Enter a valid 10-digit WhatsApp number");
-  });
+function calculateCost(q,u,b,p){
+    return ((q||0)*(units[u]||1)/(b||1))*(p||0);
+}
 
-  document.getElementById("social_username").addEventListener("blur", function () {
-    !this.value.includes(" ")
-      ? clearError(this)
-      : showError(this, "Username cannot contain spaces");
-  });
+function extractIngredients(){
+    ingredients=[];
+    recipeInput.value.split('\n').forEach((l,i)=>{
+        const m=l.match(/^([\d.\/½¼¾]+)\s*([a-zA-Z]*)\s+(.+)/);
+        if(!m) return;
+        const key=m[3].toLowerCase();
+        const master=MASTER[key];
+        ingredients.push({
+            id:Date.now()+i,
+            name:m[3],
+            qty:m[1],
+            unit:m[2]||'unit',
+            bQty: master?master.baseQty:1,
+            price: master?master.price:0,
+            locked: !!master
+        });
+    });
+    render();
+}
 
-  const form = document.getElementById("pizzaForm");
-  const modal = document.getElementById("successModal");
-  const submitBtn = document.getElementById("submitBtn");
+function render(){
+    tableBody.innerHTML=ingredients.map(i=>{
+        const cost=calculateCost(i.qty,i.unit,i.bQty,i.price);
+        return `<tr>
+        <td><b>${i.name}</b></td>
+        <td><input value="${i.qty}" onchange="upd(${i.id},'qty',this.value)"></td>
+        <td><input value="${i.unit}" onchange="upd(${i.id},'unit',this.value)"></td>
+        <td><input value="${i.bQty}" onchange="upd(${i.id},'bQty',this.value)"></td>
+        <td><input type="number" value="${i.price}" ${i.locked?'disabled style="background:#eee"':''}
+            onchange="upd(${i.id},'price',this.value)"></td>
+        <td>₹${cost.toFixed(2)}</td>
+        <td><button onclick="del(${i.id})">×</button></td>
+        </tr>`;
+    }).join('');
+    calculateTotal();
+}
 
-  form.addEventListener("submit", function () {
-    submitBtn.disabled = true;
-    submitBtn.innerText = "Submitting...";
+function upd(id,f,v){ingredients.find(x=>x.id===id)[f]=v; render();}
+function del(id){ingredients=ingredients.filter(x=>x.id!==id); render();}
 
-    setTimeout(() => {
-      modal.style.display = "flex";
-      form.reset();
-      submitBtn.disabled = false;
-      submitBtn.innerText = "I’ve Paid – Confirm My Spot";
-    }, 900);
-  });
+function addManual(){
+    ingredients.push({id:Date.now(),name:newIng.value,qty:newQty.value||1,unit:'unit',bQty:1,price:newPrice.value||0});
+    render();
+}
 
-  function closeModal() {
-    modal.style.display = "none";
-  }
+function calculateTotal(){
+    const t=ingredients.reduce((s,i)=>s+calculateCost(i.qty,i.unit,i.bQty,i.price),0);
+    totalCost.innerText=`₹${t.toFixed(2)}`;
+    perItem.innerText=`₹${(t/(itemsPerBatch.value||1)).toFixed(2)}`;
+}
+
+function exportToCSV(){
+    let csv="Ingredient,Qty,Unit,Cost\n";
+    ingredients.forEach(i=>{
+        csv+=`${i.name},${i.qty},${i.unit},${calculateCost(i.qty,i.unit,i.bQty,i.price)}\n`;
+    });
+    const a=document.createElement('a');
+    a.href=URL.createObjectURL(new Blob([csv],{type:'text/csv'}));
+    a.download='recipe_costing.csv';
+    a.click();
+}
 </script>
-
 </body>
 </html>
-
