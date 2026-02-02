@@ -1,219 +1,1143 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Professional Recipe Costing</title>
-    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;700&family=Space+Mono&display=swap" rel="stylesheet">
-    <style>
-        :root {
-            --bg: #F8F9FA; --card: #FFFFFF; --accent: #2D3436; 
-            --text: #2D3436; --dim: #636E72; --border: #DFE6E9;
-            --success: #00B894; --error: #D63031;
-        }
-        * { box-sizing: border-box; margin: 0; padding: 0; }
-        body { font-family: 'Outfit', sans-serif; background: var(--bg); color: var(--text); padding: 40px 20px; }
-        .container { max-width: 900px; margin: 0 auto; }
-        
-        header { margin-bottom: 30px; text-align: center; }
-        .card { background: var(--card); padding: 30px; border-radius: 12px; border: 1px solid var(--border); box-shadow: 0 4px 6px rgba(0,0,0,0.05); }
-        
-        .grid { display: grid; grid-template-columns: 2fr 1fr; gap: 15px; margin-bottom: 20px; }
-        label { display: block; font-size: 0.8rem; font-weight: 600; color: var(--dim); margin-bottom: 5px; text-transform: uppercase; }
-        
-        input, textarea { width: 100%; padding: 12px; border: 1px solid var(--border); border-radius: 8px; font-family: inherit; font-size: 1rem; }
-        textarea { min-height: 120px; font-family: 'Space Mono', monospace; font-size: 0.9rem; }
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Recipe Costing Calculator</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      font-family: 'Inter', system-ui, sans-serif;
+      background: linear-gradient(135deg, #f8f6f4 0%, #ede8e3 100%);
+      min-height: 100vh;
+      color: #4a3f35;
+      padding: 20px;
+    }
+    .container {
+      max-width: 1000px;
+      margin: 0 auto;
+    }
 
-        .btn { background: var(--accent); color: white; border: none; padding: 14px 24px; border-radius: 8px; cursor: pointer; font-weight: 600; width: 100%; transition: 0.2s; }
-        .btn:hover { opacity: 0.9; transform: translateY(-1px); }
-        .btn-save { background: var(--success); margin-top: 20px; }
+    /* Header */
+    header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 32px;
+      flex-wrap: wrap;
+      gap: 12px;
+    }
+    .header-left {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+    }
+    .logo {
+      width: 48px;
+      height: 48px;
+      background: linear-gradient(135deg, #8b6f47 0%, #6b563d 100%);
+      border-radius: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #fff;
+      font-size: 24px;
+      font-weight: 700;
+    }
+    h1 {
+      font-size: 26px;
+      font-weight: 700;
+      color: #3d2f24;
+      margin-bottom: 2px;
+    }
+    .subtitle {
+      font-size: 13px;
+      color: #8b7665;
+    }
+    .badge {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      padding: 6px 14px;
+      border-radius: 20px;
+      font-size: 12px;
+      font-weight: 600;
+    }
+    .badge.live {
+      background: rgba(72, 187, 120, 0.15);
+      color: #2f855a;
+      border: 1px solid rgba(72, 187, 120, 0.3);
+    }
+    .badge.demo {
+      background: rgba(237, 137, 54, 0.15);
+      color: #c05621;
+      border: 1px solid rgba(237, 137, 54, 0.3);
+    }
+    .badge-dot {
+      width: 7px;
+      height: 7px;
+      border-radius: 50%;
+      background: currentColor;
+    }
 
-        table { width: 100%; border-collapse: collapse; margin-top: 25px; font-size: 0.9rem; }
-        th { text-align: left; padding: 12px; border-bottom: 2px solid var(--border); color: var(--dim); }
-        td { padding: 12px; border-bottom: 1px solid var(--border); }
-        
-        .summary-box { background: var(--accent); color: white; padding: 25px; border-radius: 8px; margin-top: 25px; display: flex; justify-content: space-between; align-items: center; }
-        .summary-val { font-size: 2rem; font-weight: 700; }
-        .status { font-size: 0.8rem; margin-top: 10px; display: block; }
-    </style>
+    /* Card */
+    .card {
+      background: #fff;
+      border-radius: 16px;
+      padding: 28px;
+      margin-bottom: 24px;
+      box-shadow: 0 2px 8px rgba(107, 86, 61, 0.08);
+    }
+
+    /* Form */
+    .form-row {
+      display: flex;
+      gap: 16px;
+      margin-bottom: 20px;
+      flex-wrap: wrap;
+    }
+    .form-group {
+      flex: 1 1 220px;
+    }
+    .form-group-sm {
+      flex: 0 0 160px;
+    }
+    label {
+      display: block;
+      font-size: 11px;
+      font-weight: 600;
+      color: #8b7665;
+      text-transform: uppercase;
+      letter-spacing: 0.8px;
+      margin-bottom: 8px;
+    }
+    input[type="text"],
+    input[type="number"],
+    textarea,
+    select {
+      width: 100%;
+      padding: 10px 14px;
+      border: 1px solid #d4c4b5;
+      border-radius: 8px;
+      font-size: 14px;
+      font-family: inherit;
+      color: #4a3f35;
+      background: #fafaf9;
+      outline: none;
+      transition: all 0.2s;
+    }
+    input:focus,
+    textarea:focus,
+    select:focus {
+      border-color: #8b6f47;
+      box-shadow: 0 0 0 3px rgba(139, 111, 71, 0.1);
+    }
+    textarea {
+      min-height: 140px;
+      resize: vertical;
+      font-family: 'Courier New', monospace;
+      line-height: 1.6;
+    }
+    .yield-row {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .yield-input {
+      width: 70px;
+      text-align: center;
+    }
+    .yield-label {
+      font-size: 12px;
+      color: #8b7665;
+    }
+
+    /* Buttons */
+    button {
+      display: inline-flex;
+      align-items: center;
+      gap: 7px;
+      padding: 11px 20px;
+      border: none;
+      border-radius: 8px;
+      font-size: 14px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.2s;
+      font-family: inherit;
+    }
+    button:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+    }
+    .btn-primary {
+      background: linear-gradient(135deg, #8b6f47 0%, #6b563d 100%);
+      color: #fff;
+    }
+    .btn-primary:hover:not(:disabled) {
+      transform: translateY(-1px);
+      box-shadow: 0 4px 12px rgba(139, 111, 71, 0.3);
+    }
+    .btn-secondary {
+      background: transparent;
+      color: #8b6f47;
+      border: 1px solid #d4c4b5;
+    }
+    .btn-secondary:hover {
+      background: rgba(139, 111, 71, 0.05);
+    }
+    .btn-success {
+      background: linear-gradient(135deg, #48bb78 0%, #38a169 100%);
+      color: #fff;
+    }
+    .btn-saved {
+      background: rgba(72, 187, 120, 0.15);
+      color: #2f855a;
+      border: 1px solid rgba(72, 187, 120, 0.3);
+    }
+    .action-row {
+      display: flex;
+      gap: 10px;
+      margin-top: 20px;
+      flex-wrap: wrap;
+    }
+
+    /* Summary Cards */
+    .summary-row {
+      display: flex;
+      gap: 14px;
+      margin-bottom: 24px;
+      flex-wrap: wrap;
+    }
+    .summary-card {
+      flex: 1 1 150px;
+      background: #fff;
+      border: 1px solid #e8dfd5;
+      border-radius: 12px;
+      padding: 20px;
+      min-width: 150px;
+    }
+    .summary-card.highlight {
+      background: linear-gradient(135deg, #faf8f5 0%, #f5f0eb 100%);
+      border-color: #d4c4b5;
+    }
+    .summary-label {
+      font-size: 10px;
+      font-weight: 600;
+      color: #8b7665;
+      text-transform: uppercase;
+      letter-spacing: 0.8px;
+      margin-bottom: 8px;
+    }
+    .summary-value {
+      font-size: 28px;
+      font-weight: 700;
+      color: #3d2f24;
+      letter-spacing: -0.5px;
+    }
+    .summary-value.accent {
+      color: #8b6f47;
+    }
+    .summary-sub {
+      font-size: 11px;
+      color: #a89886;
+      margin-top: 4px;
+    }
+
+    /* Table */
+    .table-wrap {
+      overflow-x: auto;
+      border-radius: 12px;
+      border: 1px solid #e8dfd5;
+      margin-bottom: 8px;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      background: #fff;
+    }
+    th {
+      text-align: left;
+      font-size: 10px;
+      font-weight: 600;
+      color: #8b7665;
+      text-transform: uppercase;
+      letter-spacing: 0.8px;
+      padding: 12px 12px;
+      border-bottom: 1px solid #e8dfd5;
+      white-space: nowrap;
+      background: #fafaf9;
+    }
+    td {
+      padding: 10px 12px;
+      font-size: 13px;
+      vertical-align: middle;
+      border-bottom: 1px solid #f5f0eb;
+    }
+    tr:hover {
+      background: #fafaf9;
+    }
+    .badge-status {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      padding: 4px 10px;
+      border-radius: 20px;
+      font-size: 10px;
+      font-weight: 600;
+    }
+    .badge-ok {
+      background: rgba(72, 187, 120, 0.15);
+      color: #2f855a;
+    }
+    .badge-warn {
+      background: rgba(237, 137, 54, 0.15);
+      color: #c05621;
+    }
+    .inline-input {
+      width: 70px;
+      padding: 5px 8px;
+      text-align: center;
+      font-size: 13px;
+      border: 1px solid #d4c4b5;
+      border-radius: 6px;
+      background: #fafaf9;
+    }
+    .inline-select {
+      width: 65px;
+      padding: 5px 6px;
+      font-size: 12px;
+      border: 1px solid #d4c4b5;
+      border-radius: 6px;
+      background: #fafaf9;
+      cursor: pointer;
+    }
+    .cost-missing {
+      color: #c4b5a5;
+      font-style: italic;
+    }
+    .btn-del {
+      background: transparent;
+      border: none;
+      color: #c4b5a5;
+      padding: 4px;
+      cursor: pointer;
+    }
+    .btn-del:hover {
+      color: #e53e3e;
+    }
+
+    /* Add Row */
+    .add-row-wrap {
+      background: #fafaf9;
+      border: 1px solid #e8dfd5;
+      border-radius: 12px;
+      padding: 18px;
+      margin-top: 8px;
+      margin-bottom: 20px;
+    }
+    .add-row-title {
+      font-size: 11px;
+      font-weight: 600;
+      color: #8b7665;
+      text-transform: uppercase;
+      letter-spacing: 0.8px;
+      margin-bottom: 14px;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .add-row-fields {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+      align-items: flex-end;
+    }
+    .add-field {
+      display: flex;
+      flex-direction: column;
+    }
+    .add-field label {
+      font-size: 9px;
+      margin-bottom: 5px;
+      color: #a89886;
+    }
+
+    /* Modal */
+    .modal-bg {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: rgba(0, 0, 0, 0.5);
+      z-index: 1000;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+    }
+    .modal-bg.open {
+      display: flex;
+    }
+    .modal-box {
+      background: #fff;
+      border-radius: 16px;
+      padding: 32px;
+      max-width: 700px;
+      width: 100%;
+      max-height: 85vh;
+      overflow-y: auto;
+      box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+    }
+    .modal-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 24px;
+    }
+    .modal-header h2 {
+      font-size: 20px;
+      color: #3d2f24;
+    }
+    .modal-section {
+      margin-bottom: 28px;
+    }
+    .modal-section-title {
+      font-size: 15px;
+      font-weight: 600;
+      color: #3d2f24;
+      margin-bottom: 12px;
+    }
+    .modal-text {
+      font-size: 13px;
+      color: #6b5d4f;
+      line-height: 1.6;
+      margin-bottom: 14px;
+    }
+    .code-block {
+      background: #fafaf9;
+      border: 1px solid #e8dfd5;
+      border-radius: 10px;
+      padding: 16px;
+      margin-bottom: 14px;
+    }
+    .code-title {
+      font-size: 11px;
+      font-weight: 600;
+      color: #8b6f47;
+      margin-bottom: 12px;
+      text-transform: uppercase;
+    }
+    pre {
+      margin: 0;
+      color: #4a3f35;
+      font-size: 12px;
+      line-height: 1.6;
+      overflow-x: auto;
+      font-family: 'Courier New', monospace;
+      white-space: pre-wrap;
+    }
+    .setup-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 11px;
+    }
+    .setup-table th {
+      background: #f5f0eb;
+      color: #8b6f47;
+      padding: 6px 10px;
+      font-weight: 600;
+    }
+    .setup-table td {
+      padding: 6px 10px;
+      border-bottom: 1px solid #e8dfd5;
+    }
+    .code-note {
+      font-size: 11px;
+      color: #a89886;
+      margin-top: 12px;
+      line-height: 1.5;
+    }
+
+    /* Spinner */
+    .spinner {
+      display: inline-block;
+      width: 14px;
+      height: 14px;
+      border: 2px solid rgba(255, 255, 255, 0.3);
+      border-top: 2px solid #fff;
+      border-radius: 50%;
+      animation: spin 0.6s linear infinite;
+    }
+    @keyframes spin {
+      to { transform: rotate(360deg); }
+    }
+
+    /* Utilities */
+    .hidden {
+      display: none;
+    }
+    .text-accent {
+      color: #8b6f47;
+      font-weight: 600;
+    }
+  </style>
 </head>
 <body>
-
-<div class="container">
+  <div class="container">
+    <!-- Header -->
     <header>
-        <h1>Recipe Costing</h1>
-        <span id="syncStatus" class="status">Connecting to Master...</span>
+      <div class="header-left">
+        <div class="logo">₹</div>
+        <div>
+          <h1>Recipe Costing</h1>
+          <p class="subtitle">Professional kitchen economics · INR</p>
+        </div>
+      </div>
+      <div style="display: flex; gap: 10px; align-items: center;">
+        <button class="btn-secondary" onclick="openSetupModal()" style="padding: 8px 14px; font-size: 12px;">
+          <span>📄</span> Sheet Setup
+        </button>
+        <div class="badge demo" id="statusBadge">
+          <span class="badge-dot"></span>
+          <span>Demo Mode</span>
+        </div>
+      </div>
     </header>
 
+    <!-- Input Card -->
     <div class="card">
-        <div class="grid">
-            <div>
-                <label>Recipe Name</label>
-                <input type="text" id="recipeName" placeholder="e.g., French Halwai">
-            </div>
-            <div>
-                <label>Batch Yield (Items)</label>
-                <input type="number" id="batchYield" value="1" min="1" oninput="calculate()">
-            </div>
+      <div class="form-row">
+        <div class="form-group">
+          <label>Recipe Name</label>
+          <input type="text" id="recipeName" placeholder="e.g. Classic Chocolate Cake">
         </div>
-
-        <label>Paste Ingredients (Qty Unit Name)</label>
-        <textarea id="rawInput" placeholder="200 g Sugar&#10;100 ml Milk"></textarea>
-        <button class="btn" style="margin-top:10px" onclick="analyze()">Analyze Ingredients</button>
-
-        <table id="resultTable">
-            <thead>
-                <tr>
-                    <th>Ingredient</th><th>Qty</th><th>Unit</th><th>Cost</th><th></th>
-                </tr>
-            </thead>
-            <tbody id="tableBody"></tbody>
-        </table>
-
-        <div class="summary-box">
-            <div>
-                <p style="opacity:0.8">Total Batch Cost</p>
-                <div class="summary-val" id="totalDisplay">₹0.00</div>
-            </div>
-            <div style="text-align: right">
-                <p style="opacity:0.8">Cost Per Item</p>
-                <div class="summary-val" id="perItemDisplay" style="color: #00B894">₹0.00</div>
-            </div>
+        <div class="form-group-sm">
+          <label>Batch Yield</label>
+          <div class="yield-row">
+            <input type="number" id="batchYield" class="yield-input" value="1" min="1">
+            <span class="yield-label">units</span>
+          </div>
         </div>
+      </div>
 
-        <button id="saveBtn" class="btn btn-save" onclick="logToSheet()">Save to Google Sheet</button>
+      <label>Ingredient List <span style="text-transform: none; font-weight: 400; color: #a89886;">— paste your recipe below</span></label>
+      <textarea id="rawText" placeholder="Paste your recipe here. The app will parse it.
+
+Examples:
+  250g flour
+  500g chicken breast
+  100g cheese
+  50g butter"></textarea>
+
+      <div class="action-row">
+        <button class="btn-primary" onclick="analyseRecipe()">
+          <span>✨</span> Analyse Recipe
+        </button>
+        <button class="btn-secondary" onclick="resetApp()">Reset</button>
+      </div>
     </div>
-</div>
 
-<script>
-    // PASTE YOUR GOOGLE APPS SCRIPT WEB APP URL HERE
-    const APP_URL = "https://script.google.com/macros/s/AKfycbwuI-57C7vHJ_dCvJAcUsCKCdrSUtkIXhlJfas_AQfBlMnMfdusayP2M9A_KWRNzcOsRg/exec";
+    <!-- Results (hidden initially) -->
+    <div id="resultsSection" class="hidden">
+      <!-- Summary Cards -->
+      <div class="summary-row">
+        <div class="summary-card">
+          <div class="summary-label">Total Batch Cost</div>
+          <div class="summary-value" id="totalCost">₹0.00</div>
+          <div class="summary-sub"><span id="ingredientCount">0</span> ingredients</div>
+        </div>
+        <div class="summary-card highlight">
+          <div class="summary-label">Cost Per Item</div>
+          <div class="summary-value accent" id="costPerItem">₹0.00</div>
+          <div class="summary-sub">÷ <span id="displayYield">1</span> units</div>
+        </div>
+        <div class="summary-card">
+          <div class="summary-label">Match Rate</div>
+          <div class="summary-value" id="matchRate" style="color: #48bb78;">100%</div>
+          <div class="summary-sub"><span id="unmatchedCount">0</span> need pricing</div>
+        </div>
+      </div>
 
-    let masterPrices = [];
-    let activeIngredients = [];
-    const units = { g: 1, kg: 1000, ml: 1, l: 1000, tsp: 5, tbsp: 15, cup: 240, unit: 1 };
-
-    // Initial load of prices
-    window.onload = () => {
-        fetch(`${APP_URL}?action=getPrices`)
-            .then(res => res.json())
-            .then(data => {
-                masterPrices = data;
-                document.getElementById('syncStatus').innerText = "✓ Synced with Master Sheet";
-                document.getElementById('syncStatus').style.color = "var(--success)";
-            })
-            .catch(err => {
-                document.getElementById('syncStatus').innerText = "✕ Sync Failed. Check URL.";
-                document.getElementById('syncStatus').style.color = "var(--error)";
-            });
-    };
-
-    function analyze() {
-        const lines = document.getElementById('rawInput').value.split('\n');
-        activeIngredients = [];
-
-        lines.forEach(line => {
-            if (!line.trim()) return;
-            // Regex to handle "200 g sugar" or "200g sugar"
-            const match = line.match(/^([\d.\/]+)\s*([a-zA-Z]*)\s+(.+)/);
-            
-            if (match) {
-                const qty = evalFraction(match[1]);
-                const unit = match[2].toLowerCase() || 'unit';
-                const name = match[3].trim();
-                
-                // Find matching item in Master List (Case Insensitive)
-                const priceInfo = masterPrices.find(p => 
-                    p.ingredient.toString().toLowerCase().trim() === name.toLowerCase()
-                );
-
-                activeIngredients.push({
-                    name,
-                    qty,
-                    unit,
-                    baseQty: priceInfo ? priceInfo.base_qty : 1000,
-                    price: priceInfo ? priceInfo.price : 0
-                });
-            }
-        });
-        render();
-    }
-
-    function evalFraction(str) {
-        if (!str.includes('/')) return parseFloat(str);
-        const parts = str.split('/');
-        return parseFloat(parts[0]) / parseFloat(parts[1]);
-    }
-
-    function calculate() {
-        let total = 0;
-        activeIngredients.forEach(ing => {
-            const mult = units[ing.unit] || 1;
-            ing.lineCost = (ing.qty * mult / ing.baseQty) * ing.price;
-            total += ing.lineCost;
-        });
-
-        const batch = parseFloat(document.getElementById('batchYield').value) || 1;
-        document.getElementById('totalDisplay').innerText = `₹${total.toFixed(2)}`;
-        document.getElementById('perItemDisplay').innerText = `₹${(total / batch).toFixed(2)}`;
-        return total;
-    }
-
-    function render() {
-        const body = document.getElementById('tableBody');
-        body.innerHTML = activeIngredients.map((ing, i) => `
+      <!-- Table -->
+      <div class="table-wrap">
+        <table>
+          <thead>
             <tr>
-                <td><strong>${ing.name}</strong></td>
-                <td>${ing.qty}</td>
-                <td>${ing.unit}</td>
-                <td>₹${((ing.qty * (units[ing.unit]||1) / ing.baseQty) * ing.price).toFixed(2)}</td>
-                <td><button onclick="remove(${i})" style="background:none; border:none; color:red; cursor:pointer">✕</button></td>
+              <th>Status</th>
+              <th style="min-width: 140px;">Ingredient</th>
+              <th>Qty</th>
+              <th>Unit</th>
+              <th>Cost ₹</th>
+              <th>For</th>
+              <th>Cost Unit</th>
+              <th style="text-align: right;">Line Cost</th>
+              <th></th>
             </tr>
-        `).join('');
-        calculate();
+          </thead>
+          <tbody id="tableBody">
+          </tbody>
+        </table>
+      </div>
+
+      <!-- Add Ingredient -->
+      <div class="add-row-wrap">
+        <div class="add-row-title">➕ Add Ingredient Manually</div>
+        <div class="add-row-fields">
+          <div class="add-field" style="flex: 1 1 140px;">
+            <label>Name</label>
+            <input type="text" id="addName" placeholder="e.g. Saffron">
+          </div>
+          <div class="add-field" style="flex: 0 0 70px;">
+            <label>Qty</label>
+            <input type="number" id="addQty" placeholder="50" style="text-align: center;">
+          </div>
+          <div class="add-field" style="flex: 0 0 70px;">
+            <label>Unit</label>
+            <select id="addUnit" class="inline-select">
+              <option value="g">g</option>
+              <option value="kg">kg</option>
+            </select>
+          </div>
+          <div class="add-field" style="flex: 0 0 85px;">
+            <label>Cost ₹</label>
+            <input type="number" id="addCostPrice" placeholder="5000" style="text-align: center;">
+          </div>
+          <div class="add-field" style="flex: 0 0 60px;">
+            <label>For</label>
+            <input type="number" id="addCostQty" placeholder="100" style="text-align: center;">
+          </div>
+          <div class="add-field" style="flex: 0 0 70px;">
+            <label>Unit</label>
+            <select id="addCostUnit" class="inline-select">
+              <option value="g">g</option>
+              <option value="kg">kg</option>
+            </select>
+          </div>
+          <div class="add-field">
+            <button class="btn-primary" onclick="addManualIngredient()" style="padding: 9px 16px; font-size: 13px;">
+              ➕ Add
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Action Buttons -->
+      <div class="action-row">
+        <button class="btn-success" id="saveBtn" onclick="saveToCloud()">
+          <span>☁️</span> Save to Cloud
+        </button>
+        <button class="btn-secondary" onclick="exportCSV()">
+          <span>📥</span> Export CSV
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Setup Modal -->
+  <div class="modal-bg" id="setupModal">
+    <div class="modal-box">
+      <div class="modal-header">
+        <h2>Google Sheet Setup</h2>
+        <button class="btn-del" onclick="closeSetupModal()" style="font-size: 24px;">×</button>
+      </div>
+
+      <div class="modal-section">
+        <div class="modal-section-title">📄 Sheet Structure</div>
+        <p class="modal-text">Create a Google Sheet with <span class="text-accent">two tabs</span>:</p>
+
+        <div class="code-block">
+          <div class="code-title">Tab 1 — "Master"</div>
+          <table class="setup-table">
+            <thead>
+              <tr><th>A</th><th>B</th><th>C</th><th>D</th></tr>
+            </thead>
+            <tbody>
+              <tr><td><strong>ingredient</strong></td><td><strong>costPrice</strong></td><td><strong>costQty</strong></td><td><strong>costUnit</strong></td></tr>
+              <tr><td>Flour</td><td>120</td><td>1</td><td>kg</td></tr>
+              <tr><td>Chicken Breast</td><td>360</td><td>500</td><td>g</td></tr>
+              <tr><td>Cheese</td><td>450</td><td>500</td><td>g</td></tr>
+            </tbody>
+          </table>
+          <p class="code-note">
+            Row 1 = headers (exact names above). Each row = one ingredient.<br>
+            <span class="text-accent">costPrice</span> = what you paid in ₹ &nbsp;|&nbsp;
+            <span class="text-accent">costQty</span> = quantity bought &nbsp;|&nbsp;
+            <span class="text-accent">costUnit</span> = g or kg
+          </p>
+        </div>
+
+        <div class="code-block">
+          <div class="code-title">Tab 2 — "Log"</div>
+          <table class="setup-table">
+            <thead>
+              <tr><th>A</th><th>B</th><th>C</th><th>D</th><th>E</th><th>F</th><th>G</th></tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><strong>recipeName</strong></td><td><strong>date</strong></td><td><strong>batchYield</strong></td>
+                <td><strong>totalCost</strong></td><td><strong>costPerItem</strong></td><td><strong>ingredientCount</strong></td><td><strong>summary</strong></td>
+              </tr>
+            </tbody>
+          </table>
+          <p class="code-note">Row 1 = headers. The app auto-appends rows when you "Save to Cloud".</p>
+        </div>
+      </div>
+
+      <div class="modal-section">
+        <div class="modal-section-title">⚙️ Apps Script Code</div>
+        <p class="modal-text">Go to <span class="text-accent">Extensions → Apps Script</span> in your Sheet. Replace all code with:</p>
+        <div class="code-block">
+          <pre>function doGet(e) {
+  var action = e.parameter.action;
+  var sheet = SpreadsheetApp.getActiveSpreadsheet();
+
+  if (action === "getPrices") {
+    var master = sheet.getSheetByName("Master");
+    var data = master.getDataRange().getValues();
+    var headers = data[0];
+    var rows = data.slice(1);
+    var result = rows.map(function(row) {
+      var obj = {};
+      headers.forEach(function(h, i) { obj[h] = row[i]; });
+      return obj;
+    });
+    return ContentService
+      .createTextOutput(JSON.stringify(result))
+      .setMimeType(ContentService.MIME_TYPE.JSON);
+  }
+
+  if (action === "logRecipe") {
+    var log = sheet.getSheetByName("Log");
+    log.appendRow([
+      e.parameter.recipeName || "",
+      e.parameter.date || "",
+      e.parameter.batchYield || "",
+      e.parameter.totalCost || "",
+      e.parameter.costPerItem || "",
+      e.parameter.ingredientCount || "",
+      e.parameter.summary || ""
+    ]);
+    return ContentService
+      .createTextOutput(JSON.stringify({ success: true }))
+      .setMimeType(ContentService.MIME_TYPE.JSON);
+  }
+
+  return ContentService
+    .createTextOutput(JSON.stringify({ error: "Unknown" }))
+    .setMimeType(ContentService.MIME_TYPE.JSON);
+}</pre>
+        </div>
+        <p class="modal-text">
+          Then <span class="text-accent">Deploy → New deployment → Web app</span>. 
+          Set <em>"Execute as: Me"</em> and <em>"Who has access: Anyone"</em>. 
+          Copy the URL and paste it in the <code style="background: #fafaf9; padding: 2px 6px; border-radius: 4px; border: 1px solid #e8dfd5;">APPS_SCRIPT_URL</code> variable at the top of this HTML file.
+        </p>
+      </div>
+
+      <button class="btn-primary" onclick="closeSetupModal()" style="margin-top: 8px;">Got it</button>
+    </div>
+  </div>
+
+  <script>
+    // ═══════════════════════════════════════════════════════════════
+    // CONFIG - Paste your Google Apps Script URL here
+    // ═══════════════════════════════════════════════════════════════
+    const APPS_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbxpzZ54GHl2gjSOf1tsU9Vsj7a0zWiYXCNcdKB5laCcTIIYuI45kdS6nfjlR59I6HrwZw/exec";
+
+    // ═══════════════════════════════════════════════════════════════
+    // STATE
+    // ═══════════════════════════════════════════════════════════════
+    let rows = [];
+    let database = [];
+    let isLive = false;
+
+    // ═══════════════════════════════════════════════════════════════
+    // COST ENGINE
+    // ═══════════════════════════════════════════════════════════════
+    function toGrams(qty, unit) {
+      if (unit === "kg") return qty * 1000;
+      return qty;
     }
 
-    function remove(index) {
-        activeIngredients.splice(index, 1);
-        render();
+    function calcLineCost(recipeQty, recipeUnit, costPrice, costQty, costUnit) {
+      const perGram = costPrice / toGrams(costQty, costUnit);
+      const recipeGrams = toGrams(recipeQty, recipeUnit);
+      return recipeGrams * perGram;
     }
 
-    function logToSheet() {
-        const btn = document.getElementById('saveBtn');
-        const name = document.getElementById('recipeName').value;
-        const total = calculate();
-        const batch = document.getElementById('batchYield').value;
+    function fmtINR(n) {
+      const parts = n.toFixed(2).split(".");
+      const intPart = parts[0];
+      const dec = parts[1];
+      const reversed = intPart.split("").reverse();
+      const groups = [];
+      for (let i = 0; i < reversed.length; i += (i === 0 ? 3 : 2)) {
+        groups.push(reversed.slice(i, i + (i === 0 ? 3 : 2)).reverse().join(""));
+      }
+      return "₹" + groups.reverse().join(",") + "." + dec;
+    }
 
-        if (!name) return alert("Enter recipe name");
+    // ═══════════════════════════════════════════════════════════════
+    // PARSER
+    // ═══════════════════════════════════════════════════════════════
+    const FRAC = {"½":0.5,"¼":0.25,"¾":0.75,"⅓":0.333,"⅔":0.667,"⅛":0.125,"⅜":0.375,"⅝":0.625,"⅞":0.875};
+    
+    function parseFraction(str) {
+      const s = str.trim();
+      if (FRAC[s] !== undefined) return FRAC[s];
+      let m;
+      if ((m = s.match(/^(\d+)\s*([½¼¾⅓⅔⅛⅜⅝⅞])$/))) return +m[1] + FRAC[m[2]];
+      if ((m = s.match(/^(\d+)\s+(\d+)\s*\/\s*(\d+)$/))) return +m[1] + m[2] / m[3];
+      if ((m = s.match(/^(\d+)\s*\/\s*(\d+)$/))) return m[1] / m[2];
+      const p = parseFloat(s);
+      return isNaN(p) ? null : p;
+    }
 
-        btn.innerText = "Logging...";
-        btn.disabled = true;
+    function parseLine(line) {
+      let raw = line.trim();
+      if (!raw || raw.startsWith("//") || raw.startsWith("#")) return null;
+      raw = raw.replace(/^[-•*]\s*/, "").replace(/^\d+\.\s*/, "");
 
-        const summary = activeIngredients.map(i => `${i.name} (${i.qty}${i.unit})`).join(", ");
+      const qtyPat = /^(\d+[.\d]*\s*[½¼¾⅓⅔⅛⅜⅝⅞]?|\d+\s+\d+\s*\/\s*\d+|\d+\s*\/\s*\d+|[½¼¾⅓⅔⅛⅜⅝⅞])/;
+      let qty = null, rest = raw;
+      const qm = raw.match(qtyPat);
+      if (qm) {
+        qty = parseFraction(qm[1]);
+        rest = raw.slice(qm[0].length).trim();
+      }
 
+      let unit = "g";
+      const unitMatch = rest.match(/^(kg|g|gram|grams|kilogram|kilograms|gm)\b/i);
+      if (unitMatch) {
+        const key = unitMatch[1].toLowerCase();
+        unit = (key === "kg" || key === "kilogram" || key === "kilograms") ? "kg" : "g";
+        rest = rest.slice(unitMatch[0].length).trim();
+      }
+
+      rest = rest.replace(/^[,\-–—:]\s*/, "").replace(/^of\s+/i, "").trim();
+      const name = rest.replace(/\s+/g, " ").trim().replace(/\b\w/g, c => c.toUpperCase());
+      if (!name) return null;
+      return { name, quantity: qty, unit };
+    }
+
+    function fuzzyMatch(input, candidates) {
+      const norm = s => s.toLowerCase().replace(/[^a-z0-9]/g, "");
+      const iN = norm(input);
+      let best = null, bestScore = 0;
+      for (const c of candidates) {
+        const cN = norm(c.ingredient);
+        if (cN.includes(iN) || iN.includes(cN)) {
+          const score = Math.min(cN.length, iN.length) / Math.max(cN.length, iN.length);
+          if (score > bestScore) { bestScore = score; best = c; }
+        }
+      }
+      return bestScore >= 0.5 ? best : null;
+    }
+
+    // ═══════════════════════════════════════════════════════════════
+    // NETWORK
+    // ═══════════════════════════════════════════════════════════════
+    async function fetchPrices() {
+      try {
+        const res = await fetch(APPS_SCRIPT_URL + "?action=getPrices");
+        const text = await res.text();
+        const clean = text.replace(/^[\s\S]*?\(/, "").replace(/\);?\s*$/, "");
+        const data = JSON.parse(clean);
+        if (Array.isArray(data) && data.length > 0) {
+          database = data;
+          isLive = true;
+          updateStatusBadge(true);
+        } else {
+          loadMockData();
+        }
+      } catch (e) {
+        loadMockData();
+      }
+    }
+
+    function loadMockData() {
+      database = [
+        {ingredient:"Flour",costPrice:120,costQty:1,costUnit:"kg"},
+        {ingredient:"Sugar",costPrice:250,costQty:1,costUnit:"kg"},
+        {ingredient:"Butter",costPrice:480,costQty:1,costUnit:"kg"},
+        {ingredient:"Chicken Breast",costPrice:360,costQty:500,costUnit:"g"},
+        {ingredient:"Cheese",costPrice:450,costQty:500,costUnit:"g"},
+      ];
+      isLive = false;
+      updateStatusBadge(false);
+    }
+
+    function updateStatusBadge(live) {
+      const badge = document.getElementById("statusBadge");
+      if (live) {
+        badge.className = "badge live";
+        badge.innerHTML = '<span class="badge-dot"></span><span>Live — Google Sheets</span>';
+      } else {
+        badge.className = "badge demo";
+        badge.innerHTML = '<span class="badge-dot"></span><span>Demo Mode</span>';
+      }
+    }
+
+    async function saveToCloud() {
+      const saveBtn = document.getElementById("saveBtn");
+      saveBtn.disabled = true;
+      saveBtn.innerHTML = '<span class="spinner"></span> Saving…';
+
+      const recipeName = document.getElementById("recipeName").value || "Unnamed";
+      const batchYield = parseInt(document.getElementById("batchYield").value) || 1;
+      const totals = calculateTotals();
+      const summary = rows.map(r => `${r.quantity || "?"} ${r.unit} ${r.name}`).join("; ");
+
+      try {
         const params = new URLSearchParams({
-            action: "logRecipe",
-            recipeName: name,
-            date: new Date().toLocaleDateString(),
-            batchYield: batch,
-            totalCost: total.toFixed(2),
-            costPerItem: (total / batch).toFixed(2),
-            ingredientCount: activeIngredients.length,
-            summary: summary
+          action: "logRecipe",
+          recipeName,
+          date: new Date().toISOString().split("T")[0],
+          batchYield: String(batchYield),
+          totalCost: totals.totalCost.toFixed(2),
+          costPerItem: totals.costPerItem.toFixed(2),
+          ingredientCount: String(rows.length),
+          summary
         });
-
-        fetch(`${APP_URL}?${params.toString()}`, { method: 'POST' })
-            .then(() => {
-                alert("Recipe saved successfully!");
-                btn.innerText = "Save to Google Sheet";
-                btn.disabled = false;
-            })
-            .catch(() => {
-                alert("Error saving.");
-                btn.disabled = false;
-            });
+        await fetch(APPS_SCRIPT_URL + "?" + params.toString());
+        
+        saveBtn.className = "btn-saved";
+        saveBtn.innerHTML = '✓ Saved to Cloud';
+        setTimeout(() => {
+          saveBtn.className = "btn-success";
+          saveBtn.innerHTML = '<span>☁️</span> Save to Cloud';
+          saveBtn.disabled = false;
+        }, 2500);
+      } catch (e) {
+        alert("Failed to save. Check your Apps Script URL.");
+        saveBtn.disabled = false;
+        saveBtn.innerHTML = '<span>☁️</span> Save to Cloud';
+      }
     }
-</script>
 
+    // ═══════════════════════════════════════════════════════════════
+    // UI ACTIONS
+    // ═══════════════════════════════════════════════════════════════
+    function analyseRecipe() {
+      const rawText = document.getElementById("rawText").value;
+      if (!rawText.trim()) return;
+
+      const lines = rawText.split("\n");
+      const parsed = lines.map(parseLine).filter(Boolean);
+
+      rows = parsed.map((item, idx) => {
+        const match = fuzzyMatch(item.name, database);
+        let lineCost = null;
+        if (match && item.quantity != null) {
+          lineCost = calcLineCost(item.quantity, item.unit, match.costPrice, match.costQty, match.costUnit);
+        }
+        return {
+          id: Date.now() + idx,
+          name: item.name,
+          quantity: item.quantity,
+          unit: item.unit,
+          costPrice: match ? match.costPrice : null,
+          costQty: match ? match.costQty : null,
+          costUnit: match ? match.costUnit : null,
+          lineCost,
+          matched: !!match
+        };
+      });
+
+      renderTable();
+      updateSummary();
+      document.getElementById("resultsSection").classList.remove("hidden");
+    }
+
+    function addManualIngredient() {
+      const name = document.getElementById("addName").value.trim();
+      if (!name) return;
+
+      const qty = parseFloat(document.getElementById("addQty").value) || null;
+      const unit = document.getElementById("addUnit").value;
+      const costPrice = parseFloat(document.getElementById("addCostPrice").value) || null;
+      const costQty = parseFloat(document.getElementById("addCostQty").value) || null;
+      const costUnit = document.getElementById("addCostUnit").value;
+
+      let lineCost = null;
+      if (qty != null && costPrice != null && costQty != null) {
+        lineCost = calcLineCost(qty, unit, costPrice, costQty, costUnit);
+      }
+
+      rows.push({
+        id: Date.now(),
+        name: name.replace(/\b\w/g, c => c.toUpperCase()),
+        quantity: qty,
+        unit,
+        costPrice,
+        costQty,
+        costUnit,
+        lineCost,
+        matched: false
+      });
+
+      // Clear form
+      document.getElementById("addName").value = "";
+      document.getElementById("addQty").value = "";
+      document.getElementById("addCostPrice").value = "";
+      document.getElementById("addCostQty").value = "";
+
+      renderTable();
+      updateSummary();
+      document.getElementById("resultsSection").classList.remove("hidden");
+    }
+
+    function removeRow(id) {
+      rows = rows.filter(r => r.id !== id);
+      renderTable();
+      updateSummary();
+    }
+
+    function updateRowField(id, field, value) {
+      const row = rows.find(r => r.id === id);
+      if (!row) return;
+
+      if (field === "quantity" || field === "unit") {
+        row[field] = value;
+      } else {
+        row[field] = parseFloat(value) || null;
+      }
+
+      // Recalc
+      if (row.quantity != null && row.costPrice != null && row.costQty != null && row.costUnit != null) {
+        row.lineCost = calcLineCost(row.quantity, row.unit, row.costPrice, row.costQty, row.costUnit);
+      } else {
+        row.lineCost = null;
+      }
+
+      renderTable();
+      updateSummary();
+    }
+
+    function renderTable() {
+      const tbody = document.getElementById("tableBody");
+      tbody.innerHTML = "";
+
+      rows.forEach(row => {
+        const tr = document.createElement("tr");
+        tr.innerHTML = `
+          <td>
+            <span class="badge-status ${row.matched ? 'badge-ok' : 'badge-warn'}">
+              ${row.matched ? '✓ Matched' : '⚠ Manual'}
+            </span>
+          </td>
+          <td style="color: #4a3f35; font-weight: 500;">${row.name}</td>
+          <td>
+            <input type="number" class="inline-input" value="${row.quantity != null ? row.quantity : ''}" 
+              onchange="updateRowField(${row.id}, 'quantity', parseFloat(this.value) || null)">
+          </td>
+          <td>
+            <select class="inline-select" onchange="updateRowField(${row.id}, 'unit', this.value)">
+              <option value="g" ${row.unit === 'g' ? 'selected' : ''}>g</option>
+              <option value="kg" ${row.unit === 'kg' ? 'selected' : ''}>kg</option>
+            </select>
+          </td>
+          <td>
+            <input type="number" class="inline-input" placeholder="₹" value="${row.costPrice != null ? row.costPrice : ''}"
+              onchange="updateRowField(${row.id}, 'costPrice', this.value)">
+          </td>
+          <td>
+            <input type="number" class="inline-input" style="width: 55px;" value="${row.costQty != null ? row.costQty : ''}"
+              onchange="updateRowField(${row.id}, 'costQty', this.value)">
+          </td>
+          <td>
+            <select class="inline-select" onchange="updateRowField(${row.id}, 'costUnit', this.value)">
+              <option value="g" ${row.costUnit === 'g' ? 'selected' : ''}>g</option>
+              <option value="kg" ${row.costUnit === 'kg' ? 'selected' : ''}>kg</option>
+            </select>
+          </td>
+          <td style="text-align: right; color: #8b6f47; font-weight: 600;">
+            ${row.lineCost != null ? fmtINR(row.lineCost) : '<span class="cost-missing">—</span>'}
+          </td>
+          <td>
+            <button class="btn-del" onclick="removeRow(${row.id})" title="Remove">🗑️</button>
+          </td>
+        `;
+        tbody.appendChild(tr);
+      });
+    }
+
+    function calculateTotals() {
+      const batchYield = parseInt(document.getElementById("batchYield").value) || 1;
+      let totalCost = 0;
+      let unmatched = 0;
+
+      rows.forEach(r => {
+        if (r.lineCost != null) totalCost += r.lineCost;
+        if (!r.matched && r.costPrice == null) unmatched++;
+      });
+
+      return {
+        totalCost,
+        costPerItem: batchYield > 0 ? totalCost / batchYield : totalCost,
+        unmatched
+      };
+    }
+
+    function updateSummary() {
+      const totals = calculateTotals();
+      const batchYield = parseInt(document.getElementById("batchYield").value) || 1;
+
+      document.getElementById("totalCost").textContent = fmtINR(totals.totalCost);
+      document.getElementById("costPerItem").textContent = fmtINR(totals.costPerItem);
+      document.getElementById("ingredientCount").textContent = rows.length;
+      document.getElementById("displayYield").textContent = batchYield;
+      document.getElementById("unmatchedCount").textContent = totals.unmatched;
+
+      const matchRate = rows.length > 0 ? Math.round(((rows.length - totals.unmatched) / rows.length) * 100) : 100;
+      const matchEl = document.getElementById("matchRate");
+      matchEl.textContent = matchRate + "%";
+      matchEl.style.color = totals.unmatched === 0 ? "#48bb78" : "#ed8936";
+    }
+
+    function resetApp() {
+      document.getElementById("recipeName").value = "";
+      document.getElementById("batchYield").value = "1";
+      document.getElementById("rawText").value = "";
+      rows = [];
+      document.getElementById("resultsSection").classList.add("hidden");
+    }
+
+    function exportCSV() {
+      const totals = calculateTotals();
+      let csv = "Ingredient,Qty,Unit,Cost Price (₹),Cost Qty,Cost Unit,Line Cost (₹)\n";
+      rows.forEach(r => {
+        csv += `${r.name},${r.quantity},${r.unit},${r.costPrice},${r.costQty},${r.costUnit},${r.lineCost != null ? r.lineCost.toFixed(2) : ''}\n`;
+      });
+      csv += `\n\n,,,,,Total Batch Cost:,${totals.totalCost.toFixed(2)}\n`;
+      csv += `,,,,,Cost Per Item:,${totals.costPerItem.toFixed(2)}\n`;
+
+      const blob = new Blob([csv], { type: "text/csv" });
+      const a = document.createElement("a");
+      a.href = URL.createObjectURL(blob);
+      a.download = (document.getElementById("recipeName").value || "recipe") + "-costing.csv";
+      a.click();
+    }
+
+    function openSetupModal() {
+      document.getElementById("setupModal").classList.add("open");
+    }
+
+    function closeSetupModal() {
+      document.getElementById("setupModal").classList.remove("open");
+    }
+
+    // ═══════════════════════════════════════════════════════════════
+    // INIT
+    // ═══════════════════════════════════════════════════════════════
+    window.addEventListener("DOMContentLoaded", () => {
+      fetchPrices();
+    });
+  </script>
 </body>
 </html>
