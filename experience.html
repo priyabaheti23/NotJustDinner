@@ -492,19 +492,16 @@
     <!-- Header -->
     <header>
       <div class="header-left">
-        <div class="logo">₹</div>
+        <div class="logo">&#8377;</div>
         <div>
           <h1>Recipe Costing</h1>
-          <p class="subtitle">Professional kitchen economics · INR</p>
+          <p class="subtitle">Professional kitchen economics &middot; INR</p>
         </div>
       </div>
       <div style="display: flex; gap: 10px; align-items: center;">
-        <button class="btn-secondary" onclick="openSetupModal()" style="padding: 8px 14px; font-size: 12px;">
-          <span>📄</span> Sheet Setup
-        </button>
-        <div class="badge demo" id="statusBadge">
+        <div class="badge live" id="statusBadge">
           <span class="badge-dot"></span>
-          <span>Demo Mode</span>
+          <span>Live - Google Sheets</span>
         </div>
       </div>
     </header>
@@ -525,7 +522,7 @@
         </div>
       </div>
 
-      <label>Ingredient List <span style="text-transform: none; font-weight: 400; color: #a89886;">— paste your recipe below</span></label>
+      <label>Ingredient List <span style="text-transform: none; font-weight: 400; color: #a89886;">- paste your recipe below</span></label>
       <textarea id="rawText" placeholder="Paste your recipe here. The app will parse it.
 
 Examples:
@@ -535,9 +532,7 @@ Examples:
   50g butter"></textarea>
 
       <div class="action-row">
-        <button class="btn-primary" onclick="analyseRecipe()">
-          <span>✨</span> Analyse Recipe
-        </button>
+        <button class="btn-primary" onclick="analyseRecipe()"><span>Analyze</span> Analyse Recipe</button>
         <button class="btn-secondary" onclick="resetApp()">Reset</button>
       </div>
     </div>
@@ -548,13 +543,13 @@ Examples:
       <div class="summary-row">
         <div class="summary-card">
           <div class="summary-label">Total Batch Cost</div>
-          <div class="summary-value" id="totalCost">₹0.00</div>
+          <div class="summary-value" id="totalCost">&#8377;0.00</div>
           <div class="summary-sub"><span id="ingredientCount">0</span> ingredients</div>
         </div>
         <div class="summary-card highlight">
           <div class="summary-label">Cost Per Item</div>
-          <div class="summary-value accent" id="costPerItem">₹0.00</div>
-          <div class="summary-sub">÷ <span id="displayYield">1</span> units</div>
+          <div class="summary-value accent" id="costPerItem">&#8377;0.00</div>
+          <div class="summary-sub">/ <span id="displayYield">1</span> units</div>
         </div>
         <div class="summary-card">
           <div class="summary-label">Match Rate</div>
@@ -572,7 +567,7 @@ Examples:
               <th style="min-width: 140px;">Ingredient</th>
               <th>Qty</th>
               <th>Unit</th>
-              <th>Cost ₹</th>
+              <th>Cost &#8377;</th>
               <th>For</th>
               <th>Cost Unit</th>
               <th style="text-align: right;">Line Cost</th>
@@ -586,7 +581,7 @@ Examples:
 
       <!-- Add Ingredient -->
       <div class="add-row-wrap">
-        <div class="add-row-title">➕ Add Ingredient Manually</div>
+        <div class="add-row-title">+ Add Ingredient Manually</div>
         <div class="add-row-fields">
           <div class="add-field" style="flex: 1 1 140px;">
             <label>Name</label>
@@ -604,7 +599,7 @@ Examples:
             </select>
           </div>
           <div class="add-field" style="flex: 0 0 85px;">
-            <label>Cost ₹</label>
+            <label>Cost &#8377;</label>
             <input type="number" id="addCostPrice" placeholder="5000" style="text-align: center;">
           </div>
           <div class="add-field" style="flex: 0 0 60px;">
@@ -619,229 +614,185 @@ Examples:
             </select>
           </div>
           <div class="add-field">
-            <button class="btn-primary" onclick="addManualIngredient()" style="padding: 9px 16px; font-size: 13px;">
-              ➕ Add
-            </button>
+            <button class="btn-primary" onclick="addManualIngredient()" style="padding: 9px 16px; font-size: 13px;">+ Add</button>
           </div>
         </div>
       </div>
 
       <!-- Action Buttons -->
       <div class="action-row">
-        <button class="btn-success" id="saveBtn" onclick="saveToCloud()">
-          <span>☁️</span> Save to Cloud
-        </button>
-        <button class="btn-secondary" onclick="exportCSV()">
-          <span>📥</span> Export CSV
-        </button>
+        <button class="btn-success" id="saveBtn" onclick="saveToCloud()"><span>Cloud</span> Save to Cloud</button>
+        <button class="btn-secondary" onclick="exportCSV()"><span>Export</span> Export CSV</button>
       </div>
     </div>
   </div>
 
-  <!-- Setup Modal -->
-  <div class="modal-bg" id="setupModal">
-    <div class="modal-box">
-      <div class="modal-header">
-        <h2>Google Sheet Setup</h2>
-        <button class="btn-del" onclick="closeSetupModal()" style="font-size: 24px;">×</button>
-      </div>
 
-      <div class="modal-section">
-        <div class="modal-section-title">📄 Sheet Structure</div>
-        <p class="modal-text">Create a Google Sheet with <span class="text-accent">two tabs</span>:</p>
-
-        <div class="code-block">
-          <div class="code-title">Tab 1 — "Master"</div>
-          <table class="setup-table">
-            <thead>
-              <tr><th>A</th><th>B</th><th>C</th><th>D</th></tr>
-            </thead>
-            <tbody>
-              <tr><td><strong>ingredient</strong></td><td><strong>costPrice</strong></td><td><strong>costQty</strong></td><td><strong>costUnit</strong></td></tr>
-              <tr><td>Flour</td><td>120</td><td>1</td><td>kg</td></tr>
-              <tr><td>Chicken Breast</td><td>360</td><td>500</td><td>g</td></tr>
-              <tr><td>Cheese</td><td>450</td><td>500</td><td>g</td></tr>
-            </tbody>
-          </table>
-          <p class="code-note">
-            Row 1 = headers (exact names above). Each row = one ingredient.<br>
-            <span class="text-accent">costPrice</span> = what you paid in ₹ &nbsp;|&nbsp;
-            <span class="text-accent">costQty</span> = quantity bought &nbsp;|&nbsp;
-            <span class="text-accent">costUnit</span> = g or kg
-          </p>
-        </div>
-
-        <div class="code-block">
-          <div class="code-title">Tab 2 — "Log"</div>
-          <table class="setup-table">
-            <thead>
-              <tr><th>A</th><th>B</th><th>C</th><th>D</th><th>E</th><th>F</th><th>G</th></tr>
-            </thead>
-            <tbody>
-              <tr>
-                <td><strong>recipeName</strong></td><td><strong>date</strong></td><td><strong>batchYield</strong></td>
-                <td><strong>totalCost</strong></td><td><strong>costPerItem</strong></td><td><strong>ingredientCount</strong></td><td><strong>summary</strong></td>
-              </tr>
-            </tbody>
-          </table>
-          <p class="code-note">Row 1 = headers. The app auto-appends rows when you "Save to Cloud".</p>
-        </div>
-      </div>
-
-      <div class="modal-section">
-        <div class="modal-section-title">⚙️ Apps Script Code</div>
-        <p class="modal-text">Go to <span class="text-accent">Extensions → Apps Script</span> in your Sheet. Replace all code with:</p>
-        <div class="code-block">
-          <pre>function doGet(e) {
-  var action = e.parameter.action;
-  var sheet = SpreadsheetApp.getActiveSpreadsheet();
-
-  if (action === "getPrices") {
-    var master = sheet.getSheetByName("Master");
-    var data = master.getDataRange().getValues();
-    var headers = data[0];
-    var rows = data.slice(1);
-    var result = rows.map(function(row) {
-      var obj = {};
-      headers.forEach(function(h, i) { obj[h] = row[i]; });
-      return obj;
-    });
-    return ContentService
-      .createTextOutput(JSON.stringify(result))
-      .setMimeType(ContentService.MIME_TYPE.JSON);
-  }
-
-  if (action === "logRecipe") {
-    var log = sheet.getSheetByName("Log");
-    log.appendRow([
-      e.parameter.recipeName || "",
-      e.parameter.date || "",
-      e.parameter.batchYield || "",
-      e.parameter.totalCost || "",
-      e.parameter.costPerItem || "",
-      e.parameter.ingredientCount || "",
-      e.parameter.summary || ""
-    ]);
-    return ContentService
-      .createTextOutput(JSON.stringify({ success: true }))
-      .setMimeType(ContentService.MIME_TYPE.JSON);
-  }
-
-  return ContentService
-    .createTextOutput(JSON.stringify({ error: "Unknown" }))
-    .setMimeType(ContentService.MIME_TYPE.JSON);
-}</pre>
-        </div>
-        <p class="modal-text">
-          Then <span class="text-accent">Deploy → New deployment → Web app</span>. 
-          Set <em>"Execute as: Me"</em> and <em>"Who has access: Anyone"</em>. 
-          Copy the URL and paste it in the <code style="background: #fafaf9; padding: 2px 6px; border-radius: 4px; border: 1px solid #e8dfd5;">APPS_SCRIPT_URL</code> variable at the top of this HTML file.
-        </p>
-      </div>
-
-      <button class="btn-primary" onclick="closeSetupModal()" style="margin-top: 8px;">Got it</button>
-    </div>
-  </div>
 
   <script>
-    // ═══════════════════════════════════════════════════════════════
-    // CONFIG - Paste your Google Apps Script URL here
-    // ═══════════════════════════════════════════════════════════════
-    const APPS_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbyhiRs90vALseqpJrlRWI2WEA7NjiCF6nToBfSHbqqxjz0tN9N3mo_KS7V__NbquXyj/exec";
+    const APPS_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbwYTO-rhr-fSARWL7cOTo4XGA-4thP5291Q6TIu853opUolm85fEZNhpyOkm-RtJHnD/exec";
 
-    // ═══════════════════════════════════════════════════════════════
-    // STATE
-    // ═══════════════════════════════════════════════════════════════
     let rows = [];
     let database = [];
-    let isLive = false;
 
-    // ═══════════════════════════════════════════════════════════════
-    // COST ENGINE
-    // ═══════════════════════════════════════════════════════════════
+    const FRAC = {
+      "\u00BD": 0.5,
+      "\u00BC": 0.25,
+      "\u00BE": 0.75,
+      "\u2153": 0.333,
+      "\u2154": 0.667,
+      "\u215B": 0.125,
+      "\u215C": 0.375,
+      "\u215D": 0.625,
+      "\u215E": 0.875
+    };
+
     function toGrams(qty, unit) {
-      if (unit === "kg") return qty * 1000;
-      return qty;
+      const n = Number(qty);
+      if (!Number.isFinite(n)) return NaN;
+      return unit === "kg" ? n * 1000 : n;
     }
 
     function calcLineCost(recipeQty, recipeUnit, costPrice, costQty, costUnit) {
-      const perGram = costPrice / toGrams(costQty, costUnit);
-      const recipeGrams = toGrams(recipeQty, recipeUnit);
+      const qty = Number(recipeQty);
+      const price = Number(costPrice);
+      const baseQty = Number(costQty);
+      if (!Number.isFinite(qty) || !Number.isFinite(price) || !Number.isFinite(baseQty) || baseQty <= 0) {
+        return null;
+      }
+
+      const perGram = price / toGrams(baseQty, costUnit);
+      const recipeGrams = toGrams(qty, recipeUnit);
+      if (!Number.isFinite(perGram) || !Number.isFinite(recipeGrams)) return null;
       return recipeGrams * perGram;
     }
 
     function fmtINR(n) {
-      const parts = n.toFixed(2).split(".");
-      const intPart = parts[0];
-      const dec = parts[1];
-      const reversed = intPart.split("").reverse();
-      const groups = [];
-      for (let i = 0; i < reversed.length; i += (i === 0 ? 3 : 2)) {
-        groups.push(reversed.slice(i, i + (i === 0 ? 3 : 2)).reverse().join(""));
-      }
-      return "₹" + groups.reverse().join(",") + "." + dec;
+      const safe = Number.isFinite(Number(n)) ? Number(n) : 0;
+      return "\u20B9" + safe.toLocaleString("en-IN", { minimumFractionDigits: 2, maximumFractionDigits: 2 });
     }
 
-    // ═══════════════════════════════════════════════════════════════
-    // PARSER
-    // ═══════════════════════════════════════════════════════════════
-    const FRAC = {"½":0.5,"¼":0.25,"¾":0.75,"⅓":0.333,"⅔":0.667,"⅛":0.125,"⅜":0.375,"⅝":0.625,"⅞":0.875};
-    
+    function escapeHtml(value) {
+      return String(value)
+        .replaceAll("&", "&amp;")
+        .replaceAll("<", "&lt;")
+        .replaceAll(">", "&gt;")
+        .replaceAll('"', "&quot;")
+        .replaceAll("'", "&#39;");
+    }
+
+    function escapeCsv(value) {
+      const s = String(value ?? "");
+      return `"${s.replaceAll('"', '""')}"`;
+    }
+
     function parseFraction(str) {
-      const s = str.trim();
+      const s = String(str || "").trim();
+      if (!s) return null;
       if (FRAC[s] !== undefined) return FRAC[s];
+
       let m;
-      if ((m = s.match(/^(\d+)\s*([½¼¾⅓⅔⅛⅜⅝⅞])$/))) return +m[1] + FRAC[m[2]];
+      if ((m = s.match(/^(\d+)\s*([\u00BD\u00BC\u00BE\u2153\u2154\u215B\u215C\u215D\u215E])$/))) return +m[1] + FRAC[m[2]];
       if ((m = s.match(/^(\d+)\s+(\d+)\s*\/\s*(\d+)$/))) return +m[1] + m[2] / m[3];
-      if ((m = s.match(/^(\d+)\s*\/\s*(\d+)$/))) return m[1] / m[2];
+      if ((m = s.match(/^(\d+)\s*\/\s*(\d+)$/))) return +m[1] / +m[2];
       const p = parseFloat(s);
-      return isNaN(p) ? null : p;
+      return Number.isFinite(p) ? p : null;
+    }
+
+    function normalizeUnit(rawUnit) {
+      const unit = String(rawUnit || "").toLowerCase();
+      if (unit === "kg" || unit === "kilogram" || unit === "kilograms") return "kg";
+      return "g";
+    }
+
+    function extractMeasurement(text) {
+      const source = String(text || "");
+      const measurePattern = /(\d+\s+\d+\s*\/\s*\d+|\d+\s*\/\s*\d+|\d+(?:\.\d+)?\s*[\u00BD\u00BC\u00BE\u2153\u2154\u215B\u215C\u215D\u215E]?|[\u00BD\u00BC\u00BE\u2153\u2154\u215B\u215C\u215D\u215E])\s*(kg|kilograms?|g|gm|grams?|ml|l|liters?|litres?|tsp|teaspoons?|tbsp|tablespoons?|cups?)?/i;
+      const match = source.match(measurePattern);
+      if (!match) return null;
+
+      const quantity = parseFraction(match[1]);
+      if (quantity == null) return null;
+
+      return {
+        quantity,
+        unit: normalizeUnit(match[2]),
+        index: match.index ?? 0,
+        length: match[0].length
+      };
     }
 
     function parseLine(line) {
-      let raw = line.trim();
+      let raw = String(line || "").trim();
       if (!raw || raw.startsWith("//") || raw.startsWith("#")) return null;
-      raw = raw.replace(/^[-•*]\s*/, "").replace(/^\d+\.\s*/, "");
 
-      const qtyPat = /^(\d+[.\d]*\s*[½¼¾⅓⅔⅛⅜⅝⅞]?|\d+\s+\d+\s*\/\s*\d+|\d+\s*\/\s*\d+|[½¼¾⅓⅔⅛⅜⅝⅞])/;
-      let qty = null, rest = raw;
-      const qm = raw.match(qtyPat);
-      if (qm) {
-        qty = parseFraction(qm[1]);
-        rest = raw.slice(qm[0].length).trim();
+      raw = raw.replace(/^[-\u2022*]\s*/, "").replace(/^\d+\.\s*/, "");
+
+      const colonIdx = raw.indexOf(":");
+      const head = colonIdx >= 0 ? raw.slice(0, colonIdx).trim() : "";
+      const tail = colonIdx >= 0 ? raw.slice(colonIdx + 1).trim() : raw;
+
+      let measurement = extractMeasurement(tail);
+      let measuredSource = tail;
+      if (!measurement) {
+        measurement = extractMeasurement(raw);
+        measuredSource = raw;
       }
 
+      let quantity = null;
       let unit = "g";
-      const unitMatch = rest.match(/^(kg|g|gram|grams|kilogram|kilograms|gm)\b/i);
-      if (unitMatch) {
-        const key = unitMatch[1].toLowerCase();
-        unit = (key === "kg" || key === "kilogram" || key === "kilograms") ? "kg" : "g";
-        rest = rest.slice(unitMatch[0].length).trim();
+      if (measurement) {
+        quantity = measurement.quantity;
+        unit = measurement.unit;
       }
 
-      rest = rest.replace(/^[,\-–—:]\s*/, "").replace(/^of\s+/i, "").trim();
-      const name = rest.replace(/\s+/g, " ").trim().replace(/\b\w/g, c => c.toUpperCase());
+      let remainder = measuredSource;
+      if (measurement) {
+        remainder = `${measuredSource.slice(0, measurement.index)} ${measuredSource.slice(measurement.index + measurement.length)}`;
+      }
+
+      remainder = remainder
+        .replace(/\([^)]*\)/g, " ")
+        .replace(/^of\s+/i, "")
+        .replace(/^[,\-\u2013\u2014:]\s*/, "")
+        .replace(/\s+/g, " ")
+        .trim();
+
+      const firstPhrase = remainder.split(/\band\b|,/i)[0].trim();
+      const genericHeads = new Set(["flavoring", "flavorings", "leavening", "seasoning", "seasonings", "topping", "toppings", "garnish", "garnishes"]);
+
+      let bestName = "";
+      if (head) {
+        const headKey = head.toLowerCase().replace(/[^a-z]/g, "");
+        bestName = genericHeads.has(headKey) && firstPhrase ? firstPhrase : head;
+      } else {
+        bestName = firstPhrase || remainder;
+      }
+
+      const name = bestName.replace(/\s+/g, " ").trim().replace(/\b\w/g, c => c.toUpperCase());
       if (!name) return null;
-      return { name, quantity: qty, unit };
+      return { name, quantity, unit };
     }
 
     function fuzzyMatch(input, candidates) {
-      const norm = s => s.toLowerCase().replace(/[^a-z0-9]/g, "");
+      const norm = s => String(s).toLowerCase().replace(/[^a-z0-9]/g, "");
       const iN = norm(input);
-      let best = null, bestScore = 0;
+      let best = null;
+      let bestScore = 0;
+
       for (const c of candidates) {
         const cN = norm(c.ingredient);
         if (cN.includes(iN) || iN.includes(cN)) {
           const score = Math.min(cN.length, iN.length) / Math.max(cN.length, iN.length);
-          if (score > bestScore) { bestScore = score; best = c; }
+          if (score > bestScore) {
+            bestScore = score;
+            best = c;
+          }
         }
       }
       return bestScore >= 0.5 ? best : null;
     }
 
-    // ═══════════════════════════════════════════════════════════════
-    // NETWORK
-    // ═══════════════════════════════════════════════════════════════
     async function fetchPrices() {
       try {
         const res = await fetch(APPS_SCRIPT_URL + "?action=getPrices");
@@ -850,46 +801,26 @@ Examples:
         const data = JSON.parse(clean);
         if (Array.isArray(data) && data.length > 0) {
           database = data;
-          isLive = true;
-          updateStatusBadge(true);
-        } else {
-          loadMockData();
+          return;
         }
       } catch (e) {
-        loadMockData();
+        console.error("Failed to fetch prices from Google Sheet:", e);
       }
     }
 
-    function loadMockData() {
-      database = [
-        {ingredient:"Flour",costPrice:120,costQty:1,costUnit:"kg"},
-        {ingredient:"Sugar",costPrice:250,costQty:1,costUnit:"kg"},
-        {ingredient:"Butter",costPrice:480,costQty:1,costUnit:"kg"},
-        {ingredient:"Chicken Breast",costPrice:360,costQty:500,costUnit:"g"},
-        {ingredient:"Cheese",costPrice:450,costQty:500,costUnit:"g"},
-      ];
-      isLive = false;
-      updateStatusBadge(false);
-    }
-
-    function updateStatusBadge(live) {
+    function updateStatusBadge() {
       const badge = document.getElementById("statusBadge");
-      if (live) {
-        badge.className = "badge live";
-        badge.innerHTML = '<span class="badge-dot"></span><span>Live — Google Sheets</span>';
-      } else {
-        badge.className = "badge demo";
-        badge.innerHTML = '<span class="badge-dot"></span><span>Demo Mode</span>';
-      }
+      badge.className = "badge live";
+      badge.innerHTML = '<span class="badge-dot"></span><span>Live - Google Sheets</span>';
     }
 
     async function saveToCloud() {
       const saveBtn = document.getElementById("saveBtn");
       saveBtn.disabled = true;
-      saveBtn.innerHTML = '<span class="spinner"></span> Saving…';
+      saveBtn.innerHTML = '<span class="spinner"></span> Saving...';
 
       const recipeName = document.getElementById("recipeName").value || "Unnamed";
-      const batchYield = parseInt(document.getElementById("batchYield").value) || 1;
+      const batchYield = parseInt(document.getElementById("batchYield").value, 10) || 1;
       const totals = calculateTotals();
       const summary = rows.map(r => `${r.quantity || "?"} ${r.unit} ${r.name}`).join("; ");
 
@@ -904,25 +835,23 @@ Examples:
           ingredientCount: String(rows.length),
           summary
         });
+
         await fetch(APPS_SCRIPT_URL + "?" + params.toString());
-        
+
         saveBtn.className = "btn-saved";
-        saveBtn.innerHTML = '✓ Saved to Cloud';
+        saveBtn.innerHTML = "Saved to Cloud";
         setTimeout(() => {
           saveBtn.className = "btn-success";
-          saveBtn.innerHTML = '<span>☁️</span> Save to Cloud';
+          saveBtn.innerHTML = "Save to Cloud";
           saveBtn.disabled = false;
         }, 2500);
       } catch (e) {
         alert("Failed to save. Check your Apps Script URL.");
         saveBtn.disabled = false;
-        saveBtn.innerHTML = '<span>☁️</span> Save to Cloud';
+        saveBtn.innerHTML = "Save to Cloud";
       }
     }
 
-    // ═══════════════════════════════════════════════════════════════
-    // UI ACTIONS
-    // ═══════════════════════════════════════════════════════════════
     function analyseRecipe() {
       const rawText = document.getElementById("rawText").value;
       if (!rawText.trim()) return;
@@ -932,17 +861,17 @@ Examples:
 
       rows = parsed.map((item, idx) => {
         const match = fuzzyMatch(item.name, database);
-        let lineCost = null;
-        if (match && item.quantity != null) {
-          lineCost = calcLineCost(item.quantity, item.unit, match.costPrice, match.costQty, match.costUnit);
-        }
+        const lineCost = match && item.quantity != null
+          ? calcLineCost(item.quantity, item.unit, match.costPrice, match.costQty, match.costUnit)
+          : null;
+
         return {
           id: Date.now() + idx,
           name: item.name,
           quantity: item.quantity,
           unit: item.unit,
-          costPrice: match ? match.costPrice : null,
-          costQty: match ? match.costQty : null,
+          costPrice: match ? Number(match.costPrice) : null,
+          costQty: match ? Number(match.costQty) : null,
           costUnit: match ? match.costUnit : null,
           lineCost,
           matched: !!match
@@ -958,30 +887,30 @@ Examples:
       const name = document.getElementById("addName").value.trim();
       if (!name) return;
 
-      const qty = parseFloat(document.getElementById("addQty").value) || null;
-      const unit = document.getElementById("addUnit").value;
-      const costPrice = parseFloat(document.getElementById("addCostPrice").value) || null;
-      const costQty = parseFloat(document.getElementById("addCostQty").value) || null;
-      const costUnit = document.getElementById("addCostUnit").value;
+      const qty = parseFloat(document.getElementById("addQty").value);
+      const unit = document.getElementById("addUnit").value === "kg" ? "kg" : "g";
+      const costPrice = parseFloat(document.getElementById("addCostPrice").value);
+      const costQty = parseFloat(document.getElementById("addCostQty").value);
+      const costUnit = document.getElementById("addCostUnit").value === "kg" ? "kg" : "g";
 
-      let lineCost = null;
-      if (qty != null && costPrice != null && costQty != null) {
-        lineCost = calcLineCost(qty, unit, costPrice, costQty, costUnit);
-      }
-
-      rows.push({
+      const row = {
         id: Date.now(),
         name: name.replace(/\b\w/g, c => c.toUpperCase()),
-        quantity: qty,
+        quantity: Number.isFinite(qty) ? qty : null,
         unit,
-        costPrice,
-        costQty,
+        costPrice: Number.isFinite(costPrice) ? costPrice : null,
+        costQty: Number.isFinite(costQty) ? costQty : null,
         costUnit,
-        lineCost,
+        lineCost: null,
         matched: false
-      });
+      };
 
-      // Clear form
+      if (row.quantity != null && row.costPrice != null && row.costQty != null) {
+        row.lineCost = calcLineCost(row.quantity, row.unit, row.costPrice, row.costQty, row.costUnit);
+      }
+
+      rows.push(row);
+
       document.getElementById("addName").value = "";
       document.getElementById("addQty").value = "";
       document.getElementById("addCostPrice").value = "";
@@ -1002,13 +931,16 @@ Examples:
       const row = rows.find(r => r.id === id);
       if (!row) return;
 
-      if (field === "quantity" || field === "unit") {
-        row[field] = value;
+      if (field === "quantity") {
+        const parsed = parseFloat(value);
+        row.quantity = Number.isFinite(parsed) && parsed >= 0 ? parsed : null;
+      } else if (field === "unit" || field === "costUnit") {
+        row[field] = value === "kg" ? "kg" : "g";
       } else {
-        row[field] = parseFloat(value) || null;
+        const parsed = parseFloat(value);
+        row[field] = Number.isFinite(parsed) && parsed >= 0 ? parsed : null;
       }
 
-      // Recalc
       if (row.quantity != null && row.costPrice != null && row.costQty != null && row.costUnit != null) {
         row.lineCost = calcLineCost(row.quantity, row.unit, row.costPrice, row.costQty, row.costUnit);
       } else {
@@ -1025,56 +957,45 @@ Examples:
 
       rows.forEach(row => {
         const tr = document.createElement("tr");
+        const displayName = escapeHtml(row.name);
+        const statusText = row.matched ? "Matched" : "Manual";
+        const statusIcon = row.matched ? "\u2713" : "\u26A0";
+
         tr.innerHTML = `
           <td>
-            <span class="badge-status ${row.matched ? 'badge-ok' : 'badge-warn'}">
-              ${row.matched ? '✓ Matched' : '⚠ Manual'}
-            </span>
+            <span class="badge-status ${row.matched ? "badge-ok" : "badge-warn"}">${statusIcon} ${statusText}</span>
           </td>
-          <td style="color: #4a3f35; font-weight: 500;">${row.name}</td>
+          <td style="color: #4a3f35; font-weight: 500;">${displayName}</td>
+          <td><input type="number" class="inline-input" data-id="${row.id}" data-field="quantity" value="${row.quantity != null ? row.quantity : ""}"></td>
           <td>
-            <input type="number" class="inline-input" value="${row.quantity != null ? row.quantity : ''}" 
-              onchange="updateRowField(${row.id}, 'quantity', parseFloat(this.value) || null)">
-          </td>
-          <td>
-            <select class="inline-select" onchange="updateRowField(${row.id}, 'unit', this.value)">
-              <option value="g" ${row.unit === 'g' ? 'selected' : ''}>g</option>
-              <option value="kg" ${row.unit === 'kg' ? 'selected' : ''}>kg</option>
+            <select class="inline-select" data-id="${row.id}" data-field="unit">
+              <option value="g" ${row.unit === "g" ? "selected" : ""}>g</option>
+              <option value="kg" ${row.unit === "kg" ? "selected" : ""}>kg</option>
             </select>
           </td>
+          <td><input type="number" class="inline-input" data-id="${row.id}" data-field="costPrice" placeholder="\u20B9" value="${row.costPrice != null ? row.costPrice : ""}"></td>
+          <td><input type="number" class="inline-input" style="width: 55px;" data-id="${row.id}" data-field="costQty" value="${row.costQty != null ? row.costQty : ""}"></td>
           <td>
-            <input type="number" class="inline-input" placeholder="₹" value="${row.costPrice != null ? row.costPrice : ''}"
-              onchange="updateRowField(${row.id}, 'costPrice', this.value)">
-          </td>
-          <td>
-            <input type="number" class="inline-input" style="width: 55px;" value="${row.costQty != null ? row.costQty : ''}"
-              onchange="updateRowField(${row.id}, 'costQty', this.value)">
-          </td>
-          <td>
-            <select class="inline-select" onchange="updateRowField(${row.id}, 'costUnit', this.value)">
-              <option value="g" ${row.costUnit === 'g' ? 'selected' : ''}>g</option>
-              <option value="kg" ${row.costUnit === 'kg' ? 'selected' : ''}>kg</option>
+            <select class="inline-select" data-id="${row.id}" data-field="costUnit">
+              <option value="g" ${row.costUnit === "g" ? "selected" : ""}>g</option>
+              <option value="kg" ${row.costUnit === "kg" ? "selected" : ""}>kg</option>
             </select>
           </td>
-          <td style="text-align: right; color: #8b6f47; font-weight: 600;">
-            ${row.lineCost != null ? fmtINR(row.lineCost) : '<span class="cost-missing">—</span>'}
-          </td>
-          <td>
-            <button class="btn-del" onclick="removeRow(${row.id})" title="Remove">🗑️</button>
-          </td>
+          <td style="text-align: right; color: #8b6f47; font-weight: 600;">${row.lineCost != null ? fmtINR(row.lineCost) : '<span class="cost-missing">-</span>'}</td>
+          <td><button class="btn-del" type="button" data-id="${row.id}" data-action="remove" title="Remove">Remove</button></td>
         `;
         tbody.appendChild(tr);
       });
     }
 
     function calculateTotals() {
-      const batchYield = parseInt(document.getElementById("batchYield").value) || 1;
+      const batchYield = parseInt(document.getElementById("batchYield").value, 10) || 1;
       let totalCost = 0;
       let unmatched = 0;
 
       rows.forEach(r => {
         if (r.lineCost != null) totalCost += r.lineCost;
-        if (!r.matched && r.costPrice == null) unmatched++;
+        if (!r.matched && r.costPrice == null) unmatched += 1;
       });
 
       return {
@@ -1086,7 +1007,7 @@ Examples:
 
     function updateSummary() {
       const totals = calculateTotals();
-      const batchYield = parseInt(document.getElementById("batchYield").value) || 1;
+      const batchYield = parseInt(document.getElementById("batchYield").value, 10) || 1;
 
       document.getElementById("totalCost").textContent = fmtINR(totals.totalCost);
       document.getElementById("costPerItem").textContent = fmtINR(totals.costPerItem);
@@ -1110,12 +1031,22 @@ Examples:
 
     function exportCSV() {
       const totals = calculateTotals();
-      let csv = "Ingredient,Qty,Unit,Cost Price (₹),Cost Qty,Cost Unit,Line Cost (₹)\n";
+      let csv = "Ingredient,Qty,Unit,Cost Price (INR),Cost Qty,Cost Unit,Line Cost (INR)\n";
+
       rows.forEach(r => {
-        csv += `${r.name},${r.quantity},${r.unit},${r.costPrice},${r.costQty},${r.costUnit},${r.lineCost != null ? r.lineCost.toFixed(2) : ''}\n`;
+        csv += [
+          escapeCsv(r.name),
+          escapeCsv(r.quantity),
+          escapeCsv(r.unit),
+          escapeCsv(r.costPrice),
+          escapeCsv(r.costQty),
+          escapeCsv(r.costUnit),
+          escapeCsv(r.lineCost != null ? r.lineCost.toFixed(2) : "")
+        ].join(",") + "\n";
       });
-      csv += `\n\n,,,,,Total Batch Cost:,${totals.totalCost.toFixed(2)}\n`;
-      csv += `,,,,,Cost Per Item:,${totals.costPerItem.toFixed(2)}\n`;
+
+      csv += "\n\n,,,,,Total Batch Cost:," + totals.totalCost.toFixed(2) + "\n";
+      csv += ",,,,,Cost Per Item:," + totals.costPerItem.toFixed(2) + "\n";
 
       const blob = new Blob([csv], { type: "text/csv" });
       const a = document.createElement("a");
@@ -1124,21 +1055,31 @@ Examples:
       a.click();
     }
 
-    function openSetupModal() {
-      document.getElementById("setupModal").classList.add("open");
-    }
-
-    function closeSetupModal() {
-      document.getElementById("setupModal").classList.remove("open");
-    }
-
-    // ═══════════════════════════════════════════════════════════════
-    // INIT
-    // ═══════════════════════════════════════════════════════════════
     window.addEventListener("DOMContentLoaded", () => {
       fetchPrices();
+      updateStatusBadge();
+
+      const tbody = document.getElementById("tableBody");
+      tbody.addEventListener("change", (e) => {
+        const target = e.target;
+        if (!(target instanceof HTMLInputElement || target instanceof HTMLSelectElement)) return;
+        const id = Number(target.dataset.id);
+        const field = target.dataset.field;
+        if (!Number.isFinite(id) || !field) return;
+        updateRowField(id, field, target.value);
+      });
+
+      tbody.addEventListener("click", (e) => {
+        const button = e.target.closest("button[data-action='remove']");
+        if (!button) return;
+        const id = Number(button.dataset.id);
+        if (!Number.isFinite(id)) return;
+        removeRow(id);
+      });
     });
   </script>
 </body>
 </html>
+
+
 
