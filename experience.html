@@ -630,7 +630,7 @@ Examples:
 
 
   <script>
-    const APPS_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbwYTO-rhr-fSARWL7cOTo4XGA-4thP5291Q6TIu853opUolm85fEZNhpyOkm-RtJHnD/exec";
+    const APPS_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbzDZVdT9U-zeMQvqiwTeJHDioYCkVPIpaKfXiIc8330hhzQaqxWUBIaifdE_mtsNsP_1g/exec";
 
     let rows = [];
     let database = [];
@@ -797,14 +797,31 @@ Examples:
       try {
         const res = await fetch(APPS_SCRIPT_URL + "?action=getPrices");
         const text = await res.text();
-        const clean = text.replace(/^[\s\S]*?\(/, "").replace(/\);?\s*$/, "");
-        const data = JSON.parse(clean);
+        console.log("Raw response:", text);
+        
+        // Try to parse as JSON first
+        let data;
+        try {
+          data = JSON.parse(text);
+        } catch (e) {
+          // If that fails, try unwrapping JSONP
+          const clean = text.replace(/^[\s\S]*?\(/, "").replace(/\);?\s*$/, "");
+          data = JSON.parse(clean);
+        }
+        
+        console.log("Parsed data:", data);
+        
         if (Array.isArray(data) && data.length > 0) {
           database = data;
+          console.log("Database loaded with", data.length, "ingredients");
+          console.log("Sample ingredient:", database[0]);
           return;
+        } else {
+          console.warn("No data received from Google Sheet");
         }
       } catch (e) {
         console.error("Failed to fetch prices from Google Sheet:", e);
+        alert("ERROR: Could not load prices from Google Sheet. Check console for details.");
       }
     }
 
@@ -856,14 +873,21 @@ Examples:
       const rawText = document.getElementById("rawText").value;
       if (!rawText.trim()) return;
 
+      console.log("Database has", database.length, "ingredients:", database);
+
       const lines = rawText.split("\n");
       const parsed = lines.map(parseLine).filter(Boolean);
+      console.log("Parsed ingredients:", parsed);
 
       rows = parsed.map((item, idx) => {
         const match = fuzzyMatch(item.name, database);
+        console.log(`"${item.name}" matched to:`, match);
+        
         const lineCost = match && item.quantity != null
           ? calcLineCost(item.quantity, item.unit, match.costPrice, match.costQty, match.costUnit)
           : null;
+        
+        console.log(`Line cost for "${item.name}": ${lineCost}`);
 
         return {
           id: Date.now() + idx,
