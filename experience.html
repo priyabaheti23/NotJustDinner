@@ -795,8 +795,10 @@ Examples:
 
     async function fetchPrices() {
       try {
-        const res = await fetch(APPS_SCRIPT_URL + "?action=getPrices");
-        const text = await res.text();
+        // Try direct fetch first
+        let res = await fetch(APPS_SCRIPT_URL + "?action=getPrices");
+        let text = await res.text();
+        
         console.log("Raw response:", text);
         
         // Try to parse as JSON first
@@ -821,7 +823,24 @@ Examples:
         }
       } catch (e) {
         console.error("Failed to fetch prices from Google Sheet:", e);
-        alert("ERROR: Could not load prices from Google Sheet. Check console for details.");
+        console.error("Trying CORS proxy workaround...");
+        
+        try {
+          // Fallback: Try with CORS proxy
+          const corsProxy = "https://cors-anywhere.herokuapp.com/";
+          const res = await fetch(corsProxy + APPS_SCRIPT_URL + "?action=getPrices");
+          const text = await res.text();
+          const data = JSON.parse(text);
+          
+          if (Array.isArray(data) && data.length > 0) {
+            database = data;
+            console.log("Database loaded (via CORS proxy) with", data.length, "ingredients");
+            return;
+          }
+        } catch (corsError) {
+          console.error("CORS proxy also failed:", corsError);
+          alert("⚠️ ERROR: Could not load prices from Google Sheet.\n\nTroubleshooting:\n1. Check if your Google Sheet Master is public\n2. Verify Apps Script URL is correct\n3. Try opening the URL directly in browser");
+        }
       }
     }
 
