@@ -7,858 +7,371 @@
   <link rel="icon" type="image/png" href="assets/branding/favicon.jpg">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;1,400;1,600&family=DM+Sans:ital,wght@0,300;0,400;0,500;1,300&display=swap" rel="stylesheet">
-
-  <style>
-    /* ─── RESET ─────────────────────────────────────────── */
-    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-    html { scroll-behavior: smooth; -webkit-font-smoothing: antialiased; }
-
-    /* ─── TOKENS ─────────────────────────────────────────── */
-    :root {
-      --c-bg:       #F0EAD6;
-      --c-bg-alt:   #E9E1CB;
-      --c-ink:      #3B1C0C;
-      --c-mid:      #6B3D27;
-      --c-muted:    #9C7055;
-      --c-rule:     rgba(59,28,12,0.11);
-
-      --f-serif:    'Playfair Display', Georgia, serif;
-      --f-sans:     'DM Sans', sans-serif;
-
-      /* spacing scale */
-      --sp-xs:  8px;
-      --sp-sm:  16px;
-      --sp-md:  32px;
-      --sp-lg:  64px;
-      --sp-xl:  96px;
-      --sp-2xl: 128px;
-
-      --max-w:  960px;
-      --gutter: 40px;
-    }
-
-    /* ─── BASE ───────────────────────────────────────────── */
-    body {
-      background: var(--c-bg);
-      color: var(--c-ink);
-      font-family: var(--f-sans);
-      font-weight: 300;
-      font-size: 15px;
-      line-height: 1.75;
-      overflow-x: hidden;
-    }
-
-    img { display: block; max-width: 100%; }
-    a   { color: inherit; text-decoration: none; }
-
-    /* ─── CONTAINER ──────────────────────────────────────── */
-    .wrap {
-      max-width: var(--max-w);
-      margin-inline: auto;
-      padding-inline: var(--gutter);
-    }
-
-    /* ─── TYPOGRAPHY HELPERS ─────────────────────────────── */
-    .label {
-      font-family: var(--f-sans);
-      font-size: 10px;
-      font-weight: 500;
-      letter-spacing: 0.2em;
-      text-transform: uppercase;
-      color: var(--c-muted);
-    }
-
-    .heading {
-      font-family: var(--f-serif);
-      font-weight: 400;
-      line-height: 1.15;
-      color: var(--c-ink);
-    }
-    .heading em { font-style: italic; }
-
-    /* ─── HEADER ─────────────────────────────────────────── */
-    .header {
-      position: fixed;
-      inset-block-start: 0;
-      inset-inline: 0;
-      z-index: 90;
-      height: 62px;
-      background: rgba(240,234,214,0.92);
-      backdrop-filter: blur(14px);
-      -webkit-backdrop-filter: blur(14px);
-      border-bottom: 1px solid var(--c-rule);
-    }
-
-    .header .wrap {
-      height: 100%;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-    }
-
-    .header-logo {
-      height: 32px;
-      mix-blend-mode: multiply;
-    }
-
-    .header-logo-fallback {
-      font-family: var(--f-serif);
-      font-size: 17px;
-      color: var(--c-ink);
-    }
-
-    .header-cta {
-      font-family: var(--f-sans);
-      font-size: 10px;
-      font-weight: 500;
-      letter-spacing: 0.16em;
-      text-transform: uppercase;
-      color: var(--c-bg);
-      background: var(--c-ink);
-      padding: 9px 22px;
-      transition: opacity 0.18s;
-    }
-    .header-cta:hover { opacity: 0.7; }
-
-    /* ─── HERO ───────────────────────────────────────────── */
-    .hero {
-      min-height: 100svh;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      text-align: center;
-      padding-block: 80px;
-      padding-inline: var(--gutter);
-      gap: 0;
-    }
-
-    .hero-logo {
-      width: min(260px, 65vw);
-      mix-blend-mode: multiply;
-      opacity: 0;
-      animation: rise 1s 0.1s ease forwards;
-    }
-
-    .hero-line {
-      width: 1px;
-      height: 52px;
-      background: var(--c-rule);
-      margin-block: var(--sp-lg);
-      opacity: 0;
-      animation: rise 1s 0.3s ease forwards;
-    }
-
-    .hero-pills {
-      display: flex;
-      align-items: stretch;
-      border: 1px solid var(--c-rule);
-      opacity: 0;
-      animation: rise 1s 0.5s ease forwards;
-    }
-
-    .hero-pill {
-      padding: 14px 24px;
-      border-right: 1px solid var(--c-rule);
-      text-align: center;
-    }
-    .hero-pill:last-child { border-right: none; }
-
-    .hero-pill .val {
-      font-family: var(--f-serif);
-      font-size: 15px;
-      color: var(--c-ink);
-      margin-top: 4px;
-    }
-    .hero-pill .val em { font-style: italic; }
-
-    .hero-btn {
-      display: inline-block;
-      margin-top: var(--sp-lg);
-      font-family: var(--f-sans);
-      font-size: 10px;
-      font-weight: 500;
-      letter-spacing: 0.18em;
-      text-transform: uppercase;
-      color: var(--c-bg);
-      background: var(--c-ink);
-      padding: 14px 40px;
-      opacity: 0;
-      animation: rise 1s 0.7s ease forwards;
-      transition: opacity 0.18s;
-    }
-    .hero-btn:hover { opacity: 0.72; }
-
-    @keyframes rise {
-      from { opacity: 0; transform: translateY(14px); }
-      to   { opacity: 1; transform: translateY(0); }
-    }
-
-    /* ─── SECTION SHELL ──────────────────────────────────── */
-    .section {
-      padding-block: var(--sp-xl);
-    }
-
-    .section-alt {
-      background: var(--c-bg-alt);
-    }
-
-    .section-dark {
-      background: var(--c-ink);
-    }
-
-    .section-header {
-      margin-bottom: var(--sp-lg);
-    }
-
-    .section-header .label {
-      margin-bottom: 12px;
-    }
-
-    .section-header .heading {
-      font-size: clamp(28px, 3.6vw, 42px);
-    }
-
-    hr.rule {
-      border: none;
-      border-top: 1px solid var(--c-rule);
-    }
-
-    /* ─── ABOUT ──────────────────────────────────────────── */
-    .about-body {
-      max-width: 560px;
-      font-size: 15px;
-      color: var(--c-mid);
-      line-height: 1.85;
-    }
-    .about-body p + p { margin-top: 14px; }
-
-    /* ─── GALLERY ────────────────────────────────────────── */
-    .gallery-grid {
-      display: grid;
-      grid-template-columns: repeat(3, 1fr);
-      gap: 4px;
-    }
-
-    .g-item {
-      aspect-ratio: 1;
-      overflow: hidden;
-      background: var(--c-bg);
-    }
-
-    .g-item img {
-      width: 100%;
-      height: 100%;
-      object-fit: cover;
-      transition: transform 0.5s ease;
-    }
-    .g-item:hover img { transform: scale(1.04); }
-
-    /* ─── MENU ───────────────────────────────────────────── */
-    .menu-layout {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: var(--sp-xl);
-      align-items: start;
-    }
-
-    .menu-left .heading { color: var(--c-bg); font-size: clamp(28px, 3.6vw, 42px); margin-bottom: 12px; }
-    .menu-left .label   { color: rgba(240,234,214,0.4); margin-bottom: 16px; }
-
-    .rotating-tag {
-      display: inline-flex;
-      align-items: center;
-      gap: 8px;
-      margin-bottom: var(--sp-md);
-    }
-
-    .dot {
-      width: 5px;
-      height: 5px;
-      border-radius: 50%;
-      background: rgba(240,234,214,0.35);
-      animation: pulse 2.4s ease-in-out infinite;
-    }
-    @keyframes pulse { 0%,100%{opacity:.3} 50%{opacity:.85} }
-
-    .rotating-tag span {
-      font-size: 10px;
-      letter-spacing: 0.14em;
-      text-transform: uppercase;
-      color: rgba(240,234,214,0.38);
-    }
-
-    .menu-desc {
-      font-size: 14px;
-      color: rgba(240,234,214,0.5);
-      line-height: 1.8;
-      max-width: 340px;
-    }
-
-    .menu-note {
-      margin-top: var(--sp-sm);
-      font-size: 11px;
-      font-style: italic;
-      color: rgba(240,234,214,0.25);
-    }
-
-    .courses { margin-top: 4px; }
-
-    .c-row {
-      display: flex;
-      align-items: baseline;
-      gap: 12px;
-      padding-block: 17px;
-      border-bottom: 1px solid rgba(240,234,214,0.07);
-      opacity: 0;
-      transform: translateY(8px);
-      transition: opacity 0.4s ease, transform 0.4s ease;
-    }
-    .c-row:first-child { border-top: 1px solid rgba(240,234,214,0.07); }
-    .c-row.vis { opacity: 1; transform: none; }
-
-    .c-i {
-      font-family: var(--f-serif);
-      font-size: 11px;
-      font-style: italic;
-      color: rgba(240,234,214,0.22);
-      min-width: 22px;
-    }
-
-    .c-rule-dot {
-      flex: 1;
-      border-bottom: 1px dashed rgba(240,234,214,0.1);
-      margin-bottom: 3px;
-    }
-
-    .c-name {
-      font-family: var(--f-serif);
-      font-size: 17px;
-      color: var(--c-bg);
-      text-align: right;
-    }
-
-    .c-sub {
-      font-size: 9px;
-      letter-spacing: 0.12em;
-      text-transform: uppercase;
-      color: rgba(240,234,214,0.22);
-      min-width: 52px;
-      text-align: right;
-    }
-
-    /* ─── HOSTS ──────────────────────────────────────────── */
-    .hosts-grid {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 4px;
-    }
-
-    .host-card {
-      background: var(--c-bg);
-      padding: var(--sp-lg) var(--sp-md);
-      border: 1px solid var(--c-rule);
-    }
-
-    .host-avatar {
-      width: 60px;
-      height: 60px;
-      border-radius: 50%;
-      object-fit: cover;
-      margin-bottom: var(--sp-md);
-    }
-
-    .host-role {
-      font-size: 9px;
-      font-weight: 500;
-      letter-spacing: 0.18em;
-      text-transform: uppercase;
-      color: var(--c-muted);
-      margin-bottom: 6px;
-    }
-
-    .host-name {
-      font-family: var(--f-serif);
-      font-size: 26px;
-      color: var(--c-ink);
-      margin-bottom: 12px;
-    }
-
-    .host-bio {
-      font-size: 14px;
-      color: var(--c-mid);
-      line-height: 1.7;
-      margin-bottom: var(--sp-md);
-    }
-
-    .social-icon {
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      width: 30px;
-      height: 30px;
-      border: 1px solid var(--c-rule);
-      border-radius: 50%;
-      color: var(--c-muted);
-      transition: border-color 0.2s, color 0.2s;
-    }
-    .social-icon:hover { border-color: var(--c-ink); color: var(--c-ink); }
-    .social-icon svg { width: 12px; height: 12px; fill: none; stroke: currentColor; stroke-width: 1.6; stroke-linecap: round; }
-
-    /* ─── PRICING ────────────────────────────────────────── */
-    .pricing-layout {
-      display: grid;
-      grid-template-columns: 1fr auto;
-      gap: var(--sp-xl);
-      align-items: start;
-    }
-
-    .price-amt {
-      font-family: var(--f-serif);
-      font-size: clamp(52px, 7vw, 76px);
-      font-weight: 400;
-      color: var(--c-ink);
-      line-height: 1;
-    }
-    .price-amt sup { font-size: 0.35em; vertical-align: super; }
-
-    .price-sub {
-      margin-top: 6px;
-      font-size: 12px;
-      color: var(--c-muted);
-      letter-spacing: 0.04em;
-    }
-
-    .steps-list {
-      margin-top: var(--sp-md);
-      display: flex;
-      flex-direction: column;
-      gap: var(--sp-md);
-    }
-
-    .step {
-      display: flex;
-      gap: 16px;
-      align-items: flex-start;
-    }
-
-    .step-n {
-      font-family: var(--f-serif);
-      font-size: 14px;
-      font-style: italic;
-      color: var(--c-muted);
-      padding-top: 1px;
-      min-width: 16px;
-    }
-
-    .step-content {
-      font-size: 13px;
-      color: var(--c-mid);
-      line-height: 1.6;
-    }
-    .step-content strong {
-      font-weight: 500;
-      color: var(--c-ink);
-      display: block;
-    }
-
-    .qr-block {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      gap: 14px;
-    }
-
-    .qr-frame {
-      width: 140px;
-      height: 140px;
-      padding: 7px;
-      border: 1px solid var(--c-rule);
-      background: #fff;
-    }
-    .qr-frame img { width: 100%; height: 100%; object-fit: contain; }
-
-    .upi-tag {
-      display: inline-flex;
-      align-items: center;
-      gap: 8px;
-      background: var(--c-bg-alt);
-      border: 1px solid var(--c-rule);
-      padding: 7px 12px;
-    }
-
-    .upi-str {
-      font-family: monospace;
-      font-size: 12px;
-      color: var(--c-ink);
-    }
-
-    .copy-btn {
-      background: none;
-      border: none;
-      cursor: pointer;
-      padding: 1px;
-      color: var(--c-muted);
-      display: flex;
-      align-items: center;
-      transition: color 0.18s;
-    }
-    .copy-btn:hover { color: var(--c-ink); }
-    .copy-btn svg { width: 12px; height: 12px; fill: none; stroke: currentColor; stroke-width: 1.6; }
-
-    .copy-toast {
-      font-size: 10px;
-      color: var(--c-muted);
-      letter-spacing: 0.06em;
-      opacity: 0;
-      transition: opacity 0.3s;
-    }
-
-    /* ─── FORM ───────────────────────────────────────────── */
-    .form-grid {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 14px;
-    }
-
-    .form-grid .full { grid-column: span 2; }
-
-    .f-field {
-      display: flex;
-      flex-direction: column;
-      gap: 6px;
-    }
-
-    .f-field label {
-      font-size: 9px;
-      font-weight: 500;
-      letter-spacing: 0.2em;
-      text-transform: uppercase;
-      color: var(--c-muted);
-    }
-
-    .f-field input,
-    .f-field select {
-      background: var(--c-bg);
-      border: 1px solid rgba(59,28,12,0.14);
-      padding: 12px 14px;
-      font-family: var(--f-sans);
-      font-size: 14px;
-      font-weight: 300;
-      color: var(--c-ink);
-      outline: none;
-      appearance: none;
-      -webkit-appearance: none;
-      transition: border-color 0.2s;
-      width: 100%;
-      border-radius: 0;
-    }
-    .f-field select {
-      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6'%3E%3Cpath d='M1 1l4 4 4-4' stroke='%239C7055' stroke-width='1.2' fill='none' stroke-linecap='round'/%3E%3C/svg%3E");
-      background-repeat: no-repeat;
-      background-position: right 13px center;
-      padding-right: 32px;
-    }
-    .f-field input:focus,
-    .f-field select:focus  { border-color: var(--c-ink); }
-    .f-field input.invalid { border-color: #a03030; }
-
-    .f-error {
-      font-size: 11px;
-      font-style: italic;
-      color: #a03030;
-      display: none;
-    }
-
-    .form-submit {
-      margin-top: 6px;
-    }
-
-    .btn-submit {
-      width: 100%;
-      font-family: var(--f-sans);
-      font-size: 10px;
-      font-weight: 500;
-      letter-spacing: 0.18em;
-      text-transform: uppercase;
-      color: var(--c-bg);
-      background: var(--c-ink);
-      border: none;
-      padding: 16px;
-      cursor: pointer;
-      transition: opacity 0.18s;
-    }
-    .btn-submit:hover    { opacity: 0.75; }
-    .btn-submit:disabled { opacity: 0.45; cursor: not-allowed; }
-
-    /* ─── MODAL ──────────────────────────────────────────── */
-    .modal-ov {
-      display: none;
-      position: fixed;
-      inset: 0;
-      background: rgba(59,28,12,0.55);
-      backdrop-filter: blur(8px);
-      z-index: 200;
-      align-items: center;
-      justify-content: center;
-      padding: 24px;
-    }
-
-    .modal-box {
-      background: var(--c-bg);
-      max-width: 380px;
-      width: 100%;
-      padding: 52px 40px;
-      text-align: center;
-      animation: rise 0.3s ease both;
-    }
-
-    .modal-icon { font-size: 28px; margin-bottom: 18px; }
-    .modal-title { font-family: var(--f-serif); font-size: 30px; color: var(--c-ink); margin-bottom: 12px; }
-    .modal-body  { font-size: 14px; color: var(--c-mid); line-height: 1.7; margin-bottom: 28px; }
-
-    /* ─── FOOTER ─────────────────────────────────────────── */
-    .footer {
-      background: var(--c-ink);
-      padding-block: var(--sp-xl);
-      text-align: center;
-    }
-
-    .footer-logo {
-      height: 28px;
-      margin-inline: auto;
-      margin-bottom: 6px;
-      filter: invert(1) brightness(10);
-      opacity: 0.65;
-    }
-
-    .footer-sub {
-      font-size: 9px;
-      letter-spacing: 0.2em;
-      text-transform: uppercase;
-      color: rgba(240,234,214,0.25);
-      margin-bottom: var(--sp-md);
-    }
-
-    .footer-icons {
-      display: flex;
-      gap: 12px;
-      justify-content: center;
-      margin-bottom: var(--sp-md);
-    }
-
-    .footer-icons a {
-      width: 36px;
-      height: 36px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      border: 1px solid rgba(240,234,214,0.1);
-      border-radius: 50%;
-      color: rgba(240,234,214,0.35);
-      transition: border-color 0.2s, color 0.2s;
-    }
-    .footer-icons a:hover { border-color: rgba(240,234,214,0.45); color: rgba(240,234,214,0.7); }
-    .footer-icons a svg { width: 13px; height: 13px; fill: none; stroke: currentColor; stroke-width: 1.5; stroke-linecap: round; }
-
-    .footer-copy {
-      font-size: 11px;
-      color: rgba(240,234,214,0.2);
-      line-height: 1.9;
-    }
-
-    /* ─── REVEAL ─────────────────────────────────────────── */
-    .reveal {
-      opacity: 0;
-      transform: translateY(16px);
-      transition: opacity 0.7s ease, transform 0.7s ease;
-    }
-    .reveal.vis { opacity: 1; transform: none; }
-
-    /* ─── RESPONSIVE ─────────────────────────────────────── */
-    @media (max-width: 680px) {
-      :root { --gutter: 20px; --sp-xl: 64px; --sp-lg: 48px; }
-
-      .header-logo { height: 26px; }
-
-      .hero-pills { flex-wrap: wrap; }
-      .hero-pill  { flex: 1 1 40%; border-bottom: 1px solid var(--c-rule); }
-      .hero-pill:nth-child(2n) { border-right: none; }
-      .hero-pill:nth-last-child(-n+2) { border-bottom: none; }
-
-      .menu-layout  { grid-template-columns: 1fr; gap: var(--sp-lg); }
-      .hosts-grid   { grid-template-columns: 1fr; }
-      .pricing-layout { grid-template-columns: 1fr; gap: var(--sp-lg); }
-      .qr-block     { align-items: flex-start; }
-      .form-grid    { grid-template-columns: 1fr; }
-      .form-grid .full { grid-column: span 1; }
-    }
-  </style>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;1,400;1,600&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+/* ── RESET ───────────────────────────────────────── */
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth;-webkit-font-smoothing:antialiased}
+
+/* ── TOKENS ──────────────────────────────────────── */
+:root{
+  --bg:    #F0EAD6;
+  --bg2:   #E9E1CB;
+  --ink:   #3B1C0C;
+  --mid:   #6B3D27;
+  --muted: #9C7055;
+  --rule:  rgba(59,28,12,.11);
+  --serif: 'Playfair Display',Georgia,serif;
+  --sans:  'DM Sans',sans-serif;
+  --w:     900px;
+  --g:     40px;
+}
+
+/* ── BASE ────────────────────────────────────────── */
+body{background:var(--bg);color:var(--ink);font-family:var(--sans);font-weight:300;font-size:15px;line-height:1.75;overflow-x:hidden}
+img{display:block;max-width:100%}
+a{color:inherit;text-decoration:none}
+.wrap{max-width:var(--w);margin-inline:auto;padding-inline:var(--g)}
+
+/* ── TYPE ────────────────────────────────────────── */
+.lbl{font-size:10px;font-weight:500;letter-spacing:.2em;text-transform:uppercase;color:var(--muted)}
+.h{font-family:var(--serif);font-weight:400;line-height:1.15;color:var(--ink)}
+.h em{font-style:italic}
+
+/* ── HEADER ──────────────────────────────────────── */
+.hdr{position:fixed;inset-block-start:0;inset-inline:0;z-index:90;height:60px;
+  background:rgba(240,234,214,.93);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);
+  border-bottom:1px solid var(--rule)}
+.hdr .wrap{height:100%;display:flex;align-items:center;justify-content:space-between}
+.hdr-logo{height:30px;mix-blend-mode:multiply}
+.hdr-logo-fb{font-family:var(--serif);font-size:16px;color:var(--ink)}
+.hdr-btn{font-size:10px;font-weight:500;letter-spacing:.16em;text-transform:uppercase;
+  color:var(--bg);background:var(--ink);padding:9px 22px;transition:opacity .18s}
+.hdr-btn:hover{opacity:.7}
+
+/* ── HERO ────────────────────────────────────────── */
+.hero{min-height:100svh;display:flex;flex-direction:column;align-items:center;
+  justify-content:center;text-align:center;padding:80px var(--g)}
+.hero-logo{width:min(248px,62vw);mix-blend-mode:multiply;opacity:0;animation:rise 1s .1s ease forwards}
+.hero-vline{width:1px;height:48px;background:var(--rule);margin:52px auto;opacity:0;animation:rise 1s .3s ease forwards}
+.hero-pills{display:flex;align-items:stretch;border:1px solid var(--rule);
+  opacity:0;animation:rise 1s .5s ease forwards}
+.pill{padding:13px 22px;border-right:1px solid var(--rule);text-align:center}
+.pill:last-child{border-right:none}
+.pill .v{font-family:var(--serif);font-size:14px;color:var(--ink);margin-top:4px}
+.pill .v em{font-style:italic}
+.hero-cta{margin-top:48px;font-size:10px;font-weight:500;letter-spacing:.18em;text-transform:uppercase;
+  color:var(--bg);background:var(--ink);padding:14px 40px;display:inline-block;
+  opacity:0;animation:rise 1s .7s ease forwards;transition:opacity .18s}
+.hero-cta:hover{opacity:.72}
+@keyframes rise{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:translateY(0)}}
+
+/* ── SECTION ─────────────────────────────────────── */
+.sec{padding-block:88px}
+.sec-alt{background:var(--bg2)}
+.sec-dark{background:var(--ink)}
+.sec-hd{margin-bottom:52px}
+.sec-hd .lbl{margin-bottom:12px}
+.sec-hd .h{font-size:clamp(26px,3.4vw,40px)}
+hr.div{border:none;border-top:1px solid var(--rule)}
+
+/* ── ABOUT ───────────────────────────────────────── */
+.about-p{max-width:520px;font-size:15px;color:var(--mid);line-height:1.85}
+.about-p p+p{margin-top:14px}
+
+/* ── GALLERY ─────────────────────────────────────── */
+.gal{display:grid;grid-template-columns:repeat(3,1fr);gap:4px}
+.gi{aspect-ratio:1;overflow:hidden;background:var(--bg)}
+.gi img{width:100%;height:100%;object-fit:cover;transition:transform .5s ease}
+.gi:hover img{transform:scale(1.04)}
+
+/* ── MENU ────────────────────────────────────────── */
+.menu-lay{display:grid;grid-template-columns:1fr 1fr;gap:80px;align-items:start}
+.menu-l .h{color:var(--bg);font-size:clamp(26px,3.4vw,40px);margin-bottom:10px}
+.menu-l .lbl{color:rgba(240,234,214,.38);margin-bottom:14px}
+.rtag{display:inline-flex;align-items:center;gap:8px;margin-bottom:20px}
+.dot{width:5px;height:5px;border-radius:50%;background:rgba(240,234,214,.35);
+  animation:blink 2.4s ease-in-out infinite}
+@keyframes blink{0%,100%{opacity:.3}50%{opacity:.9}}
+.rtag span{font-size:10px;letter-spacing:.13em;text-transform:uppercase;color:rgba(240,234,214,.38)}
+.mdesc{font-size:14px;color:rgba(240,234,214,.5);line-height:1.8;max-width:320px}
+.mnote{margin-top:12px;font-size:11px;font-style:italic;color:rgba(240,234,214,.22)}
+.courses{padding-top:4px}
+.cr{display:flex;align-items:baseline;gap:12px;padding-block:16px;
+  border-bottom:1px solid rgba(240,234,214,.07);
+  opacity:0;transform:translateY(8px);transition:opacity .4s ease,transform .4s ease}
+.cr:first-child{border-top:1px solid rgba(240,234,214,.07)}
+.cr.vis{opacity:1;transform:none}
+.ci{font-family:var(--serif);font-size:11px;font-style:italic;color:rgba(240,234,214,.22);min-width:20px}
+.cdash{flex:1;border-bottom:1px dashed rgba(240,234,214,.1);margin-bottom:3px}
+.cn{font-family:var(--serif);font-size:16px;color:var(--bg)}
+.ct{font-size:9px;letter-spacing:.12em;text-transform:uppercase;color:rgba(240,234,214,.22);min-width:50px;text-align:right}
+
+/* ── HOSTS ───────────────────────────────────────── */
+.hosts{display:grid;grid-template-columns:1fr 1fr;gap:4px}
+.hc{background:var(--bg);padding:48px 36px;border:1px solid var(--rule)}
+.hav{width:58px;height:58px;border-radius:50%;object-fit:cover;margin-bottom:20px}
+.hrole{font-size:9px;font-weight:500;letter-spacing:.18em;text-transform:uppercase;color:var(--muted);margin-bottom:6px}
+.hname{font-family:var(--serif);font-size:24px;color:var(--ink);margin-bottom:12px}
+.hbio{font-size:14px;color:var(--mid);line-height:1.7;margin-bottom:20px}
+.sicon{display:inline-flex;align-items:center;justify-content:center;width:30px;height:30px;
+  border:1px solid var(--rule);border-radius:50%;color:var(--muted);transition:border-color .2s,color .2s}
+.sicon:hover{border-color:var(--ink);color:var(--ink)}
+.sicon svg{width:12px;height:12px;fill:none;stroke:currentColor;stroke-width:1.6;stroke-linecap:round}
+
+/* ── BOOKING TABS ────────────────────────────────── */
+.booking-tabs{display:flex;gap:0;border:1px solid var(--rule);margin-bottom:48px}
+.btab{flex:1;padding:18px 24px;text-align:center;cursor:pointer;border-right:1px solid var(--rule);
+  transition:background .2s,color .2s;background:var(--bg)}
+.btab:last-child{border-right:none}
+.btab.active{background:var(--ink);color:var(--bg)}
+.btab .t-head{font-family:var(--serif);font-size:18px;margin-bottom:4px}
+.btab .t-head em{font-style:italic}
+.btab .t-sub{font-size:11px;color:var(--muted);letter-spacing:.04em}
+.btab.active .t-sub{color:rgba(240,234,214,.5)}
+
+/* ── BOOKING PANEL ───────────────────────────────── */
+.bpanel{display:none}
+.bpanel.active{display:block}
+
+/* ── CALENDAR ────────────────────────────────────── */
+.cal-wrap{margin-bottom:40px}
+.cal-title{font-family:var(--serif);font-size:22px;color:var(--ink);margin-bottom:24px}
+.cal-grid{display:grid;grid-template-columns:repeat(7,1fr);gap:3px;max-width:480px}
+.cal-day-label{text-align:center;font-size:10px;font-weight:500;letter-spacing:.12em;
+  text-transform:uppercase;color:var(--muted);padding-bottom:10px}
+.cal-day{aspect-ratio:1;display:flex;align-items:center;justify-content:center;
+  font-family:var(--serif);font-size:15px;cursor:default;border:1px solid transparent;
+  transition:all .18s;position:relative}
+.cal-day.empty{background:transparent}
+.cal-day.avail{cursor:pointer;border-color:var(--rule);background:var(--bg2)}
+.cal-day.avail:hover{border-color:var(--mid);background:var(--bg)}
+.cal-day.avail.selected{background:var(--ink);color:var(--bg);border-color:var(--ink)}
+.cal-day.past{color:var(--muted);opacity:.35;cursor:not-allowed}
+.cal-day .day-badge{position:absolute;bottom:4px;left:50%;transform:translateX(-50%);
+  width:4px;height:4px;border-radius:50%;background:var(--mid)}
+.cal-day.selected .day-badge{background:rgba(240,234,214,.5)}
+
+/* ── GUEST COUNT ─────────────────────────────────── */
+.guest-row{display:flex;align-items:center;gap:24px;margin-bottom:36px}
+.guest-label{font-size:13px;color:var(--mid)}
+.guest-counter{display:flex;align-items:center;gap:0;border:1px solid var(--rule)}
+.gcbtn{width:40px;height:40px;background:var(--bg2);border:none;cursor:pointer;
+  font-size:18px;color:var(--ink);display:flex;align-items:center;justify-content:center;
+  transition:background .18s;font-family:var(--sans)}
+.gcbtn:hover{background:var(--bg)}
+.gcbtn:disabled{opacity:.35;cursor:not-allowed}
+.gcnum{width:48px;height:40px;display:flex;align-items:center;justify-content:center;
+  font-family:var(--serif);font-size:20px;color:var(--ink);border-left:1px solid var(--rule);border-right:1px solid var(--rule)}
+.guest-error{font-size:12px;color:#a03030;font-style:italic;display:none}
+
+/* ── MEMBER FORMS ────────────────────────────────── */
+.member-forms{display:flex;flex-direction:column;gap:28px}
+.member-block{border:1px solid var(--rule);padding:28px;background:var(--bg)}
+.member-title{font-family:var(--serif);font-size:17px;color:var(--ink);margin-bottom:20px;
+  padding-bottom:14px;border-bottom:1px solid var(--rule)}
+.fgrid{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+.fgrid .full{grid-column:span 2}
+.ff{display:flex;flex-direction:column;gap:6px}
+.ff label{font-size:9px;font-weight:500;letter-spacing:.2em;text-transform:uppercase;color:var(--muted)}
+.ff input,.ff select{background:var(--bg2);border:1px solid rgba(59,28,12,.13);
+  padding:12px 14px;font-family:var(--sans);font-size:14px;font-weight:300;color:var(--ink);
+  outline:none;appearance:none;-webkit-appearance:none;transition:border-color .2s;border-radius:0;width:100%}
+.ff select{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6'%3E%3Cpath d='M1 1l4 4 4-4' stroke='%239C7055' stroke-width='1.2' fill='none' stroke-linecap='round'/%3E%3C/svg%3E");
+  background-repeat:no-repeat;background-position:right 13px center;padding-right:32px}
+.ff input:focus,.ff select:focus{border-color:var(--ink);background:var(--bg)}
+
+/* ── PRICING BLOCK ───────────────────────────────── */
+.pricing-row{display:grid;grid-template-columns:1fr auto;gap:60px;align-items:start;margin-bottom:40px}
+.pamt{font-family:var(--serif);font-size:clamp(48px,6.5vw,72px);font-weight:400;color:var(--ink);line-height:1}
+.pamt sup{font-size:.36em;vertical-align:super}
+.psub{margin-top:6px;font-size:12px;color:var(--muted);letter-spacing:.04em}
+.steps-l{margin-top:28px;display:flex;flex-direction:column;gap:18px}
+.step{display:flex;gap:14px;align-items:flex-start}
+.sn{font-family:var(--serif);font-size:14px;font-style:italic;color:var(--muted);min-width:16px;padding-top:1px}
+.sc{font-size:13px;color:var(--mid);line-height:1.6}
+.sc strong{font-weight:500;color:var(--ink);display:block}
+.qr-blk{display:flex;flex-direction:column;align-items:center;gap:12px}
+.qrf{width:136px;height:136px;padding:7px;border:1px solid var(--rule);background:#fff}
+.qrf img{width:100%;height:100%;object-fit:contain}
+.upi-tag{display:inline-flex;align-items:center;gap:8px;background:var(--bg2);
+  border:1px solid var(--rule);padding:7px 12px}
+.upi-s{font-family:monospace;font-size:12px;color:var(--ink)}
+.cbtn{background:none;border:none;cursor:pointer;padding:1px;color:var(--muted);
+  display:flex;align-items:center;transition:color .18s}
+.cbtn:hover{color:var(--ink)}
+.cbtn svg{width:12px;height:12px;fill:none;stroke:currentColor;stroke-width:1.6}
+.ctst{font-size:10px;color:var(--muted);letter-spacing:.06em;opacity:0;transition:opacity .3s}
+
+/* ── SUBMIT BTN ──────────────────────────────────── */
+.sub-btn{width:100%;font-family:var(--sans);font-size:10px;font-weight:500;
+  letter-spacing:.18em;text-transform:uppercase;color:var(--bg);background:var(--ink);
+  border:none;padding:16px;cursor:pointer;transition:opacity .18s;margin-top:24px}
+.sub-btn:hover{opacity:.75}
+.sub-btn:disabled{opacity:.4;cursor:not-allowed}
+
+/* ── PRIVATE DINING ──────────────────────────────── */
+.pd-intro{font-size:15px;color:var(--mid);line-height:1.85;max-width:520px;margin-bottom:40px}
+.pd-includes{display:grid;grid-template-columns:repeat(3,1fr);gap:3px;margin-bottom:48px}
+.pd-feat{background:var(--bg2);border:1px solid var(--rule);padding:24px 20px}
+.pd-feat .fi{font-size:22px;margin-bottom:10px}
+.pd-feat .ft{font-family:var(--serif);font-size:15px;color:var(--ink);margin-bottom:6px}
+.pd-feat .fd{font-size:13px;color:var(--mid);line-height:1.6}
+
+/* ── MODAL ───────────────────────────────────────── */
+.modal-ov{display:none;position:fixed;inset:0;background:rgba(59,28,12,.55);
+  backdrop-filter:blur(8px);z-index:200;align-items:center;justify-content:center;padding:24px}
+.modal-box{background:var(--bg);max-width:380px;width:100%;padding:48px 36px;
+  text-align:center;animation:rise .3s ease both}
+.mi{font-size:26px;margin-bottom:16px}
+.mt{font-family:var(--serif);font-size:28px;color:var(--ink);margin-bottom:12px}
+.mb{font-size:14px;color:var(--mid);line-height:1.7;margin-bottom:26px}
+
+/* ── FOOTER ──────────────────────────────────────── */
+.ftr{background:var(--ink);padding-block:80px;text-align:center}
+.ftr-logo{height:26px;margin-inline:auto;margin-bottom:6px;filter:invert(1) brightness(10);opacity:.62}
+.ftr-sub{font-size:9px;letter-spacing:.2em;text-transform:uppercase;color:rgba(240,234,214,.25);margin-bottom:28px}
+.ftr-icons{display:flex;gap:12px;justify-content:center;margin-bottom:28px}
+.ftr-icons a{width:34px;height:34px;display:flex;align-items:center;justify-content:center;
+  border:1px solid rgba(240,234,214,.1);border-radius:50%;color:rgba(240,234,214,.35);transition:border-color .2s,color .2s}
+.ftr-icons a:hover{border-color:rgba(240,234,214,.45);color:rgba(240,234,214,.7)}
+.ftr-icons a svg{width:13px;height:13px;fill:none;stroke:currentColor;stroke-width:1.5;stroke-linecap:round}
+.ftr-copy{font-size:11px;color:rgba(240,234,214,.2);line-height:1.9}
+
+/* ── REVEAL ──────────────────────────────────────── */
+.rev{opacity:0;transform:translateY(16px);transition:opacity .7s ease,transform .7s ease}
+.rev.vis{opacity:1;transform:none}
+
+/* ── MOBILE ──────────────────────────────────────── */
+@media(max-width:640px){
+  :root{--g:20px}
+  .hero-pills{flex-wrap:wrap}
+  .pill{flex:1 1 45%;border-bottom:1px solid var(--rule)}
+  .pill:nth-child(2n){border-right:none}
+  .menu-lay{grid-template-columns:1fr;gap:48px}
+  .hosts{grid-template-columns:1fr}
+  .booking-tabs{flex-direction:column}
+  .btab{border-right:none;border-bottom:1px solid var(--rule)}
+  .btab:last-child{border-bottom:none}
+  .pricing-row{grid-template-columns:1fr;gap:36px}
+  .fgrid{grid-template-columns:1fr}
+  .fgrid .full{grid-column:span 1}
+  .pd-includes{grid-template-columns:1fr}
+  .guest-row{flex-wrap:wrap}
+  .cal-grid{max-width:100%}
+}
+</style>
 </head>
 <body>
 
-<!-- ─ HEADER ──────────────────────────────────────────────── -->
-<header class="header">
+<!-- HEADER -->
+<header class="hdr">
   <div class="wrap">
     <a href="index.html">
-      <img src="assets/branding/logo.png"
-           class="header-logo"
-           alt="Not Just Dinner"
-           onerror="this.outerHTML='<span class=\'header-logo-fallback\'>Not <em>Just</em> Dinner</span>'">
+      <img src="assets/branding/logo.png" class="hdr-logo" alt="Not Just Dinner"
+           onerror="this.outerHTML='<span class=\'hdr-logo-fb\'>Not <em>Just</em> Dinner</span>'">
     </a>
-    <a href="#booking" class="header-cta">Book a Seat</a>
+    <a href="#book" class="hdr-btn">Book a Seat</a>
   </div>
 </header>
 
-<!-- ─ HERO ────────────────────────────────────────────────── -->
+<!-- HERO -->
 <section class="hero">
-  <img src="assets/branding/logo.png"
-       class="hero-logo"
-       alt="Not Just Dinner"
-       onerror="this.outerHTML='<h1 style=\'font-family:var(--f-serif);font-size:clamp(44px,9vw,88px);font-weight:400;line-height:1.05;text-align:center;margin-bottom:0;opacity:0;animation:rise 1s 0.1s ease forwards;\'>Not <em>Just</em><br>DINNER</h1>'">
-
-  <div class="hero-line"></div>
-
+  <img src="assets/branding/logo.png" class="hero-logo" alt="Not Just Dinner"
+       onerror="this.outerHTML='<h1 style=\'font-family:var(--serif);font-size:clamp(42px,9vw,86px);font-weight:400;line-height:1.05;text-align:center;opacity:0;animation:rise 1s .1s ease forwards;\'>Not <em>Just</em><br>DINNER</h1>'">
+  <div class="hero-vline"></div>
   <div class="hero-pills">
-    <div class="hero-pill">
-      <div class="label">Dates</div>
-      <div class="val">21 & 28 March</div>
-    </div>
-    <div class="hero-pill">
-      <div class="label">Time</div>
-      <div class="val">7:30 PM</div>
-    </div>
-    <div class="hero-pill">
-      <div class="label">Location</div>
-      <div class="val">Koramangala</div>
-    </div>
-    <div class="hero-pill">
-      <div class="label">Seats</div>
-      <div class="val">Only 8</div>
-    </div>
-    <div class="hero-pill">
-      <div class="label">Menu</div>
-      <div class="val"><em>2.0</em></div>
-    </div>
+    <div class="pill"><div class="lbl">Month</div><div class="v">April 2025</div></div>
+    <div class="pill"><div class="lbl">Time</div><div class="v">7:30 PM</div></div>
+    <div class="pill"><div class="lbl">Location</div><div class="v">Koramangala</div></div>
+    <div class="pill"><div class="lbl">Seats</div><div class="v">Only 8</div></div>
+    <div class="pill"><div class="lbl">Menu</div><div class="v"><em>2.0</em></div></div>
   </div>
-
-  <a href="#booking" class="hero-btn">Reserve Your Seat</a>
+  <a href="#book" class="hero-cta">Reserve Your Seat</a>
 </section>
 
-<!-- ─ ABOUT ────────────────────────────────────────────────── -->
-<hr class="rule">
-<section class="section" id="about">
-  <div class="wrap reveal">
-    <div class="section-header">
-      <p class="label">The Experience</p>
-      <h2 class="heading" style="font-size:clamp(28px,3.6vw,42px);margin-top:12px;">More than a meal. <em>An evening.</em></h2>
+<!-- ABOUT -->
+<hr class="div">
+<section class="sec" id="about">
+  <div class="wrap rev">
+    <div class="sec-hd">
+      <p class="lbl">The Experience</p>
+      <h2 class="h" style="font-size:clamp(26px,3.4vw,40px);margin-top:12px;">More than a meal. <em>An evening.</em></h2>
     </div>
-    <div class="about-body">
+    <div class="about-p">
       <p>Not Just Dinner is an intentionally hosted dining experience designed for people who appreciate thoughtful food, calm spaces, and meaningful moments.</p>
       <p>Each evening is carefully planned — from the menu to the pacing of the meal — so guests can slow down, feel present, and enjoy a dinner that unfolds naturally.</p>
     </div>
   </div>
 </section>
 
-<!-- ─ GALLERY ──────────────────────────────────────────────── -->
-<section class="section section-alt">
+<!-- GALLERY -->
+<section class="sec sec-alt">
   <div class="wrap">
-    <div class="section-header reveal">
-      <p class="label">Moments from the Table</p>
-      <h2 class="heading" style="font-size:clamp(28px,3.6vw,42px);margin-top:12px;">A glimpse into <em>past evenings</em></h2>
+    <div class="sec-hd rev">
+      <p class="lbl">Moments from the Table</p>
+      <h2 class="h" style="font-size:clamp(26px,3.4vw,40px);margin-top:12px;">A glimpse into <em>past evenings</em></h2>
     </div>
-    <div class="gallery-grid reveal">
-      <div class="g-item"><img src="assets/supper-club/supper-1.jpg" alt="" loading="lazy"></div>
-      <div class="g-item"><img src="assets/supper-club/supper-2.jpg" alt="" loading="lazy"></div>
-      <div class="g-item"><img src="assets/supper-club/supper-3.jpg" alt="" loading="lazy"></div>
-      <div class="g-item"><img src="assets/supper-club/supper-4.jpg" alt="" loading="lazy"></div>
-      <div class="g-item"><img src="assets/supper-club/supper-5.jpg" alt="" loading="lazy"></div>
-      <div class="g-item"><img src="assets/supper-club/supper-6.jpg" alt="" loading="lazy"></div>
-      <div class="g-item"><img src="assets/supper-club/supper-7.jpg" alt="" loading="lazy"></div>
-      <div class="g-item"><img src="assets/supper-club/supper-8.jpg" alt="" loading="lazy"></div>
-      <div class="g-item"><img src="assets/supper-club/supper-9.jpg" alt="" loading="lazy"></div>
+    <div class="gal rev">
+      <div class="gi"><img src="assets/supper-club/supper-1.jpg" alt="" loading="lazy"></div>
+      <div class="gi"><img src="assets/supper-club/supper-2.jpg" alt="" loading="lazy"></div>
+      <div class="gi"><img src="assets/supper-club/supper-3.jpg" alt="" loading="lazy"></div>
+      <div class="gi"><img src="assets/supper-club/supper-4.jpg" alt="" loading="lazy"></div>
+      <div class="gi"><img src="assets/supper-club/supper-5.jpg" alt="" loading="lazy"></div>
+      <div class="gi"><img src="assets/supper-club/supper-6.jpg" alt="" loading="lazy"></div>
+      <div class="gi"><img src="assets/supper-club/supper-7.jpg" alt="" loading="lazy"></div>
+      <div class="gi"><img src="assets/supper-club/supper-8.jpg" alt="" loading="lazy"></div>
+      <div class="gi"><img src="assets/supper-club/supper-9.jpg" alt="" loading="lazy"></div>
     </div>
   </div>
 </section>
 
-<!-- ─ MENU ─────────────────────────────────────────────────── -->
-<section class="section section-dark" id="menu">
+<!-- MENU -->
+<section class="sec sec-dark" id="menu">
   <div class="wrap">
-    <div class="menu-layout reveal">
-      <div class="menu-left">
-        <p class="label" style="color:rgba(240,234,214,0.38);margin-bottom:12px;">This Month's Feature</p>
-        <h2 class="heading" style="color:var(--c-bg);font-size:clamp(28px,3.6vw,42px);margin-bottom:12px;">Menu <em>2.0</em></h2>
-        <div class="rotating-tag">
-          <div class="dot"></div>
-          <span>Rotating monthly — new menu each edition</span>
-        </div>
-        <p class="menu-desc">Our menu is never the same twice. Each edition brings a new 5-course journey — different ingredients, different stories. This month: <strong style="color:rgba(240,234,214,0.8);font-weight:400;">Menu 2.0</strong>.</p>
-        <p class="menu-note">Full menu revealed to confirmed guests only.</p>
+    <div class="menu-lay rev">
+      <div class="menu-l">
+        <p class="lbl" style="color:rgba(240,234,214,.38);margin-bottom:12px;">This Month's Feature</p>
+        <h2 class="h" style="color:var(--bg);font-size:clamp(26px,3.4vw,40px);margin-bottom:10px;">Menu <em>2.0</em></h2>
+        <div class="rtag"><div class="dot"></div><span>Rotating monthly — new menu each edition</span></div>
+        <p class="mdesc">Our menu is never the same twice. Each edition brings a new 5-course journey — different ingredients, different stories. This month: <strong style="color:rgba(240,234,214,.8);font-weight:400">Menu 2.0</strong>.</p>
+        <p class="mnote">Full menu revealed to confirmed guests only.</p>
       </div>
-
       <div class="courses">
-        <div class="c-row">
-          <span class="c-i">i</span>
-          <div class="c-rule-dot"></div>
-          <span class="c-name">Amuse-Bouche</span>
-          <span class="c-sub">Welcome</span>
-        </div>
-        <div class="c-row">
-          <span class="c-i">ii</span>
-          <div class="c-rule-dot"></div>
-          <span class="c-name">First Course</span>
-          <span class="c-sub">Starter</span>
-        </div>
-        <div class="c-row">
-          <span class="c-i">iii</span>
-          <div class="c-rule-dot"></div>
-          <span class="c-name">Second Course</span>
-          <span class="c-sub">Intermezzo</span>
-        </div>
-        <div class="c-row">
-          <span class="c-i">iv</span>
-          <div class="c-rule-dot"></div>
-          <span class="c-name">Main Course</span>
-          <span class="c-sub">Entrée</span>
-        </div>
-        <div class="c-row">
-          <span class="c-i">v</span>
-          <div class="c-rule-dot"></div>
-          <span class="c-name">Dessert</span>
-          <span class="c-sub">Finale</span>
-        </div>
+        <div class="cr"><span class="ci">i</span><div class="cdash"></div><span class="cn">Amuse-Bouche</span><span class="ct">Welcome</span></div>
+        <div class="cr"><span class="ci">ii</span><div class="cdash"></div><span class="cn">First Course</span><span class="ct">Starter</span></div>
+        <div class="cr"><span class="ci">iii</span><div class="cdash"></div><span class="cn">Second Course</span><span class="ct">Intermezzo</span></div>
+        <div class="cr"><span class="ci">iv</span><div class="cdash"></div><span class="cn">Main Course</span><span class="ct">Entrée</span></div>
+        <div class="cr"><span class="ci">v</span><div class="cdash"></div><span class="cn">Dessert</span><span class="ct">Finale</span></div>
       </div>
     </div>
   </div>
 </section>
 
-<!-- ─ HOSTS ─────────────────────────────────────────────────── -->
-<hr class="rule">
-<section class="section" id="hosts">
+<!-- HOSTS -->
+<hr class="div">
+<section class="sec" id="hosts">
   <div class="wrap">
-    <div class="section-header reveal">
-      <p class="label">Behind the Evening</p>
-      <h2 class="heading" style="font-size:clamp(28px,3.6vw,42px);margin-top:12px;">Meet Your <em>Hosts</em></h2>
+    <div class="sec-hd rev">
+      <p class="lbl">Behind the Evening</p>
+      <h2 class="h" style="font-size:clamp(26px,3.4vw,40px);margin-top:12px;">Meet Your <em>Hosts</em></h2>
     </div>
-    <div class="hosts-grid reveal">
-      <div class="host-card">
-        <img src="assets/branding/host-kiran.jpg" alt="Kiran" class="host-avatar"
-             onerror="this.style.display='none'">
-        <p class="host-role">The Dinner</p>
-        <h3 class="host-name">Kiran</h3>
-        <p class="host-bio">Kiran leads the <strong style="font-weight:400;">"Dinner"</strong> experience. Trained in Michelin-star kitchens and a graduate of Le Cordon Bleu, Paris.</p>
-        <a href="https://www.instagram.com/frenchhalwai" target="_blank" class="social-icon" aria-label="Instagram">
+    <div class="hosts rev">
+      <div class="hc">
+        <img src="assets/branding/host-kiran.jpg" alt="Kiran" class="hav" onerror="this.style.display='none'">
+        <p class="hrole">The Dinner</p>
+        <h3 class="hname">Kiran</h3>
+        <p class="hbio">Kiran leads the <strong style="font-weight:400">"Dinner"</strong> experience. Trained in Michelin-star kitchens and a graduate of Le Cordon Bleu, Paris.</p>
+        <a href="https://www.instagram.com/frenchhalwai" target="_blank" class="sicon" aria-label="Instagram">
           <svg viewBox="0 0 24 24"><rect x="2" y="2" width="20" height="20" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.5" cy="6.5" r="1.2" fill="currentColor" stroke="none"/></svg>
         </a>
       </div>
-      <div class="host-card">
-        <img src="assets/branding/host-priya.jpg" alt="Priya" class="host-avatar"
-             onerror="this.style.display='none'">
-        <p class="host-role">The Not Just</p>
-        <h3 class="host-name">Priya</h3>
-        <p class="host-bio">Priya looks after the <strong style="font-weight:400;">"Not Just"</strong> part — making sure the vibe is right, the flow effortless, and the evening warm & intentional.</p>
-        <a href="https://www.linkedin.com/in/priyabaheti/" target="_blank" class="social-icon" aria-label="LinkedIn">
+      <div class="hc">
+        <img src="assets/branding/host-priya.jpg" alt="Priya" class="hav" onerror="this.style.display='none'">
+        <p class="hrole">The Not Just</p>
+        <h3 class="hname">Priya</h3>
+        <p class="hbio">Priya looks after the <strong style="font-weight:400">"Not Just"</strong> part — the vibe, the flow, and making sure the evening feels warm & intentional.</p>
+        <a href="https://www.linkedin.com/in/priyabaheti/" target="_blank" class="sicon" aria-label="LinkedIn">
           <svg viewBox="0 0 24 24"><path stroke="none" fill="currentColor" d="M4.98 3.5C4.98 4.88 3.88 6 2.5 6S0 4.88 0 3.5 1.12 1 2.5 1 4.98 2.12 4.98 3.5zM0 8h5v16H0zM8 8h4.8v2.2h.07c.67-1.27 2.3-2.6 4.73-2.6C22 7.6 24 10 24 14.5V24h-5v-8.4c0-2-.03-4.6-2.8-4.6-2.8 0-3.2 2.2-3.2 4.4V24H8z"/></svg>
         </a>
       </div>
@@ -866,215 +379,439 @@
   </div>
 </section>
 
-<!-- ─ PRICING ───────────────────────────────────────────────── -->
-<hr class="rule">
-<section class="section section-alt" id="booking">
+<!-- ══════════════════════════════════════════════════ -->
+<!-- BOOKING                                            -->
+<!-- ══════════════════════════════════════════════════ -->
+<hr class="div">
+<section class="sec sec-alt" id="book">
   <div class="wrap">
-    <div class="section-header reveal">
-      <p class="label">Pricing & Confirmation</p>
-      <h2 class="heading" style="font-size:clamp(28px,3.6vw,42px);margin-top:12px;">Secure Your <em>Seat</em></h2>
+    <div class="sec-hd rev">
+      <p class="lbl">Reserve Your Place</p>
+      <h2 class="h" style="font-size:clamp(26px,3.4vw,40px);margin-top:12px;">Choose Your <em>Experience</em></h2>
     </div>
-    <div class="pricing-layout reveal">
-      <div>
-        <div class="price-amt"><sup>₹</sup>1,999</div>
-        <div class="price-sub">per person · all-inclusive</div>
-        <div class="steps-list">
-          <div class="step">
-            <span class="step-n">1.</span>
-            <div class="step-content"><strong>Pay via UPI</strong>Scan the QR or use the UPI ID shown →</div>
+
+    <!-- TABS -->
+    <div class="booking-tabs rev">
+      <div class="btab active" id="tab-community" onclick="switchTab('community')">
+        <div class="t-head">Community <em>Dining</em></div>
+        <div class="t-sub">Join the shared table · Up to 4 guests · ₹1,999 / person</div>
+      </div>
+      <div class="btab" id="tab-private" onclick="switchTab('private')">
+        <div class="t-head">Private <em>Dining</em></div>
+        <div class="t-sub">Host your own evening · Full table · ₹16,000</div>
+      </div>
+    </div>
+
+    <!-- ── COMMUNITY PANEL ── -->
+    <div class="bpanel active" id="panel-community">
+
+      <!-- STEP 1: Pick a date -->
+      <div class="cal-wrap rev">
+        <p class="lbl" style="margin-bottom:16px;">Step 1 — Pick a Saturday in April</p>
+        <div class="cal-title" id="cal-heading">April 2025</div>
+        <div class="cal-grid">
+          <!-- Day labels -->
+          <div class="cal-day-label">Sun</div>
+          <div class="cal-day-label">Mon</div>
+          <div class="cal-day-label">Tue</div>
+          <div class="cal-day-label">Wed</div>
+          <div class="cal-day-label">Thu</div>
+          <div class="cal-day-label">Fri</div>
+          <div class="cal-day-label">Sat</div>
+          <!-- Days injected by JS -->
+        </div>
+        <p id="cal-error" style="font-size:12px;color:#a03030;font-style:italic;margin-top:10px;display:none;">Please select a date to continue.</p>
+      </div>
+
+      <!-- STEP 2: Guest count -->
+      <div class="rev" style="margin-bottom:40px">
+        <p class="lbl" style="margin-bottom:16px;">Step 2 — How many guests?</p>
+        <div class="guest-row">
+          <span class="guest-label">Number of seats</span>
+          <div class="guest-counter">
+            <button class="gcbtn" id="gc-minus" onclick="changeGuests(-1)" disabled>−</button>
+            <div class="gcnum" id="gc-display">1</div>
+            <button class="gcbtn" id="gc-plus" onclick="changeGuests(1)">+</button>
           </div>
-          <div class="step">
-            <span class="step-n">2.</span>
-            <div class="step-content"><strong>Fill the Form Below</strong>No login. Quick and easy.</div>
+          <span class="guest-label" id="gc-price">₹1,999 total</span>
+        </div>
+        <p class="guest-error" id="guest-err">For community dining, we've kept the limit to 4 guests. For a larger private group, consider our Private Dining option above.</p>
+      </div>
+
+      <!-- STEP 3: Payment -->
+      <div class="rev" style="margin-bottom:40px">
+        <p class="lbl" style="margin-bottom:20px;">Step 3 — Complete Payment</p>
+        <div class="pricing-row">
+          <div>
+            <div class="pamt" id="comm-price-display"><sup>₹</sup>1,999</div>
+            <div class="psub" id="comm-price-note">for 1 guest · all-inclusive</div>
+            <div class="steps-l">
+              <div class="step"><span class="sn">1.</span><div class="sc"><strong>Pay via UPI</strong>Scan the QR or use the UPI ID →</div></div>
+              <div class="step"><span class="sn">2.</span><div class="sc"><strong>Fill details below</strong>One form per guest.</div></div>
+              <div class="step"><span class="sn">3.</span><div class="sc"><strong>We confirm on WhatsApp</strong>Location sent before the evening.</div></div>
+            </div>
           </div>
-          <div class="step">
-            <span class="step-n">3.</span>
-            <div class="step-content"><strong>We'll Reach Out</strong>Location & details sent on WhatsApp.</div>
+          <div class="qr-blk">
+            <div class="qrf"><img src="assets/branding/payment-qr.jpeg" alt="UPI QR"></div>
+            <div class="upi-tag">
+              <span class="upi-s">baheti.priya@yescred</span>
+              <button class="cbtn" onclick="copyUPI()" aria-label="Copy"><svg viewBox="0 0 24 24"><rect x="9" y="9" width="13" height="13" rx="2"/><rect x="3" y="3" width="13" height="13" rx="2"/></svg></button>
+              <span id="copyMsg" class="ctst">Copied</span>
+            </div>
           </div>
         </div>
       </div>
-      <div class="qr-block">
-        <div class="qr-frame">
-          <img src="assets/branding/payment-qr.jpeg" alt="UPI QR">
-        </div>
-        <div class="upi-tag">
-          <span class="upi-str" id="upiText">baheti.priya@yescred</span>
-          <button class="copy-btn" onclick="copyUPI()" aria-label="Copy UPI ID">
-            <svg viewBox="0 0 24 24"><rect x="9" y="9" width="13" height="13" rx="2"/><rect x="3" y="3" width="13" height="13" rx="2"/></svg>
-          </button>
-          <span id="copyMsg" class="copy-toast">Copied</span>
+
+      <!-- STEP 4: Guest Details -->
+      <div class="rev">
+        <p class="lbl" style="margin-bottom:20px;">Step 4 — Guest Details</p>
+        <div class="member-forms" id="member-forms"></div>
+        <button class="sub-btn" id="comm-submit" onclick="submitCommunity()">I've Paid — Confirm My Seat(s)</button>
+      </div>
+
+    </div><!-- /panel-community -->
+
+    <!-- ── PRIVATE DINING PANEL ── -->
+    <div class="bpanel" id="panel-private">
+
+      <p class="pd-intro">Host an exclusive evening for you and your guests. The full table is yours — we take care of everything, from the 5-course menu to the ambience. Tell us your preferred date and we'll be in touch.</p>
+
+      <div class="pd-includes rev">
+        <div class="pd-feat"><div class="fi">🕯</div><div class="ft">Full Table</div><div class="fd">Exclusive use of the dining space for your group of up to 8.</div></div>
+        <div class="pd-feat"><div class="fi">🍽</div><div class="ft">5-Course Menu</div><div class="fd">The same thoughtfully curated menu, tailored to your party.</div></div>
+        <div class="pd-feat"><div class="fi">✦</div><div class="ft">Personalised</div><div class="fd">Custom welcome, dietary accommodations, and a memorable evening.</div></div>
+      </div>
+
+      <!-- Private payment -->
+      <div class="rev" style="margin-bottom:40px">
+        <p class="lbl" style="margin-bottom:20px;">Complete Payment First</p>
+        <div class="pricing-row">
+          <div>
+            <div class="pamt"><sup>₹</sup>16,000</div>
+            <div class="psub">full table · up to 8 guests · all-inclusive</div>
+            <div class="steps-l">
+              <div class="step"><span class="sn">1.</span><div class="sc"><strong>Pay via UPI</strong>Scan the QR or use the UPI ID →</div></div>
+              <div class="step"><span class="sn">2.</span><div class="sc"><strong>Fill your host details</strong>Below — takes 2 minutes.</div></div>
+              <div class="step"><span class="sn">3.</span><div class="sc"><strong>We'll call you</strong>To finalise your date and any preferences.</div></div>
+            </div>
+          </div>
+          <div class="qr-blk">
+            <div class="qrf"><img src="assets/branding/payment-qr.jpeg" alt="UPI QR"></div>
+            <div class="upi-tag">
+              <span class="upi-s">baheti.priya@yescred</span>
+              <button class="cbtn" onclick="copyUPI()" aria-label="Copy"><svg viewBox="0 0 24 24"><rect x="9" y="9" width="13" height="13" rx="2"/><rect x="3" y="3" width="13" height="13" rx="2"/></svg></button>
+            </div>
+          </div>
         </div>
       </div>
-    </div>
+
+      <!-- Private form -->
+      <div class="rev">
+        <p class="lbl" style="margin-bottom:20px;">Host Details</p>
+        <form id="privateForm"
+              action="https://script.google.com/macros/s/AKfycbw_MO48-U0Nr_S3PxwrDWr1LahqJqJ7wgCo8GroQoFW9Zz6e85OhGpoxwgNtN2_RXJj/exec"
+              method="POST" target="hidden_iframe_pd">
+          <div class="fgrid">
+            <div class="ff">
+              <label for="pd-name">Your Full Name *</label>
+              <input type="text" name="name" id="pd-name" placeholder="Host name" required>
+            </div>
+            <div class="ff">
+              <label for="pd-phone">WhatsApp Number *</label>
+              <input type="tel" name="whatsapp" id="pd-phone" placeholder="10-digit number" required>
+            </div>
+            <div class="ff">
+              <label for="pd-guests">Number of Guests</label>
+              <select name="guest_count" id="pd-guests">
+                <option value="">Select</option>
+                <option>2</option><option>3</option><option>4</option>
+                <option>5</option><option>6</option><option>7</option><option>8</option>
+              </select>
+            </div>
+            <div class="ff">
+              <label for="pd-pref-date">Preferred Date in April</label>
+              <select name="preferred_date" id="pd-pref-date">
+                <option value="">Select</option>
+                <option>Saturday, 5 April</option>
+                <option>Sunday, 6 April</option>
+                <option>Saturday, 12 April</option>
+                <option>Sunday, 13 April</option>
+                <option>Saturday, 19 April</option>
+                <option>Sunday, 20 April</option>
+                <option>Saturday, 26 April</option>
+                <option>Sunday, 27 April</option>
+              </select>
+            </div>
+            <div class="ff">
+              <label for="pd-dietary">Dietary Notes</label>
+              <input type="text" name="dietary_notes" id="pd-dietary" placeholder="Any allergies or preferences">
+            </div>
+            <div class="ff">
+              <label for="pd-occasion">Occasion (optional)</label>
+              <input type="text" name="occasion" id="pd-occasion" placeholder="Birthday, anniversary…">
+            </div>
+            <div class="ff full">
+              <label for="pd-source">How did you hear about us? *</label>
+              <select name="source" id="pd-source" required>
+                <option value="">Select one</option>
+                <option>Instagram</option>
+                <option>Twitter / X</option>
+                <option>Friend / Previous Guest</option>
+              </select>
+            </div>
+            <input type="hidden" name="booking_type" value="Private Dining">
+          </div>
+          <button type="submit" class="sub-btn" id="pd-submit">I've Paid — Request Private Dining</button>
+        </form>
+        <iframe name="hidden_iframe_pd" style="display:none"></iframe>
+      </div>
+
+    </div><!-- /panel-private -->
+
   </div>
 </section>
 
-<!-- ─ FORM ──────────────────────────────────────────────────── -->
-<section class="section" id="pricing-confirmation">
-  <div class="wrap">
-    <div class="section-header reveal">
-      <p class="label">Step 2 of 2</p>
-      <h2 class="heading" style="font-size:clamp(26px,3.2vw,38px);margin-top:12px;">Confirm Your <em>Booking</em></h2>
-    </div>
-    <div class="reveal">
-      <form id="confirmationForm"
-            action="https://script.google.com/macros/s/AKfycbw_MO48-U0Nr_S3PxwrDWr1LahqJqJ7wgCo8GroQoFW9Zz6e85OhGpoxwgNtN2_RXJj/exec"
-            method="POST"
-            target="hidden_iframe">
-        <div class="form-grid">
-          <div class="f-field">
-            <label for="fullName">Full Name *</label>
-            <input type="text" name="name" id="fullName" placeholder="Your full name" required>
-            <span class="f-error">Please enter your full name</span>
-          </div>
-          <div class="f-field">
-            <label for="whatsappNumber">WhatsApp Number *</label>
-            <input type="tel" name="whatsapp" id="whatsappNumber" placeholder="10-digit number" required>
-            <span class="f-error">Enter a valid 10-digit number</span>
-          </div>
-          <div class="f-field">
-            <label for="dinnerDate">Which Date? *</label>
-            <select name="dinner_date" id="dinnerDate" required>
-              <option value="">Select a date</option>
-              <option>21st March</option>
-              <option>28th March</option>
-            </select>
-          </div>
-          <div class="f-field">
-            <label for="dietary">Dietary Preference *</label>
-            <select name="dietary" id="dietary" required>
-              <option value="">Select one</option>
-              <option>Egg in dessert OK</option>
-              <option>Egg in dessert NOT OK</option>
-            </select>
-          </div>
-          <div class="f-field">
-            <label for="socialPlatform">Social Platform *</label>
-            <select name="social_platform" id="socialPlatform" required>
-              <option value="">Select one</option>
-              <option>Instagram</option>
-              <option>LinkedIn</option>
-              <option>X (Twitter)</option>
-            </select>
-          </div>
-          <div class="f-field">
-            <label for="socialUsername">Username / Handle *</label>
-            <input type="text" name="social_username" id="socialUsername" placeholder="@yourhandle" required>
-          </div>
-          <div class="f-field full">
-            <label for="source">How did you hear about us? *</label>
-            <select name="source" id="source" required>
-              <option value="">Select one</option>
-              <option>Instagram</option>
-              <option>Twitter / X</option>
-              <option>Friend / Previous Guest</option>
-            </select>
-          </div>
-        </div>
-        <div class="form-submit">
-          <button type="submit" class="btn-submit" id="submitBtn">I've Paid — Confirm My Seat</button>
-        </div>
-      </form>
-      <iframe name="hidden_iframe" style="display:none;"></iframe>
-    </div>
-  </div>
-</section>
-
-<!-- ─ MODAL ─────────────────────────────────────────────────── -->
-<div id="successModal" class="modal-ov">
+<!-- MODALS -->
+<div id="modal-community" class="modal-ov">
   <div class="modal-box">
-    <div class="modal-icon">🕯</div>
-    <h3 class="modal-title">Seat Confirmed</h3>
-    <p class="modal-body">Thank you for confirming your seat at <strong style="font-weight:400;">Not Just Dinner</strong>. We'll share the exact location with you on WhatsApp shortly.</p>
-    <button onclick="closeModal()" class="btn-submit" style="width:auto;padding:13px 36px;">Done</button>
+    <div class="mi">🕯</div>
+    <h3 class="mt">Seats Confirmed</h3>
+    <p class="mb">Thank you for joining <strong style="font-weight:400">Not Just Dinner</strong>. We'll send the exact location and all details to your WhatsApp shortly.</p>
+    <button onclick="closeModal('modal-community')" class="sub-btn" style="width:auto;padding:12px 32px">Done</button>
   </div>
 </div>
 
-<!-- ─ FOOTER ─────────────────────────────────────────────────── -->
-<footer class="footer">
-  <img src="assets/branding/logo.png"
-       class="footer-logo"
-       alt="Not Just Dinner"
-       onerror="this.outerHTML='<p style=\'font-family:var(--f-serif);font-size:17px;color:rgba(240,234,214,0.55);margin-bottom:6px;\'>Not <em>Just</em> Dinner</p>'">
-  <p class="footer-sub">An Intentionally Hosted Evening · Bengaluru</p>
+<div id="modal-private" class="modal-ov">
+  <div class="modal-box">
+    <div class="mi">✦</div>
+    <h3 class="mt">Request Received</h3>
+    <p class="mb">Thank you for choosing <strong style="font-weight:400">Private Dining</strong>. We'll reach out on WhatsApp within 24 hours to confirm your date and details.</p>
+    <button onclick="closeModal('modal-private')" class="sub-btn" style="width:auto;padding:12px 32px">Done</button>
+  </div>
+</div>
 
-  <div class="footer-icons">
+<!-- FOOTER -->
+<footer class="ftr">
+  <img src="assets/branding/logo.png" class="ftr-logo" alt="Not Just Dinner"
+       onerror="this.outerHTML='<p style=\'font-family:var(--serif);font-size:16px;color:rgba(240,234,214,.5);margin-bottom:6px;\'>Not <em>Just</em> Dinner</p>'">
+  <p class="ftr-sub">An Intentionally Hosted Evening · Bengaluru</p>
+  <div class="ftr-icons">
     <a href="https://instagram.com/notjust.dinner" target="_blank" aria-label="Instagram">
       <svg viewBox="0 0 24 24"><rect x="2" y="2" width="20" height="20" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.5" cy="6.5" r="1.2" fill="currentColor" stroke="none"/></svg>
     </a>
-    <a href="https://x.com/NotJustDinnerr" target="_blank" aria-label="X / Twitter">
+    <a href="https://x.com/NotJustDinnerr" target="_blank" aria-label="X">
       <svg viewBox="0 0 24 24"><path d="M4 4l16 16M20 4L4 20"/></svg>
     </a>
     <a href="https://chat.whatsapp.com/FWgqkihDAlhEJfXYPFlPjW" target="_blank" aria-label="WhatsApp">
       <svg viewBox="0 0 24 24"><path d="M12 2a10 10 0 0 0-8.94 14.5L2 22l5.7-1.9A10 10 0 1 0 12 2z"/></svg>
     </a>
   </div>
-
-  <p class="footer-copy">
-    Questions? Reach out above or join our WhatsApp Community for updates.<br>
-    © 2025 Not Just Dinner · Bengaluru
-  </p>
+  <p class="ftr-copy">Questions? Reach out above or join our WhatsApp Community.<br>© 2025 Not Just Dinner · Bengaluru</p>
 </footer>
 
 <script>
-  /* Copy UPI */
-  function copyUPI() {
-    navigator.clipboard.writeText("baheti.priya@yescred");
-    const t = document.getElementById("copyMsg");
-    t.style.opacity = "1";
-    setTimeout(() => t.style.opacity = "0", 1800);
+/* ─── TABS ─────────────────────────────────────── */
+function switchTab(t) {
+  ['community','private'].forEach(id => {
+    document.getElementById('tab-'+id).classList.toggle('active', id===t);
+    document.getElementById('panel-'+id).classList.toggle('active', id===t);
+  });
+}
+
+/* ─── CALENDAR ──────────────────────────────────── */
+const AVAILABLE_DAYS = [5,6,12,13,19,20,26,27]; // Sat+Sun of April 2025
+let selectedDate = null;
+
+function buildCalendar() {
+  const grid = document.querySelector('.cal-grid');
+  // remove existing day cells (keep labels = first 7 children)
+  while (grid.children.length > 7) grid.removeChild(grid.lastChild);
+
+  // April 2025 starts on Tuesday (index 2, Sun=0)
+  const startDay = 2;
+  const daysInMonth = 30;
+  const today = new Date();
+  const isApril2025 = true; // fixed month
+
+  // empty cells before 1st
+  for (let i = 0; i < startDay; i++) {
+    const e = document.createElement('div');
+    e.className = 'cal-day empty';
+    grid.appendChild(e);
   }
 
-  /* Validation */
-  const nameI  = document.getElementById("fullName");
-  const phoneI = document.getElementById("whatsappNumber");
+  for (let d = 1; d <= daysInMonth; d++) {
+    const cell = document.createElement('div');
+    const isAvail = AVAILABLE_DAYS.includes(d);
+    const isPast  = new Date(2025,3,d) < new Date(today.getFullYear(),today.getMonth(),today.getDate());
 
-  nameI.addEventListener("blur", () => {
-    const err = nameI.value.trim().length < 3;
-    nameI.classList.toggle("invalid", err);
-    nameI.nextElementSibling.style.display = err ? "block" : "none";
-  });
-  phoneI.addEventListener("blur", () => {
-    const err = !/^[0-9]{10}$/.test(phoneI.value);
-    phoneI.classList.toggle("invalid", err);
-    phoneI.nextElementSibling.style.display = err ? "block" : "none";
-  });
+    cell.className = 'cal-day' + (isAvail && !isPast ? ' avail' : isPast ? ' past' : '');
+    cell.textContent = d;
 
-  /* Submit */
-  const form  = document.getElementById("confirmationForm");
-  const modal = document.getElementById("successModal");
-  const btn   = document.getElementById("submitBtn");
+    if (isAvail && !isPast) {
+      // badge dot
+      const dot = document.createElement('div');
+      dot.className = 'day-badge';
+      cell.appendChild(dot);
+      cell.addEventListener('click', () => selectDate(d, cell));
+    }
+    grid.appendChild(cell);
+  }
+}
 
-  form.addEventListener("submit", () => {
-    btn.disabled    = true;
-    btn.textContent = "Submitting…";
-    setTimeout(() => {
-      modal.style.display = "flex";
-      document.body.style.overflow = "hidden";
-      form.reset();
-      btn.disabled    = false;
-      btn.textContent = "I've Paid — Confirm My Seat";
-    }, 900);
-  });
+function selectDate(d, cell) {
+  document.querySelectorAll('.cal-day.selected').forEach(c => c.classList.remove('selected'));
+  cell.classList.add('selected');
+  selectedDate = `${d} April 2025`;
+  document.getElementById('cal-error').style.display = 'none';
+}
 
-  function closeModal() {
-    modal.style.display = "none";
-    document.body.style.overflow = "auto";
+buildCalendar();
+
+/* ─── GUEST COUNTER ─────────────────────────────── */
+let guestCount = 1;
+
+function changeGuests(delta) {
+  const next = guestCount + delta;
+  if (next > 4) {
+    document.getElementById('guest-err').style.display = 'block';
+    return;
+  }
+  document.getElementById('guest-err').style.display = 'none';
+  if (next < 1) return;
+  guestCount = next;
+  document.getElementById('gc-display').textContent = guestCount;
+  document.getElementById('gc-minus').disabled = guestCount <= 1;
+  document.getElementById('gc-plus').disabled  = guestCount >= 4;
+  document.getElementById('gc-price').textContent = '₹' + (1999 * guestCount).toLocaleString('en-IN') + ' total';
+  // update pricing display
+  document.getElementById('comm-price-display').innerHTML = '<sup>₹</sup>' + (1999 * guestCount).toLocaleString('en-IN');
+  document.getElementById('comm-price-note').textContent = 'for ' + guestCount + ' guest' + (guestCount>1?'s':'') + ' · all-inclusive';
+  renderMemberForms();
+}
+
+/* ─── MEMBER FORMS ──────────────────────────────── */
+function renderMemberForms() {
+  const wrap = document.getElementById('member-forms');
+  wrap.innerHTML = '';
+  for (let i = 1; i <= guestCount; i++) {
+    wrap.innerHTML += `
+    <div class="member-block">
+      <div class="member-title">Guest ${i}${i===1?' <span style="font-size:13px;font-style:italic;font-family:var(--sans);color:var(--muted);">(Primary / Host)</span>':''}</div>
+      <div class="fgrid">
+        <div class="ff">
+          <label>Full Name *</label>
+          <input type="text" name="g${i}_name" placeholder="Full name" required>
+        </div>
+        <div class="ff">
+          <label>WhatsApp${i===1?' *':''}</label>
+          <input type="tel" name="g${i}_whatsapp" placeholder="${i===1?'10-digit number':'Optional'}">
+        </div>
+        <div class="ff">
+          <label>Dietary Preference *</label>
+          <select name="g${i}_dietary" required>
+            <option value="">Select one</option>
+            <option>Egg in dessert OK</option>
+            <option>Egg in dessert NOT OK</option>
+          </select>
+        </div>
+        ${i===1?`
+        <div class="ff">
+          <label>How did you hear about us? *</label>
+          <select name="source" required>
+            <option value="">Select one</option>
+            <option>Instagram</option>
+            <option>Twitter / X</option>
+            <option>Friend / Previous Guest</option>
+          </select>
+        </div>
+        <div class="ff">
+          <label>Social Platform *</label>
+          <select name="social_platform" required>
+            <option value="">Select one</option>
+            <option>Instagram</option>
+            <option>LinkedIn</option>
+            <option>X (Twitter)</option>
+          </select>
+        </div>
+        <div class="ff">
+          <label>Your Handle *</label>
+          <input type="text" name="social_username" placeholder="@yourhandle">
+        </div>`:''}
+      </div>
+    </div>`;
+  }
+}
+
+renderMemberForms();
+
+/* ─── COMMUNITY SUBMIT ──────────────────────────── */
+function submitCommunity() {
+  if (!selectedDate) {
+    document.getElementById('cal-error').style.display = 'block';
+    document.querySelector('.cal-wrap').scrollIntoView({behavior:'smooth',block:'start'});
+    return;
   }
 
-  /* Scroll reveal */
-  const obs = new IntersectionObserver((entries) => {
-    entries.forEach(e => {
-      if (!e.isIntersecting) return;
-      e.target.classList.add("vis");
-      e.target.querySelectorAll(".c-row").forEach((r, i) =>
-        setTimeout(() => r.classList.add("vis"), i * 90)
-      );
-      obs.unobserve(e.target);
-    });
-  }, { threshold: 0.08 });
+  // collect data
+  const data = new FormData();
+  data.append('booking_type', 'Community Dining');
+  data.append('dinner_date', selectedDate);
+  data.append('guest_count', guestCount);
 
-  document.querySelectorAll(".reveal").forEach(el => obs.observe(el));
+  const forms = document.getElementById('member-forms');
+  const inputs = forms.querySelectorAll('input,select');
+  inputs.forEach(inp => { if(inp.name) data.append(inp.name, inp.value); });
+
+  const btn = document.getElementById('comm-submit');
+  btn.disabled = true; btn.textContent = 'Submitting…';
+
+  fetch('https://script.google.com/macros/s/AKfycbw_MO48-U0Nr_S3PxwrDWr1LahqJqJ7wgCo8GroQoFW9Zz6e85OhGpoxwgNtN2_RXJj/exec', {
+    method: 'POST', body: data, mode: 'no-cors'
+  }).finally(() => {
+    document.getElementById('modal-community').style.display = 'flex';
+    document.body.style.overflow = 'hidden';
+    btn.disabled = false; btn.textContent = "I've Paid — Confirm My Seat(s)";
+  });
+}
+
+/* ─── PRIVATE FORM ──────────────────────────────── */
+const pf = document.getElementById('privateForm');
+pf.addEventListener('submit', () => {
+  const btn = document.getElementById('pd-submit');
+  btn.disabled = true; btn.textContent = 'Submitting…';
+  setTimeout(() => {
+    document.getElementById('modal-private').style.display = 'flex';
+    document.body.style.overflow = 'hidden';
+    pf.reset();
+    btn.disabled = false; btn.textContent = "I've Paid — Request Private Dining";
+  }, 900);
+});
+
+/* ─── MODAL CLOSE ───────────────────────────────── */
+function closeModal(id) {
+  document.getElementById(id).style.display = 'none';
+  document.body.style.overflow = 'auto';
+}
+
+/* ─── COPY UPI ──────────────────────────────────── */
+function copyUPI() {
+  navigator.clipboard.writeText('baheti.priya@yescred');
+  const t = document.getElementById('copyMsg');
+  if(t){ t.style.opacity='1'; setTimeout(()=>t.style.opacity='0',1800); }
+}
+
+/* ─── SCROLL REVEAL ─────────────────────────────── */
+const obs = new IntersectionObserver(entries => {
+  entries.forEach(e => {
+    if (!e.isIntersecting) return;
+    e.target.classList.add('vis');
+    e.target.querySelectorAll('.cr').forEach((r,i)=>
+      setTimeout(()=>r.classList.add('vis'), i*90));
+    obs.unobserve(e.target);
+  });
+}, {threshold:.07});
+document.querySelectorAll('.rev').forEach(el=>obs.observe(el));
 </script>
 </body>
 </html>
