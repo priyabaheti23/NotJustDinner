@@ -1,6 +1,3 @@
-// WAIT FOR PAGE LOAD
-document.addEventListener("DOMContentLoaded", function () {
-
   // TAB SWITCHING
   window.switchTab = function(tab) {
     document.querySelectorAll('.tab').forEach(t => t.classList.remove('on'));
@@ -65,9 +62,6 @@ document.addEventListener("DOMContentLoaded", function () {
 
 });
 
-
-<script>
-'use strict';
 /* ════════════════════════════════════════════
    CONFIG
 ════════════════════════════════════════════ */
@@ -396,5 +390,17 @@ if (bookSec) stickyObs.observe(bookSec);
 ════════════════════════════════════════════ */
 buildCal();
 fetchAvailability();
-</script>
+
+
+
+// FIX: show hidden sections
+window.addEventListener("load", () => {
+  document.querySelectorAll('.rev').forEach(el => {
+    el.classList.add('vis');
+  });
+
+  document.querySelectorAll('.cr').forEach((el, i) => {
+    setTimeout(() => el.classList.add('vis'), i * 100);
+  });
+});
 
