@@ -447,4 +447,9 @@ hr.rl{border:none;border-top:1px solid var(--rl)}
   .vc-meta{flex-direction:column;gap:12px}
   body{padding-bottom:62px}
 }
+
+.rev { opacity: 1 !important; transform: none !important; }
+
 </style>
+
+
