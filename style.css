@@ -380,3 +380,31 @@ footer {
   }
 }
 
+/* MODAL BACKGROUND */
+.modal-overlay {
+  position: fixed;   /* 🔥 VERY IMPORTANT */
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+
+  background: rgba(0,0,0,0.4); /* dark background */
+
+  display: none; /* hidden by default */
+
+  align-items: center;
+  justify-content: center;
+
+  z-index: 9999; /* 🔥 bring to front */
+}
+
+/* MODAL BOX */
+.modal-box {
+  background: #F0EAD6; /* your beige */
+  padding: 40px;
+  max-width: 420px;
+  width: 90%;
+
+  text-align: center;
+}
+
