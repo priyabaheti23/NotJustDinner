@@ -122,8 +122,10 @@ function buildCal() {
     if (isAvail) {
       const dayName = isSat ? 'Saturday' : 'Sunday';
       const key = `${dayName}, ${d} April 2026`;
-
-      const booked = availability[key] || 0;
+      const booked = Object.keys(availability).reduce((acc, k) => {
+        if (k.trim() === key.trim()) return availability[k];
+        return acc;
+      }, 0);
       const remaining = MAX_SEATS - booked;
 
       if (remaining <= 0) {
