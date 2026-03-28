@@ -18,6 +18,57 @@ let availability = {};
 let gCount = 1;
 
 /* ═══════════════════════════════════════
+   RENDER FORMS (FIXED)
+═══════════════════════════════════════ */
+function renderForms() {
+  const wrap = document.getElementById('member-forms');
+  if (!wrap) return;
+
+  wrap.innerHTML = '';
+
+  for (let i = 1; i <= gCount; i++) {
+    const div = document.createElement('div');
+    div.className = 'mbl';
+
+    div.innerHTML = `
+      <div class="mbl-title">Guest ${i}</div>
+
+      <div class="ff">
+        <label>Full Name *</label>
+        <input type="text" id="gn${i}" required>
+      </div>
+
+      <div class="ff">
+        <label>Diet *</label>
+        <select id="gw${i}" required>
+          <option value="">Select</option>
+          <option>Egg OK</option>
+          <option>No Egg</option>
+        </select>
+      </div>
+
+      ${i === 1 ? `
+      <div class="ff">
+        <label>WhatsApp *</label>
+        <input type="tel" id="gwa1" required>
+      </div>
+
+      <div class="ff">
+        <label>Source</label>
+        <select id="gsrc">
+          <option>Instagram</option>
+          <option>Friend</option>
+          <option>Other</option>
+        </select>
+      </div>
+      ` : ''}
+    `;
+
+    wrap.appendChild(div);
+  }
+}
+
+/* ═══════════════════════════════════════
    TAB SWITCHING
 ═══════════════════════════════════════ */
 window.switchTab = function(tab) {
@@ -25,6 +76,11 @@ window.switchTab = function(tab) {
     document.getElementById('tab-' + id).classList.toggle('on', id === tab);
     document.getElementById('panel-' + id).classList.toggle('on', id === tab);
   });
+
+  // 🔥 Ensure forms show when tab is opened
+  if (tab === 'community') {
+    setTimeout(() => renderForms(), 100);
+  }
 };
 
 /* ═══════════════════════════════════════
@@ -128,61 +184,8 @@ window.changeG = function(delta) {
   document.getElementById('c-sub').textContent =
     `for ${gCount} guest${gCount > 1 ? 's' : ''}`;
 
-  renderForms(); // 🔥 IMPORTANT
+  renderForms(); // 🔥 update forms
 };
-
-/* ═══════════════════════════════════════
-   RENDER FORMS (FIXED ISSUE)
-═══════════════════════════════════════ */
-function renderForms() {
-  const wrap = document.getElementById('member-forms');
-  if (!wrap) return;
-
-  wrap.innerHTML = '';
-
-  for (let i = 1; i <= gCount; i++) {
-    const isFirst = i === 1;
-
-    wrap.innerHTML += `
-      <div class="mbl">
-        <div class="mbl-title">Guest ${i}</div>
-        <div class="fgrid">
-
-          <div class="ff">
-            <label>Full Name *</label>
-            <input type="text" id="gn${i}" required>
-          </div>
-
-          <div class="ff">
-            <label>Diet *</label>
-            <select id="gw${i}" required>
-              <option value="">Select</option>
-              <option>Egg OK</option>
-              <option>No Egg</option>
-            </select>
-          </div>
-
-          ${isFirst ? `
-          <div class="ff">
-            <label>WhatsApp *</label>
-            <input type="tel" id="gwa1" required>
-          </div>
-
-          <div class="ff">
-            <label>Source</label>
-            <select id="gsrc">
-              <option>Instagram</option>
-              <option>Friend</option>
-              <option>Other</option>
-            </select>
-          </div>
-          ` : ''}
-
-        </div>
-      </div>
-    `;
-  }
-}
 
 /* ═══════════════════════════════════════
    COPY UPI
@@ -225,6 +228,7 @@ window.submitCommunity = function() {
 
   alert("Booking Confirmed 🎉");
 
+  // update UI instantly
   availability[selectedDate] = (availability[selectedDate] || 0) + gCount;
   buildCal();
 };
@@ -246,15 +250,20 @@ window.updateGiftPrice = function(seats) {
 };
 
 /* ═══════════════════════════════════════
-   INIT
+   INIT (CRITICAL)
 ═══════════════════════════════════════ */
-window.addEventListener("load", () => {
+window.onload = function() {
+
+  // reveal animations
   document.querySelectorAll('.rev').forEach(el => el.classList.add('vis'));
 
   document.querySelectorAll('.cr').forEach((el, i) => {
     setTimeout(() => el.classList.add('vis'), i * 100);
   });
 
-  renderForms();     // 🔥 THIS FIXES YOUR ISSUE
+  // 🔥 FORCE FORM LOAD
+  setTimeout(() => renderForms(), 100);
+
+  // load availability
   fetchAvailability();
-});
+};
