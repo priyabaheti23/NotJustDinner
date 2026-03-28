@@ -121,7 +121,7 @@ function buildCal() {
 
     if (isAvail) {
       const dayName = isSat ? 'Saturday' : 'Sunday';
-      const key = `${dayName}, ${d} April 2026`;
+      const key = `2026-04-${String(d).padStart(2, '0')}`;
       const booked = Object.keys(availability).reduce((acc, k) => {
         if (k.trim() === key.trim()) return availability[k];
         return acc;
@@ -154,7 +154,7 @@ function selectDate(dateKey, cell, remaining) {
 
   document.querySelectorAll('.day.sel').forEach(c => c.classList.remove('sel'));
   cell.classList.add('sel');
-  selectedDate = dateKey;
+  selectedDate = `2026-04-${String(d).padStart(2, '0')}`;
 
   document.getElementById('cal-err').style.display = 'none';
 }
