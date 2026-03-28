@@ -3,7 +3,7 @@
 /* ═══════════════════════════════════════
    CONFIG
 ═══════════════════════════════════════ */
-const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbyCeVslM1jAHj-aLjyhHyElGIyfRvJjpJT0HV1wRNRLyogMmPPZwnfXEthFpMwoYUTryA/exec';
+const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbyCeVslM1jAHj-aLjyhHyElGIyfRvJjpJT0HV1wRNRLyogMmPPZwnfXEthFpMwoYUTryA/exec'; // ← replace this
 const MAX_SEATS = 8;
 const PRICE = 1999;
 
@@ -31,6 +31,21 @@ window.switchTab = function(tab) {
 };
 
 /* ═══════════════════════════════════════
+   FETCH AVAILABILITY
+═══════════════════════════════════════ */
+function fetchAvailability() {
+  fetch(SCRIPT_URL)
+    .then(res => res.json())
+    .then(data => {
+      availability = data || {};
+      buildCal();
+    })
+    .catch(() => {
+      buildCal();
+    });
+}
+
+/* ═══════════════════════════════════════
    CALENDAR
 ═══════════════════════════════════════ */
 function buildCal() {
@@ -54,8 +69,23 @@ function buildCal() {
     cell.innerHTML = `<span class="day-num">${d}</span>`;
 
     if (isAvail) {
-      cell.className = 'day avail';
-      cell.onclick = () => selectDate(d, cell);
+      const dayName = isSat ? 'Saturday' : 'Sunday';
+      const key = `${dayName}, ${d} April 2026`;
+
+      const booked = availability[key] || 0;
+      const remaining = MAX_SEATS - booked;
+
+      if (remaining <= 0) {
+        cell.className = 'day full';
+        cell.innerHTML += `<span class="day-seats">Full</span>`;
+      } else {
+        cell.className = 'day avail';
+        if (remaining <= 2) cell.classList.add('almost');
+
+        cell.innerHTML += `<span class="day-seats">${remaining} left</span>`;
+
+        cell.onclick = () => selectDate(key, cell, remaining);
+      }
     } else {
       cell.className = 'day other';
     }
@@ -64,10 +94,17 @@ function buildCal() {
   }
 }
 
-function selectDate(d, cell) {
+function selectDate(dateKey, cell, remaining) {
+  if (remaining < gCount) {
+    alert(`Only ${remaining} seats left`);
+    return;
+  }
+
   document.querySelectorAll('.day.sel').forEach(c => c.classList.remove('sel'));
   cell.classList.add('sel');
-  selectedDate = d;
+  selectedDate = dateKey;
+
+  document.getElementById('cal-err').style.display = 'none';
 }
 
 /* ═══════════════════════════════════════
@@ -95,7 +132,8 @@ window.changeG = function(delta) {
 
   document.getElementById('gc-tot').textContent = '₹' + total;
   document.getElementById('c-amt').innerHTML = `<sup>₹</sup>${total}`;
-  document.getElementById('c-sub').textContent = `for ${gCount} guest${gCount > 1 ? 's' : ''}`;
+  document.getElementById('c-sub').textContent =
+    `for ${gCount} guest${gCount > 1 ? 's' : ''}`;
 };
 
 /* ═══════════════════════════════════════
@@ -112,7 +150,7 @@ window.copyUPI = function() {
 };
 
 /* ═══════════════════════════════════════
-   SUBMIT
+   SUBMIT BOOKING
 ═══════════════════════════════════════ */
 window.submitCommunity = function() {
   if (!selectedDate) {
@@ -120,7 +158,28 @@ window.submitCommunity = function() {
     return;
   }
 
-  alert("Booking submitted (connect Google Sheets next)");
+  const formData = new FormData();
+
+  formData.append("booking_type", "Community Dining");
+  formData.append("dinner_date", selectedDate);
+  formData.append("guest_count", gCount);
+
+  formData.append("g1_name", document.getElementById("gn1")?.value || "");
+  formData.append("g1_wa", document.getElementById("gwa1")?.value || "");
+  formData.append("g1_diet", document.getElementById("gw1")?.value || "");
+  formData.append("source", document.getElementById("gsrc")?.value || "");
+
+  fetch(SCRIPT_URL, {
+    method: "POST",
+    body: formData,
+    mode: "no-cors"
+  });
+
+  alert("Booking Confirmed 🎉");
+
+  // update UI instantly
+  availability[selectedDate] = (availability[selectedDate] || 0) + gCount;
+  buildCal();
 };
 
 /* ═══════════════════════════════════════
@@ -130,14 +189,17 @@ window.updateGiftPrice = function(seats) {
   const price = PRICE * seats;
 
   document.getElementById("g-amt").innerHTML = `<sup>₹</sup>${price}`;
-  document.getElementById("g-sub").textContent = `for ${seats} seat${seats > 1 ? 's' : ''}`;
+  document.getElementById("g-sub").textContent =
+    `for ${seats} seat${seats > 1 ? 's' : ''}`;
 
-  document.getElementById("vp-seats").textContent = `${seats} guest${seats > 1 ? 's' : ''}`;
+  document.getElementById("vp-seats").textContent =
+    `${seats} guest${seats > 1 ? 's' : ''}`;
+
   document.getElementById("vp-val").textContent = `₹${price}`;
 };
 
 /* ═══════════════════════════════════════
-   REVEAL FIX (CRITICAL)
+   REVEAL FIX + INIT
 ═══════════════════════════════════════ */
 window.addEventListener("load", () => {
   document.querySelectorAll('.rev').forEach(el => el.classList.add('vis'));
@@ -146,5 +208,5 @@ window.addEventListener("load", () => {
     setTimeout(() => el.classList.add('vis'), i * 100);
   });
 
-  buildCal(); // load calendar
+  fetchAvailability();
 });
