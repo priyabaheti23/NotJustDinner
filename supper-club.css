@@ -475,6 +475,15 @@ hr.rl{border:none;border-top:1px solid var(--rl)}
   text-align: center;
 }
 
+.ferr {
+  display: none;
+  color: var(--red);
+  font-size: 11px;
+  margin-top: 4px;
+  font-style: italic;
+  line-height: 1.4;
+}
+
 </style>
 
 
