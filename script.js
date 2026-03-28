@@ -1,7 +1,7 @@
 'use strict';
 
 /* ═══════════════════════════════════════
-   CONFIG  — single Apps Script URL for ALL bookings
+   CONFIG
 ═══════════════════════════════════════ */
 const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbyCeVslM1jAHj-aLjyhHyElGIyfRvJjpJT0HV1wRNRLyogMmPPZwnfXEthFpMwoYUTryA/exec';
 const MAX_SEATS  = 8;
@@ -17,26 +17,24 @@ let availability = {};
 let gCount       = 1;
 
 /* ═══════════════════════════════════════
-   UTILITY — send JSON to Apps Script
-   (URLSearchParams → application/x-www-form-urlencoded
-    which doPost(e) can read via e.parameter)
+   POST TO SHEET
+   URL-encoded so e.parameter works in Apps Script
 ═══════════════════════════════════════ */
 function postToSheet(payload) {
-  // Convert plain object → URL-encoded string so Apps Script e.parameter works
   const body = Object.entries(payload)
     .map(([k, v]) => encodeURIComponent(k) + '=' + encodeURIComponent(v ?? ''))
     .join('&');
 
   return fetch(SCRIPT_URL, {
     method : 'POST',
-    mode   : 'no-cors',          // required for Apps Script
+    mode   : 'no-cors',
     headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
     body
   });
 }
 
 /* ═══════════════════════════════════════
-   MODAL HELPERS
+   MODAL
 ═══════════════════════════════════════ */
 window.openModal = function (id) {
   const el = document.getElementById(id);
@@ -63,7 +61,7 @@ window.switchTab = function (tab) {
 };
 
 /* ═══════════════════════════════════════
-   FETCH AVAILABILITY
+   AVAILABILITY
 ═══════════════════════════════════════ */
 function fetchAvailability() {
   fetch(SCRIPT_URL)
@@ -80,7 +78,6 @@ function buildCal() {
   if (!grid) return;
   while (grid.children.length > 7) grid.removeChild(grid.lastChild);
 
-  // April 2026 starts on Wednesday → 3 blank cells (Sun Mon Tue)
   for (let i = 0; i < 3; i++) {
     const e = document.createElement('div');
     e.className = 'day empty';
@@ -117,48 +114,42 @@ function buildCal() {
 
 function selectDate(dateKey, cell, remaining) {
   if (remaining < gCount) {
-    showFieldError('cal-err', `Only ${remaining} seat(s) left on this date. Reduce guest count or pick another date.`);
+    showErr('cal-err', `Only ${remaining} seat(s) left. Reduce guest count or pick another date.`);
     return;
   }
   document.querySelectorAll('.day.sel').forEach(c => c.classList.remove('sel'));
   cell.classList.add('sel');
   selectedDate = dateKey;
-  hideFieldError('cal-err');
+  hideErr('cal-err');
 }
 
 /* ═══════════════════════════════════════
-   INLINE VALIDATION HELPERS
+   ERROR HELPERS
 ═══════════════════════════════════════ */
-function showFieldError(id, msg) {
+function showErr(id, msg) {
   const el = document.getElementById(id);
   if (!el) return;
-  el.textContent = msg;
+  el.textContent  = msg;
   el.style.display = 'block';
 }
-function hideFieldError(id) {
+function hideErr(id) {
   const el = document.getElementById(id);
   if (el) el.style.display = 'none';
 }
 
-// Attach live validation to an input/select
-function attachValidation(inputId, errorId, validator) {
-  const el = document.getElementById(inputId);
-  if (!el) return;
-  const check = () => {
-    const err = validator(el.value);
-    err ? showFieldError(errorId, err) : hideFieldError(errorId);
-  };
-  el.addEventListener('input',  check);
-  el.addEventListener('blur',   check);
-  el.addEventListener('change', check);
+/* ═══════════════════════════════════════
+   GET FIELD VALUE SAFELY
+═══════════════════════════════════════ */
+function val(id) {
+  const el = document.getElementById(id);
+  if (!el) return '';
+  return el.value ? el.value.trim() : '';
 }
 
 /* ═══════════════════════════════════════
    RENDER GUEST FORMS
-   — Name, WhatsApp, Dietary, Social Platform,
-     Social Username per guest
-   — Source (how did you hear) from guest 1 only
-   — Date is taken from calendar, NOT per-guest
+   IDs used here MUST match exactly what
+   submitCommunity() reads below
 ═══════════════════════════════════════ */
 function renderForms() {
   const wrap = document.getElementById('member-forms');
@@ -173,30 +164,30 @@ function renderForms() {
       <div class="fgrid">
 
         <div class="ff">
-          <label for="gn${i}">Full Name *</label>
-          <input type="text" id="gn${i}" placeholder="Full name" autocomplete="name">
-          <p class="field-err" id="err-gn${i}" style="display:none;color:var(--red);font-size:11px;margin-top:4px;font-style:italic"></p>
+          <label>Full Name *</label>
+          <input type="text" id="guest_name_${i}" placeholder="Full name" autocomplete="off">
+          <p id="err_name_${i}" class="ferr"></p>
         </div>
 
         <div class="ff">
-          <label for="gwa${i}">WhatsApp Number *</label>
-          <input type="tel" id="gwa${i}" placeholder="10-digit number" maxlength="10">
-          <p class="field-err" id="err-gwa${i}" style="display:none;color:var(--red);font-size:11px;margin-top:4px;font-style:italic"></p>
+          <label>WhatsApp Number *</label>
+          <input type="tel" id="guest_wa_${i}" placeholder="10-digit number" maxlength="10" autocomplete="off">
+          <p id="err_wa_${i}" class="ferr"></p>
         </div>
 
         <div class="ff">
-          <label for="gdiet${i}">Dietary Preference *</label>
-          <select id="gdiet${i}">
+          <label>Dietary Preference *</label>
+          <select id="guest_diet_${i}">
             <option value="">Select</option>
             <option value="Egg OK">Egg OK</option>
             <option value="No Egg">No Egg</option>
           </select>
-          <p class="field-err" id="err-gdiet${i}" style="display:none;color:var(--red);font-size:11px;margin-top:4px;font-style:italic"></p>
+          <p id="err_diet_${i}" class="ferr"></p>
         </div>
 
         <div class="ff">
-          <label for="gplatform${i}">Social Platform</label>
-          <select id="gplatform${i}">
+          <label>Social Platform</label>
+          <select id="guest_platform_${i}">
             <option value="">Select (optional)</option>
             <option value="Instagram">Instagram</option>
             <option value="Twitter / X">Twitter / X</option>
@@ -205,31 +196,55 @@ function renderForms() {
         </div>
 
         <div class="ff span2">
-          <label for="gusername${i}">Social Username</label>
-          <input type="text" id="gusername${i}" placeholder="@handle (optional)">
+          <label>Social Username</label>
+          <input type="text" id="guest_username_${i}" placeholder="@handle (optional)" autocomplete="off">
         </div>
 
         ${i === 1 ? `
         <div class="ff span2">
-          <label for="gsrc">How did you hear about us? *</label>
-          <select id="gsrc">
+          <label>How did you hear about us? *</label>
+          <select id="guest_source">
             <option value="">Select one</option>
             <option value="Instagram">Instagram</option>
             <option value="Twitter / X">Twitter / X</option>
             <option value="Friend / Previous Guest">Friend / Previous Guest</option>
           </select>
-          <p class="field-err" id="err-gsrc" style="display:none;color:var(--red);font-size:11px;margin-top:4px;font-style:italic"></p>
+          <p id="err_source" class="ferr"></p>
         </div>` : ''}
 
       </div>`;
     wrap.appendChild(div);
 
-    // Attach live validation after the element exists in the DOM
-    attachValidation(`gn${i}`,    `err-gn${i}`,    v => v.trim() ? '' : 'Name is required');
-    attachValidation(`gwa${i}`,   `err-gwa${i}`,   v => /^\d{10}$/.test(v.trim()) ? '' : 'Enter a valid 10-digit WhatsApp number');
-    attachValidation(`gdiet${i}`, `err-gdiet${i}`, v => v ? '' : 'Please select a dietary preference');
+    /* ── Inline validation (fires on blur) ── */
+    document.getElementById(`guest_name_${i}`).addEventListener('blur', function() {
+      this.value.trim()
+        ? hideErr(`err_name_${i}`)
+        : showErr(`err_name_${i}`, 'Name is required');
+    });
+
+    document.getElementById(`guest_wa_${i}`).addEventListener('blur', function() {
+      /^\d{10}$/.test(this.value.trim())
+        ? hideErr(`err_wa_${i}`)
+        : showErr(`err_wa_${i}`, 'Enter a valid 10-digit WhatsApp number');
+    });
+
+    document.getElementById(`guest_wa_${i}`).addEventListener('input', function() {
+      // Strip non-digits as they type
+      this.value = this.value.replace(/\D/g, '');
+    });
+
+    document.getElementById(`guest_diet_${i}`).addEventListener('change', function() {
+      this.value
+        ? hideErr(`err_diet_${i}`)
+        : showErr(`err_diet_${i}`, 'Please select a dietary preference');
+    });
+
     if (i === 1) {
-      attachValidation('gsrc', 'err-gsrc', v => v ? '' : 'Please tell us how you heard about us');
+      document.getElementById('guest_source').addEventListener('change', function() {
+        this.value
+          ? hideErr('err_source')
+          : showErr('err_source', 'Please tell us how you heard about us');
+      });
     }
   }
 }
@@ -242,21 +257,20 @@ window.changeG = function (delta) {
   if (next < 1 || next > 4) return;
 
   gCount = next;
-  document.getElementById('gc-n').textContent   = gCount;
-  document.getElementById('gc-').disabled        = gCount === 1;
-  document.getElementById('gc+').disabled        = gCount === 4;
-  document.getElementById('g-err').style.display = 'none';
+  document.getElementById('gc-n').textContent  = gCount;
+  document.getElementById('gc-').disabled       = gCount === 1;
+  document.getElementById('gc+').disabled       = gCount === 4;
+  hideErr('g-err');
 
   const total = PRICE * gCount;
-  document.getElementById('gc-tot').textContent   = '₹' + total.toLocaleString('en-IN');
-  document.getElementById('c-amt').innerHTML      = `<sup>₹</sup>${total.toLocaleString('en-IN')}`;
-  document.getElementById('c-sub').textContent    = `for ${gCount} guest${gCount > 1 ? 's' : ''} · all-inclusive`;
+  document.getElementById('gc-tot').textContent  = '₹' + total.toLocaleString('en-IN');
+  document.getElementById('c-amt').innerHTML     = `<sup>₹</sup>${total.toLocaleString('en-IN')}`;
+  document.getElementById('c-sub').textContent   = `for ${gCount} guest${gCount > 1 ? 's' : ''} · all-inclusive`;
 
-  // If selected date no longer has enough seats, deselect it
   if (selectedDate) {
     const remaining = MAX_SEATS - (availability[selectedDate] || 0);
     if (remaining < gCount) {
-      showFieldError('cal-err', `Only ${remaining} seat(s) left on this date. Pick another date.`);
+      showErr('cal-err', `Only ${remaining} seat(s) left on this date. Pick another date.`);
       selectedDate = null;
       document.querySelectorAll('.day.sel').forEach(c => c.classList.remove('sel'));
     }
@@ -276,103 +290,136 @@ window.copyUPI = function () {
 };
 
 /* ═══════════════════════════════════════
-   VALIDATE ALL GUEST FORMS (on submit)
+   VALIDATE COMMUNITY FORM
+   Returns true if all good, false + shows
+   errors if anything is missing
 ═══════════════════════════════════════ */
-function validateCommunityForms() {
-  let valid = true;
+function validateCommunity() {
+  let ok = true;
 
   if (!selectedDate) {
-    showFieldError('cal-err', 'Please select a date to continue.');
+    showErr('cal-err', 'Please select a date to continue.');
     document.getElementById('cal-err').scrollIntoView({ behavior: 'smooth', block: 'center' });
-    valid = false;
+    ok = false;
   }
 
   for (let i = 1; i <= gCount; i++) {
-    const name = document.getElementById('gn'    + i)?.value.trim();
-    const wa   = document.getElementById('gwa'   + i)?.value.trim();
-    const diet = document.getElementById('gdiet' + i)?.value;
+    const name = val(`guest_name_${i}`);
+    const wa   = val(`guest_wa_${i}`);
+    const diet = val(`guest_diet_${i}`);
 
-    if (!name) { showFieldError(`err-gn${i}`,    'Name is required'); valid = false; }
-    if (!/^\d{10}$/.test(wa)) { showFieldError(`err-gwa${i}`, 'Enter a valid 10-digit WhatsApp number'); valid = false; }
-    if (!diet) { showFieldError(`err-gdiet${i}`, 'Please select a dietary preference'); valid = false; }
+    if (!name) { showErr(`err_name_${i}`, 'Name is required'); ok = false; }
+    if (!/^\d{10}$/.test(wa)) { showErr(`err_wa_${i}`, 'Enter a valid 10-digit WhatsApp number'); ok = false; }
+    if (!diet) { showErr(`err_diet_${i}`, 'Please select a dietary preference'); ok = false; }
   }
 
-  const src = document.getElementById('gsrc')?.value;
-  if (!src) { showFieldError('err-gsrc', 'Please tell us how you heard about us'); valid = false; }
+  const src = val('guest_source');
+  if (!src) { showErr('err_source', 'Please tell us how you heard about us'); ok = false; }
 
-  return valid;
+  return ok;
 }
 
 /* ═══════════════════════════════════════
-   SUBMIT — COMMUNITY DINING
+   SUBMIT — COMMUNITY
 ═══════════════════════════════════════ */
 window.submitCommunity = function () {
-  if (!validateCommunityForms()) return;
+  if (!validateCommunity()) return;
 
   const btn = document.getElementById('comm-submit');
   btn.disabled    = true;
   btn.textContent = 'Submitting…';
 
-  // Build flat payload — all data in one object
+  /* Build payload — field IDs match renderForms() exactly */
   const payload = {
     booking_type : 'Community Dining',
     dinner_date  : selectedDate,
     guest_count  : gCount,
-    source       : document.getElementById('gsrc')?.value || '',
-    timestamp    : new Date().toISOString(),
+    source       : val('guest_source'),
+    timestamp    : new Date().toLocaleString('en-IN', { timeZone: 'Asia/Kolkata' }),
   };
 
   for (let i = 1; i <= gCount; i++) {
-    payload[`g${i}_name`]     = document.getElementById('gn'        + i)?.value.trim() || '';
-    payload[`g${i}_whatsapp`] = document.getElementById('gwa'       + i)?.value.trim() || '';
-    payload[`g${i}_diet`]     = document.getElementById('gdiet'     + i)?.value        || '';
-    payload[`g${i}_platform`] = document.getElementById('gplatform' + i)?.value        || '';
-    payload[`g${i}_username`] = document.getElementById('gusername' + i)?.value.trim() || '';
+    payload[`g${i}_name`]     = val(`guest_name_${i}`);
+    payload[`g${i}_whatsapp`] = val(`guest_wa_${i}`);
+    payload[`g${i}_diet`]     = val(`guest_diet_${i}`);
+    payload[`g${i}_platform`] = val(`guest_platform_${i}`);
+    payload[`g${i}_username`] = val(`guest_username_${i}`);
   }
 
-  postToSheet(payload)
-    .finally(() => {
-      // Optimistically update local availability
-      availability[selectedDate] = (availability[selectedDate] || 0) + gCount;
-      buildCal();
+  /* Debug — remove after confirming data arrives */
+  console.log('Submitting payload:', payload);
 
-      openModal('m-community');
-
-      btn.disabled    = false;
-      btn.textContent = "I've Paid — Confirm My Seat(s)";
-    });
+  postToSheet(payload).finally(() => {
+    availability[selectedDate] = (availability[selectedDate] || 0) + gCount;
+    buildCal();
+    openModal('m-community');
+    resetCommunityForm();
+    btn.disabled    = false;
+    btn.textContent = "I've Paid — Confirm My Seat(s)";
+  });
 };
 
 /* ═══════════════════════════════════════
-   SUBMIT — PRIVATE DINING
-   (intercepts the native form submit)
+   RESET COMMUNITY FORM
+═══════════════════════════════════════ */
+function resetCommunityForm() {
+  // Reset date selection
+  selectedDate = null;
+  document.querySelectorAll('.day.sel').forEach(c => c.classList.remove('sel'));
+
+  // Reset guest count to 1
+  gCount = 1;
+  document.getElementById('gc-n').textContent  = '1';
+  document.getElementById('gc-').disabled       = true;
+  document.getElementById('gc+').disabled       = false;
+  document.getElementById('gc-tot').textContent = '₹1,999';
+  document.getElementById('c-amt').innerHTML    = '<sup>₹</sup>1,999';
+  document.getElementById('c-sub').textContent  = 'for 1 guest · all-inclusive';
+
+  // Re-render blank forms
+  renderForms();
+}
+
+/* ═══════════════════════════════════════
+   PRIVATE DINING FORM
 ═══════════════════════════════════════ */
 function initPrivateForm() {
   const form = document.getElementById('privateForm');
   if (!form) return;
 
-  // Attach inline validation
-  attachValidation('pd-name',  'err-pd-name',  v => v.trim() ? '' : 'Name is required');
-  attachValidation('pd-phone', 'err-pd-phone', v => /^\d{10}$/.test(v.trim()) ? '' : 'Enter a valid 10-digit number');
-  attachValidation('pd-src',   'err-pd-src',   v => v ? '' : 'Please tell us how you heard about us');
+  /* Inline validation */
+  document.getElementById('pd-name')?.addEventListener('blur', function() {
+    this.value.trim() ? hideErr('err-pd-name') : showErr('err-pd-name', 'Name is required');
+  });
+  document.getElementById('pd-phone')?.addEventListener('blur', function() {
+    /^\d{10}$/.test(this.value.trim())
+      ? hideErr('err-pd-phone')
+      : showErr('err-pd-phone', 'Enter a valid 10-digit number');
+  });
+  document.getElementById('pd-phone')?.addEventListener('input', function() {
+    this.value = this.value.replace(/\D/g, '');
+  });
+  document.getElementById('pd-src')?.addEventListener('change', function() {
+    this.value ? hideErr('err-pd-src') : showErr('err-pd-src', 'Please tell us how you heard about us');
+  });
 
-  // Add error placeholders if they don't exist
-  addErrorEl('pd-name',  'err-pd-name');
-  addErrorEl('pd-phone', 'err-pd-phone');
-  addErrorEl('pd-src',   'err-pd-src');
+  /* Add error elements below each field */
+  addErrEl('pd-name',  'err-pd-name');
+  addErrEl('pd-phone', 'err-pd-phone');
+  addErrEl('pd-src',   'err-pd-src');
 
   form.addEventListener('submit', function (e) {
     e.preventDefault();
 
-    let valid = true;
-    const name  = document.getElementById('pd-name')?.value.trim();
-    const phone = document.getElementById('pd-phone')?.value.trim();
-    const src   = document.getElementById('pd-src')?.value;
+    let ok    = true;
+    const name  = document.getElementById('pd-name')?.value.trim()  || '';
+    const phone = document.getElementById('pd-phone')?.value.trim() || '';
+    const src   = document.getElementById('pd-src')?.value          || '';
 
-    if (!name)  { showFieldError('err-pd-name',  'Name is required'); valid = false; }
-    if (!/^\d{10}$/.test(phone)) { showFieldError('err-pd-phone', 'Enter a valid 10-digit number'); valid = false; }
-    if (!src)   { showFieldError('err-pd-src',   'Please tell us how you heard about us'); valid = false; }
-    if (!valid) return;
+    if (!name)                        { showErr('err-pd-name',  'Name is required'); ok = false; }
+    if (!/^\d{10}$/.test(phone))      { showErr('err-pd-phone', 'Enter a valid 10-digit number'); ok = false; }
+    if (!src)                         { showErr('err-pd-src',   'Please tell us how you heard about us'); ok = false; }
+    if (!ok) return;
 
     const btn = document.getElementById('pd-submit');
     btn.disabled    = true;
@@ -380,103 +427,108 @@ function initPrivateForm() {
 
     const payload = {
       booking_type   : 'Private Dining',
-      name           : name,
+      timestamp      : new Date().toLocaleString('en-IN', { timeZone: 'Asia/Kolkata' }),
+      name,
       whatsapp       : phone,
-      guest_count    : document.getElementById('pd-guests')?.value  || '',
-      preferred_date : document.getElementById('pd-date')?.value    || '',
-      dietary_notes  : document.getElementById('pd-diet')?.value    || '',
-      occasion       : document.getElementById('pd-occ')?.value     || '',
+      guest_count    : document.getElementById('pd-guests')?.value || '',
+      preferred_date : document.getElementById('pd-date')?.value   || '',
+      dietary_notes  : document.getElementById('pd-diet')?.value   || '',
+      occasion       : document.getElementById('pd-occ')?.value    || '',
       source         : src,
-      timestamp      : new Date().toISOString(),
     };
 
-    postToSheet(payload)
-      .finally(() => {
-        openModal('m-private');
-        btn.disabled    = false;
-        btn.textContent = "I've Paid — Request Private Dining";
-        form.reset();
-      });
+    console.log('Private payload:', payload);
+
+    postToSheet(payload).finally(() => {
+      openModal('m-private');
+      form.reset();
+      btn.disabled    = false;
+      btn.textContent = "I've Paid — Request Private Dining";
+    });
   });
 }
 
 /* ═══════════════════════════════════════
-   SUBMIT — GIFT VOUCHER
+   GIFT VOUCHER FORM
 ═══════════════════════════════════════ */
 function initGiftForm() {
   const form = document.getElementById('giftForm');
   if (!form) return;
 
-  attachValidation('g-rec',       'err-g-rec',       v => v.trim() ? '' : "Recipient's name is required");
-  attachValidation('g-gifter',    'err-g-gifter',    v => v.trim() ? '' : 'Your name is required');
-  attachValidation('g-gifter-wa', 'err-g-gifter-wa', v => /^\d{10}$/.test(v.trim()) ? '' : 'Enter a valid 10-digit number');
-  attachValidation('g-src',       'err-g-src',       v => v ? '' : 'Please tell us how you heard about us');
+  document.getElementById('g-rec')?.addEventListener('blur', function() {
+    this.value.trim() ? hideErr('err-g-rec') : showErr('err-g-rec', "Recipient's name is required");
+  });
+  document.getElementById('g-gifter')?.addEventListener('blur', function() {
+    this.value.trim() ? hideErr('err-g-gifter') : showErr('err-g-gifter', 'Your name is required');
+  });
+  document.getElementById('g-gifter-wa')?.addEventListener('blur', function() {
+    /^\d{10}$/.test(this.value.trim())
+      ? hideErr('err-g-gifter-wa')
+      : showErr('err-g-gifter-wa', 'Enter a valid 10-digit number');
+  });
+  document.getElementById('g-gifter-wa')?.addEventListener('input', function() {
+    this.value = this.value.replace(/\D/g, '');
+  });
+  document.getElementById('g-src')?.addEventListener('change', function() {
+    this.value ? hideErr('err-g-src') : showErr('err-g-src', 'Please tell us how you heard about us');
+  });
 
-  addErrorEl('g-rec',       'err-g-rec');
-  addErrorEl('g-gifter',    'err-g-gifter');
-  addErrorEl('g-gifter-wa', 'err-g-gifter-wa');
-  addErrorEl('g-src',       'err-g-src');
+  addErrEl('g-rec',       'err-g-rec');
+  addErrEl('g-gifter',    'err-g-gifter');
+  addErrEl('g-gifter-wa', 'err-g-gifter-wa');
+  addErrEl('g-src',       'err-g-src');
 
   form.addEventListener('submit', function (e) {
     e.preventDefault();
 
-    let valid = true;
-    const recName  = document.getElementById('g-rec')?.value.trim();
-    const gifter   = document.getElementById('g-gifter')?.value.trim();
-    const gifterWa = document.getElementById('g-gifter-wa')?.value.trim();
-    const src      = document.getElementById('g-src')?.value;
+    let ok = true;
+    const recName   = document.getElementById('g-rec')?.value.trim()        || '';
+    const gifter    = document.getElementById('g-gifter')?.value.trim()     || '';
+    const gifterWa  = document.getElementById('g-gifter-wa')?.value.trim()  || '';
+    const src       = document.getElementById('g-src')?.value               || '';
 
-    if (!recName)  { showFieldError('err-g-rec',       "Recipient's name is required"); valid = false; }
-    if (!gifter)   { showFieldError('err-g-gifter',    'Your name is required');        valid = false; }
-    if (!/^\d{10}$/.test(gifterWa)) { showFieldError('err-g-gifter-wa', 'Enter a valid 10-digit number'); valid = false; }
-    if (!src)      { showFieldError('err-g-src',       'Please tell us how you heard about us'); valid = false; }
-    if (!valid) return;
+    if (!recName)                         { showErr('err-g-rec',       "Recipient's name is required"); ok = false; }
+    if (!gifter)                          { showErr('err-g-gifter',    'Your name is required');        ok = false; }
+    if (!/^\d{10}$/.test(gifterWa))       { showErr('err-g-gifter-wa','Enter a valid 10-digit number'); ok = false; }
+    if (!src)                             { showErr('err-g-src',       'Please tell us how you heard about us'); ok = false; }
+    if (!ok) return;
 
     const btn = document.getElementById('gf-submit');
     btn.disabled    = true;
     btn.textContent = 'Submitting…';
 
-    const seats = document.getElementById('g-seats')?.value || 1;
+    const seats = document.getElementById('g-seats')?.value || '1';
     const payload = {
       booking_type       : 'Gift Voucher',
+      timestamp          : new Date().toLocaleString('en-IN', { timeZone: 'Asia/Kolkata' }),
       recipient_name     : recName,
       recipient_whatsapp : document.getElementById('g-rec-wa')?.value.trim()  || '',
       gifter_name        : gifter,
       gifter_whatsapp    : gifterWa,
       gift_seats         : seats,
       gift_value         : PRICE * Number(seats),
-      occasion           : document.getElementById('g-occ')?.value             || '',
-      personal_note      : document.getElementById('g-note')?.value            || '',
-      voucher_delivery   : document.getElementById('g-delivery')?.value        || '',
+      occasion           : document.getElementById('g-occ')?.value            || '',
+      personal_note      : document.getElementById('g-note')?.value           || '',
+      voucher_delivery   : document.getElementById('g-delivery')?.value       || '',
       source             : src,
-      timestamp          : new Date().toISOString(),
     };
 
-    postToSheet(payload)
-      .finally(() => {
-        openModal('m-gift');
-        btn.disabled    = false;
-        btn.textContent = "I've Paid — Send the Voucher";
-        form.reset();
-        // Reset voucher preview
-        document.getElementById('vp-for').textContent   = '—';
-        document.getElementById('vp-from').textContent  = '—';
-        document.getElementById('vp-seats').textContent = '1 guest';
-        document.getElementById('vp-val').textContent   = '₹1,999';
-      });
-  });
-}
+    console.log('Gift payload:', payload);
 
-/* Helper — insert error <p> after an input if not already there */
-function addErrorEl(inputId, errorId) {
-  if (document.getElementById(errorId)) return;
-  const input = document.getElementById(inputId);
-  if (!input) return;
-  const p = document.createElement('p');
-  p.id        = errorId;
-  p.className = 'field-err';
-  p.style.cssText = 'display:none;color:var(--red);font-size:11px;margin-top:4px;font-style:italic';
-  input.parentNode.insertBefore(p, input.nextSibling);
+    postToSheet(payload).finally(() => {
+      openModal('m-gift');
+      form.reset();
+      // Reset voucher preview
+      document.getElementById('vp-for').textContent   = '—';
+      document.getElementById('vp-from').textContent  = '—';
+      document.getElementById('vp-seats').textContent = '1 guest';
+      document.getElementById('vp-val').textContent   = '₹1,999';
+      document.getElementById('g-amt').innerHTML      = '<sup>₹</sup>1,999';
+      document.getElementById('g-sub').textContent    = 'for 1 seat · all-inclusive';
+      btn.disabled    = false;
+      btn.textContent = "I've Paid — Send the Voucher";
+    });
+  });
 }
 
 /* ═══════════════════════════════════════
@@ -489,6 +541,20 @@ window.updateGiftPrice = function (seats) {
   document.getElementById('vp-seats').textContent = `${seats} guest${seats > 1 ? 's' : ''}`;
   document.getElementById('vp-val').textContent   = `₹${price.toLocaleString('en-IN')}`;
 };
+
+/* ═══════════════════════════════════════
+   HELPER — insert <p> error element
+   after an input if not already there
+═══════════════════════════════════════ */
+function addErrEl(inputId, errorId) {
+  if (document.getElementById(errorId)) return;
+  const input = document.getElementById(inputId);
+  if (!input) return;
+  const p = document.createElement('p');
+  p.id            = errorId;
+  p.className     = 'ferr';
+  input.parentNode.insertBefore(p, input.nextSibling);
+}
 
 /* ═══════════════════════════════════════
    INIT
