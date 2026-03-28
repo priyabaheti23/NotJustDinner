@@ -158,7 +158,7 @@ function selectDate(dateKey, cell, remaining) {
 
   document.querySelectorAll('.day.sel').forEach(c => c.classList.remove('sel'));
   cell.classList.add('sel');
-  selectedDate = `2026-04-${String(d).padStart(2, '0')}`;
+  selectedDate = dateKey;
 
   document.getElementById('cal-err').style.display = 'none';
 }
