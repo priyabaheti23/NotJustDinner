@@ -10,6 +10,10 @@ const PRICE = 1999;
 const SAT = [4,11,18,25];
 const SUN = [5,12,19,26];
 
+const btn = document.getElementById("comm-submit");
+btn.disabled = true;
+btn.innerText = "Submitting...";
+
 /* ═══════════════════════════════════════
    STATE
 ═══════════════════════════════════════ */
@@ -228,9 +232,18 @@ window.submitCommunity = function() {
     mode: "no-cors"
   });
 
-  alert("Booking Confirmed 🎉");
+   setTimeout(() => {
+  document.getElementById("successModal").style.display = "flex";
+  document.body.style.overflow = "hidden";
+   btn.disabled = false;
+btn.innerText = "I've Paid — Confirm My Seat(s)";
 
-  // update UI instantly
+      function closeModal() {
+  document.getElementById("successModal").style.display = "none";
+  document.body.style.overflow = "auto";
+}
+   
+   // update UI instantly
   availability[selectedDate] = (availability[selectedDate] || 0) + gCount;
   buildCal();
 };
