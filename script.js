@@ -3,7 +3,7 @@
 /* ═══════════════════════════════════════
    CONFIG
 ═══════════════════════════════════════ */
-const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbyCeVslM1jAHj-aLjyhHyElGIyfRvJjpJT0HV1wRNRLyogMmPPZwnfXEthFpMwoYUTryA/exec'; // ← replace this
+const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbyCeVslM1jAHj-aLjyhHyElGIyfRvJjpJT0HV1wRNRLyogMmPPZwnfXEthFpMwoYUTryA/exec'; // ← replace
 const MAX_SEATS = 8;
 const PRICE = 1999;
 
@@ -22,11 +22,8 @@ let gCount = 1;
 ═══════════════════════════════════════ */
 window.switchTab = function(tab) {
   ['community','private','gift'].forEach(id => {
-    const tabEl = document.getElementById('tab-' + id);
-    const panel = document.getElementById('panel-' + id);
-
-    tabEl.classList.toggle('on', id === tab);
-    panel.classList.toggle('on', id === tab);
+    document.getElementById('tab-' + id).classList.toggle('on', id === tab);
+    document.getElementById('panel-' + id).classList.toggle('on', id === tab);
   });
 };
 
@@ -40,9 +37,7 @@ function fetchAvailability() {
       availability = data || {};
       buildCal();
     })
-    .catch(() => {
-      buildCal();
-    });
+    .catch(() => buildCal());
 }
 
 /* ═══════════════════════════════════════
@@ -83,7 +78,6 @@ function buildCal() {
         if (remaining <= 2) cell.classList.add('almost');
 
         cell.innerHTML += `<span class="day-seats">${remaining} left</span>`;
-
         cell.onclick = () => selectDate(key, cell, remaining);
       }
     } else {
@@ -121,7 +115,6 @@ window.changeG = function(delta) {
   if (next < 1) return;
 
   document.getElementById('g-err').style.display = 'none';
-
   gCount = next;
 
   document.getElementById('gc-n').textContent = gCount;
@@ -134,7 +127,62 @@ window.changeG = function(delta) {
   document.getElementById('c-amt').innerHTML = `<sup>₹</sup>${total}`;
   document.getElementById('c-sub').textContent =
     `for ${gCount} guest${gCount > 1 ? 's' : ''}`;
+
+  renderForms(); // 🔥 IMPORTANT
 };
+
+/* ═══════════════════════════════════════
+   RENDER FORMS (FIXED ISSUE)
+═══════════════════════════════════════ */
+function renderForms() {
+  const wrap = document.getElementById('member-forms');
+  if (!wrap) return;
+
+  wrap.innerHTML = '';
+
+  for (let i = 1; i <= gCount; i++) {
+    const isFirst = i === 1;
+
+    wrap.innerHTML += `
+      <div class="mbl">
+        <div class="mbl-title">Guest ${i}</div>
+        <div class="fgrid">
+
+          <div class="ff">
+            <label>Full Name *</label>
+            <input type="text" id="gn${i}" required>
+          </div>
+
+          <div class="ff">
+            <label>Diet *</label>
+            <select id="gw${i}" required>
+              <option value="">Select</option>
+              <option>Egg OK</option>
+              <option>No Egg</option>
+            </select>
+          </div>
+
+          ${isFirst ? `
+          <div class="ff">
+            <label>WhatsApp *</label>
+            <input type="tel" id="gwa1" required>
+          </div>
+
+          <div class="ff">
+            <label>Source</label>
+            <select id="gsrc">
+              <option>Instagram</option>
+              <option>Friend</option>
+              <option>Other</option>
+            </select>
+          </div>
+          ` : ''}
+
+        </div>
+      </div>
+    `;
+  }
+}
 
 /* ═══════════════════════════════════════
    COPY UPI
@@ -177,7 +225,6 @@ window.submitCommunity = function() {
 
   alert("Booking Confirmed 🎉");
 
-  // update UI instantly
   availability[selectedDate] = (availability[selectedDate] || 0) + gCount;
   buildCal();
 };
@@ -199,7 +246,7 @@ window.updateGiftPrice = function(seats) {
 };
 
 /* ═══════════════════════════════════════
-   REVEAL FIX + INIT
+   INIT
 ═══════════════════════════════════════ */
 window.addEventListener("load", () => {
   document.querySelectorAll('.rev').forEach(el => el.classList.add('vis'));
@@ -208,5 +255,6 @@ window.addEventListener("load", () => {
     setTimeout(() => el.classList.add('vis'), i * 100);
   });
 
+  renderForms();     // 🔥 THIS FIXES YOUR ISSUE
   fetchAvailability();
 });
