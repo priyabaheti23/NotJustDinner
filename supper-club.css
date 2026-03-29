@@ -285,14 +285,15 @@ hr.rl:last-of-type{
 .fgrid{
   display:grid;
   grid-template-columns:1fr 1fr;
-  column-gap:18px;
-  row-gap:22px; /* THIS FIXES VERTICAL SPACE */
+  column-gap:20px;
+  row-gap:8px; /* reduce this */
 }
 .fgrid .span2{grid-column:span 2}
 .ff{
   display:flex;
   flex-direction:column;
   gap:10px;
+  margin-bottom:12px; /* THIS FIXES YOUR ISSUE */
 }
 .ff label{
   font-size:9px;
