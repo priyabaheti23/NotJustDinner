@@ -202,7 +202,7 @@ hr.rl:last-of-type{
    BOOKING TABS
 ══════════════════════════════════════════ */
 .tabs{display:flex;border:1px solid var(--rl);margin-bottom:52px}
-.tab{flex:1;padding:20px 24px;text-align:center;cursor:pointer;
+.tab{flex:1;padding:28px 20px;text-align:center;cursor:pointer;
   border-right:1px solid var(--rl);transition:background .2s,color .2s;
   background:var(--cr);position:relative}
 .tab:last-child{border-right:none}
@@ -336,12 +336,30 @@ hr.rl:last-of-type{
 .after-text strong{font-weight:500;color:var(--ink);display:block;font-size:12px}
 
 /* WhatsApp CTA */
-.wa-cta{display:inline-flex;align-items:center;gap:9px;
-  background:#25D366;color:#fff;
-  font-size:11px;font-weight:500;letter-spacing:.06em;
-  padding:11px 22px;margin-top:10px;transition:opacity .2s}
-.wa-cta:hover{opacity:.85}
-.wa-cta svg{width:16px;height:16px;fill:currentColor}
+/* Clean WhatsApp */
+.wa-private{
+  margin-top:20px;
+  text-align:center;
+}
+
+.wa-text{
+  font-size:12px;
+  color:var(--mu);
+  margin-bottom:6px;
+}
+
+.wa-link{
+  font-size:13px;
+  font-style:italic;
+  color:var(--ink);
+  border-bottom:1px solid var(--ink);
+  padding-bottom:2px;
+  transition:opacity .2s;
+}
+
+.wa-link:hover{
+  opacity:.6;
+}
 
 /* ══════════════════════════════════════════
    SUBMIT BTN
