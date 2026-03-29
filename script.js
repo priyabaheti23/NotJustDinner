@@ -65,7 +65,25 @@ window.switchTab = function (tab) {
 function fetchAvailability() {
   fetch(SCRIPT_URL)
     .then(r => r.json())
-    .then(data => { availability = data || {}; buildCal(); })
+    .then(data => {
+      availability = {};
+      // Convert whatever date format the sheet returns into 2026-04-11
+      Object.entries(data || {}).forEach(([key, value]) => {
+        let dateKey = key;
+        // If it looks like "Sat Apr 11 2026 00:00:00 GMT+0530..."
+        if (key.includes('GMT') || key.includes('Apr') || key.includes('2026')) {
+          const d = new Date(key);
+          if (!isNaN(d)) {
+            const y = d.getFullYear();
+            const m = String(d.getMonth() + 1).padStart(2, '0');
+            const day = String(d.getDate()).padStart(2, '0');
+            dateKey = `${y}-${m}-${day}`;
+          }
+        }
+        availability[dateKey] = (availability[dateKey] || 0) + value;
+      });
+      buildCal();
+    })
     .catch(() => buildCal());
 }
 
