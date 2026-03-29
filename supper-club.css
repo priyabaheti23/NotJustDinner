@@ -88,7 +88,9 @@ a{color:inherit;text-decoration:none}
    SECTIONS
 ══════════════════════════════════════════ */
 .sec{padding-block:84px}
-.sec-alt{background:var(--cr2)}
+.sec-alt{
+  background:#E2D6BB; /* slightly darker, warmer */
+}
 .sec-dark{background:var(--ink)}
 .sec-hd{margin-bottom:48px}
 .sec-hd .eyebrow{margin-bottom:12px}
@@ -119,7 +121,7 @@ hr.rl:last-of-type{
    WHO IS THIS FOR
 ══════════════════════════════════════════ */
 .for-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:3px;margin-top:44px}
-.for-card{background:var(--cr);border:1px solid var(--rl);padding:28px 22px}
+.for-card{background:#F5EFE2;border:1px solid var(--rl);padding:28px 22px}
 .for-icon{font-size:22px;margin-bottom:12px}
 .for-title{font-family:var(--sf);font-size:16px;color:var(--ink);margin-bottom:8px}
 .for-desc{font-size:13px;color:var(--br);line-height:1.65}
