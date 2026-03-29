@@ -172,8 +172,18 @@ hr.rl:last-of-type{
    HOSTS
 ══════════════════════════════════════════ */
 .hosts-grid{display:grid;grid-template-columns:1fr 1fr;gap:3px}
-.hc{background:var(--cr);padding:48px 40px;border:1px solid var(--rl)}
-.hav{width:96px;height:96px;border-radius:50%;object-fit:cover;
+.hc{
+  background:var(--cr);
+  padding:56px 40px;
+  text-align:center; /* centers everything */
+}
+border:1px solid var(--rl)}
+.hav{
+  width:130px;
+  height:130px;
+  margin:0 auto 24px; /* center image */
+}
+border-radius:50%;object-fit:cover;
   margin-bottom:22px;border:2px solid var(--rl);filter:sepia(8%)}
 .h-role{font-size:9px;font-weight:500;letter-spacing:.2em;text-transform:uppercase;color:var(--mu);margin-bottom:7px}
 .h-name{font-family:var(--sf);font-size:26px;font-weight:400;color:var(--ink);margin-bottom:12px}
@@ -188,7 +198,17 @@ hr.rl:last-of-type{
    BOOKING TABS
 ══════════════════════════════════════════ */
 .tabs{display:flex;border:1px solid var(--rl);margin-bottom:52px}
-.tab{flex:1;padding:20px 24px;text-align:center;cursor:pointer;
+.tab{
+  flex:1;
+  padding:28px 20px;
+}
+.tab-name{
+  margin-bottom:6px;
+}
+.tab-sub{
+  line-height:1.5;
+}
+text-align:center;cursor:pointer;
   border-right:1px solid var(--rl);transition:background .2s,color .2s;
   background:var(--cr);position:relative}
 .tab:last-child{border-right:none}
@@ -322,8 +342,30 @@ hr.rl:last-of-type{
 .after-text strong{font-weight:500;color:var(--ink);display:block;font-size:12px}
 
 /* WhatsApp CTA */
-.wa-cta{display:inline-flex;align-items:center;gap:9px;
-  background:#25D366;color:#fff;
+/* New elegant WhatsApp style */
+.wa-private{
+  margin-top:20px;
+  text-align:center;
+}
+
+.wa-text{
+  font-size:12px;
+  color:var(--mu);
+  margin-bottom:6px;
+}
+
+.wa-link{
+  font-size:13px;
+  font-style:italic;
+  color:var(--ink);
+  border-bottom:1px solid var(--ink);
+  padding-bottom:2px;
+  transition:opacity .2s;
+}
+
+.wa-link:hover{
+  opacity:.6;
+}
   font-size:11px;font-weight:500;letter-spacing:.06em;
   padding:11px 22px;margin-top:10px;transition:opacity .2s}
 .wa-cta:hover{opacity:.85}
