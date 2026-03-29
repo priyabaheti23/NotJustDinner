@@ -18,7 +18,6 @@ let gCount       = 1;
 
 /* ═══════════════════════════════════════
    POST TO SHEET
-   URL-encoded so e.parameter works in Apps Script
 ═══════════════════════════════════════ */
 function postToSheet(payload) {
   const body = Object.entries(payload)
@@ -129,7 +128,7 @@ function selectDate(dateKey, cell, remaining) {
 function showErr(id, msg) {
   const el = document.getElementById(id);
   if (!el) return;
-  el.textContent  = msg;
+  el.textContent   = msg;
   el.style.display = 'block';
 }
 function hideErr(id) {
@@ -148,8 +147,6 @@ function val(id) {
 
 /* ═══════════════════════════════════════
    RENDER GUEST FORMS
-   IDs used here MUST match exactly what
-   submitCommunity() reads below
 ═══════════════════════════════════════ */
 function renderForms() {
   const wrap = document.getElementById('member-forms');
@@ -215,7 +212,6 @@ function renderForms() {
       </div>`;
     wrap.appendChild(div);
 
-    /* ── Inline validation (fires on blur) ── */
     document.getElementById(`guest_name_${i}`).addEventListener('blur', function() {
       this.value.trim()
         ? hideErr(`err_name_${i}`)
@@ -229,7 +225,6 @@ function renderForms() {
     });
 
     document.getElementById(`guest_wa_${i}`).addEventListener('input', function() {
-      // Strip non-digits as they type
       this.value = this.value.replace(/\D/g, '');
     });
 
@@ -291,8 +286,6 @@ window.copyUPI = function () {
 
 /* ═══════════════════════════════════════
    VALIDATE COMMUNITY FORM
-   Returns true if all good, false + shows
-   errors if anything is missing
 ═══════════════════════════════════════ */
 function validateCommunity() {
   let ok = true;
@@ -321,6 +314,7 @@ function validateCommunity() {
 
 /* ═══════════════════════════════════════
    SUBMIT — COMMUNITY
+   ✅ FIXED: Booking_Type (underscore, no space)
 ═══════════════════════════════════════ */
 window.submitCommunity = function () {
   if (!validateCommunity()) return;
@@ -329,17 +323,12 @@ window.submitCommunity = function () {
   btn.disabled    = true;
   btn.textContent = 'Submitting…';
 
-  /* Build payload — field IDs match renderForms() exactly */
-const payload = {
-  "Timestamp": new Date().toLocaleString("en-IN"),
-  "Booking Type": "Community Dining",
-  "Date": selectedDate,
-  "Guest Count": gCount,
-  "Name": val("guest_name_1"),
-  "WhatsApp": val("guest_wa_1"),
-  "Diet": val("guest_diet_1"),
-  "Source": val("guest_source")
-};
+  const payload = {
+    Booking_Type  : 'Community Dining',
+    Date          : selectedDate,
+    Guest_Count   : gCount,
+    Source        : val('guest_source')
+  };
 
   for (let i = 1; i <= gCount; i++) {
     payload[`g${i}_name`]     = val(`guest_name_${i}`);
@@ -349,8 +338,7 @@ const payload = {
     payload[`g${i}_username`] = val(`guest_username_${i}`);
   }
 
-  /* Debug — remove after confirming data arrives */
-  console.log('Submitting payload:', payload);
+  console.log('Community payload:', payload);
 
   postToSheet(payload).finally(() => {
     availability[selectedDate] = (availability[selectedDate] || 0) + gCount;
@@ -366,11 +354,9 @@ const payload = {
    RESET COMMUNITY FORM
 ═══════════════════════════════════════ */
 function resetCommunityForm() {
-  // Reset date selection
   selectedDate = null;
   document.querySelectorAll('.day.sel').forEach(c => c.classList.remove('sel'));
 
-  // Reset guest count to 1
   gCount = 1;
   document.getElementById('gc-n').textContent  = '1';
   document.getElementById('gc-').disabled       = true;
@@ -379,18 +365,17 @@ function resetCommunityForm() {
   document.getElementById('c-amt').innerHTML    = '<sup>₹</sup>1,999';
   document.getElementById('c-sub').textContent  = 'for 1 guest · all-inclusive';
 
-  // Re-render blank forms
   renderForms();
 }
 
 /* ═══════════════════════════════════════
    PRIVATE DINING FORM
+   ✅ FIXED: Booking_Type (underscore, no space)
 ═══════════════════════════════════════ */
 function initPrivateForm() {
   const form = document.getElementById('privateForm');
   if (!form) return;
 
-  /* Inline validation */
   document.getElementById('pd-name')?.addEventListener('blur', function() {
     this.value.trim() ? hideErr('err-pd-name') : showErr('err-pd-name', 'Name is required');
   });
@@ -406,7 +391,6 @@ function initPrivateForm() {
     this.value ? hideErr('err-pd-src') : showErr('err-pd-src', 'Please tell us how you heard about us');
   });
 
-  /* Add error elements below each field */
   addErrEl('pd-name',  'err-pd-name');
   addErrEl('pd-phone', 'err-pd-phone');
   addErrEl('pd-src',   'err-pd-src');
@@ -419,9 +403,9 @@ function initPrivateForm() {
     const phone = document.getElementById('pd-phone')?.value.trim() || '';
     const src   = document.getElementById('pd-src')?.value          || '';
 
-    if (!name)                        { showErr('err-pd-name',  'Name is required'); ok = false; }
-    if (!/^\d{10}$/.test(phone))      { showErr('err-pd-phone', 'Enter a valid 10-digit number'); ok = false; }
-    if (!src)                         { showErr('err-pd-src',   'Please tell us how you heard about us'); ok = false; }
+    if (!name)                   { showErr('err-pd-name',  'Name is required'); ok = false; }
+    if (!/^\d{10}$/.test(phone)) { showErr('err-pd-phone', 'Enter a valid 10-digit number'); ok = false; }
+    if (!src)                    { showErr('err-pd-src',   'Please tell us how you heard about us'); ok = false; }
     if (!ok) return;
 
     const btn = document.getElementById('pd-submit');
@@ -429,15 +413,14 @@ function initPrivateForm() {
     btn.textContent = 'Submitting…';
 
     const payload = {
-      booking_type   : 'Private Dining',
-      timestamp      : new Date().toLocaleString('en-IN', { timeZone: 'Asia/Kolkata' }),
-      name,
+      Booking_Type   : 'Private Dining',
+      name           : name,
       whatsapp       : phone,
       guest_count    : document.getElementById('pd-guests')?.value || '',
       preferred_date : document.getElementById('pd-date')?.value   || '',
       dietary_notes  : document.getElementById('pd-diet')?.value   || '',
       occasion       : document.getElementById('pd-occ')?.value    || '',
-      source         : src,
+      source         : src
     };
 
     console.log('Private payload:', payload);
@@ -453,6 +436,7 @@ function initPrivateForm() {
 
 /* ═══════════════════════════════════════
    GIFT VOUCHER FORM
+   ✅ FIXED: Booking_Type (underscore, no space)
 ═══════════════════════════════════════ */
 function initGiftForm() {
   const form = document.getElementById('giftForm');
@@ -485,15 +469,15 @@ function initGiftForm() {
     e.preventDefault();
 
     let ok = true;
-    const recName   = document.getElementById('g-rec')?.value.trim()        || '';
-    const gifter    = document.getElementById('g-gifter')?.value.trim()     || '';
-    const gifterWa  = document.getElementById('g-gifter-wa')?.value.trim()  || '';
-    const src       = document.getElementById('g-src')?.value               || '';
+    const recName  = document.getElementById('g-rec')?.value.trim()       || '';
+    const gifter   = document.getElementById('g-gifter')?.value.trim()    || '';
+    const gifterWa = document.getElementById('g-gifter-wa')?.value.trim() || '';
+    const src      = document.getElementById('g-src')?.value              || '';
 
-    if (!recName)                         { showErr('err-g-rec',       "Recipient's name is required"); ok = false; }
-    if (!gifter)                          { showErr('err-g-gifter',    'Your name is required');        ok = false; }
-    if (!/^\d{10}$/.test(gifterWa))       { showErr('err-g-gifter-wa','Enter a valid 10-digit number'); ok = false; }
-    if (!src)                             { showErr('err-g-src',       'Please tell us how you heard about us'); ok = false; }
+    if (!recName)                   { showErr('err-g-rec',       "Recipient's name is required"); ok = false; }
+    if (!gifter)                    { showErr('err-g-gifter',    'Your name is required'); ok = false; }
+    if (!/^\d{10}$/.test(gifterWa)) { showErr('err-g-gifter-wa','Enter a valid 10-digit number'); ok = false; }
+    if (!src)                       { showErr('err-g-src',       'Please tell us how you heard about us'); ok = false; }
     if (!ok) return;
 
     const btn = document.getElementById('gf-submit');
@@ -502,18 +486,17 @@ function initGiftForm() {
 
     const seats = document.getElementById('g-seats')?.value || '1';
     const payload = {
-      booking_type       : 'Gift Voucher',
-      timestamp          : new Date().toLocaleString('en-IN', { timeZone: 'Asia/Kolkata' }),
+      Booking_Type       : 'Gift Voucher',
       recipient_name     : recName,
-      recipient_whatsapp : document.getElementById('g-rec-wa')?.value.trim()  || '',
+      recipient_whatsapp : document.getElementById('g-rec-wa')?.value.trim() || '',
       gifter_name        : gifter,
       gifter_whatsapp    : gifterWa,
       gift_seats         : seats,
       gift_value         : PRICE * Number(seats),
-      occasion           : document.getElementById('g-occ')?.value            || '',
-      personal_note      : document.getElementById('g-note')?.value           || '',
-      voucher_delivery   : document.getElementById('g-delivery')?.value       || '',
-      source             : src,
+      occasion           : document.getElementById('g-occ')?.value   || '',
+      personal_note      : document.getElementById('g-note')?.value  || '',
+      voucher_delivery   : document.getElementById('g-delivery')?.value || '',
+      source             : src
     };
 
     console.log('Gift payload:', payload);
@@ -521,7 +504,6 @@ function initGiftForm() {
     postToSheet(payload).finally(() => {
       openModal('m-gift');
       form.reset();
-      // Reset voucher preview
       document.getElementById('vp-for').textContent   = '—';
       document.getElementById('vp-from').textContent  = '—';
       document.getElementById('vp-seats').textContent = '1 guest';
@@ -546,16 +528,15 @@ window.updateGiftPrice = function (seats) {
 };
 
 /* ═══════════════════════════════════════
-   HELPER — insert <p> error element
-   after an input if not already there
+   HELPER — insert error element
 ═══════════════════════════════════════ */
 function addErrEl(inputId, errorId) {
   if (document.getElementById(errorId)) return;
   const input = document.getElementById(inputId);
   if (!input) return;
   const p = document.createElement('p');
-  p.id            = errorId;
-  p.className     = 'ferr';
+  p.id        = errorId;
+  p.className = 'ferr';
   input.parentNode.insertBefore(p, input.nextSibling);
 }
 
