@@ -1,208 +1,614 @@
-/* ══════════════════════════════════════════
-RESET & TOKENS
-══════════════════════════════════════════ */
-*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
-html{scroll-behavior:smooth;-webkit-font-smoothing:antialiased}
-:root{
---cr:#F0EAD6;
---cr2:#E2D6BB;
---cr3:#DFD4B4;
---ink:#2E1208;
---br:#5C2D14;
---mu:#9C6E50;
---grn:#3D6B47;
---red:#8B2500;
---rl:rgba(46,18,8,.1);
---sf:'Playfair Display',Georgia,serif;
---ss:'DM Sans',sans-serif;
---mw:880px;
---gx:clamp(20px,5vw,48px);
-}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Not Just Dinner · Bengaluru</title>
+<meta name="description" content="An intimate supper club in Bengaluru with only 8 seats per evening. 5-course vegetarian menu. Every Saturday & Sunday in April 2026.">
+<meta property="og:title" content="Not Just Dinner · Bengaluru">
+<meta property="og:description" content="A beautiful, intentional dining experience. Limited to 8 seats.">
+<meta property="og:image" content="assets/supper-club/supper-2.jpg">
+<meta property="og:type" content="website">
+<link rel="icon" type="image/png" href="assets/branding/favicon.jpg">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="supper-club.css">
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,300;0,400;0,600;1,300;1,400&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+</head>
+<body>
 
-body{
-background:var(--cr);
-color:var(--ink);
-font-family:var(--ss);
-font-size:15px;
-line-height:1.75;
-overflow-x:hidden;
-}
+<!-- ══ NAV ══════════════════════════════════════════ -->
+<nav class="nav" role="navigation" aria-label="Main navigation">
+  <div class="w">
+    <a href="/" aria-label="Not Just Dinner – Home">
+      <img src="assets/branding/logo.png" class="nav-logo" alt="Not Just Dinner"
+           onerror="this.outerHTML='<span class=\'nav-logo-fb\'>Not <em>Just</em> Dinner</span>'">
+    </a>
+    <a href="#book" class="nav-cta" aria-label="Book a seat">Book a Seat</a>
+  </div>
+</nav>
 
-img{display:block;max-width:100%}
-a{text-decoration:none;color:inherit}
-.w{max-width:var(--mw);margin:auto;padding-inline:var(--gx)}
+<!-- ══ HERO ═════════════════════════════════════════ -->
+<section class="hero" aria-label="Not Just Dinner hero">
+  <div class="hero-bg" role="img" aria-label="Dinner table setting"></div>
+  <div class="hero-copy">
+    <span class="l1">Bengaluru · April 2026</span>
+    <span class="l2">Just</span>
+    <span class="l3">Dinner</span>
+  </div>
+  <div class="hero-scroll" aria-hidden="true">
+    <span>Scroll</span>
+    <div class="scroll-line"></div>
+  </div>
+</section>
 
-.eyebrow{
-font-size:9px;
-letter-spacing:.24em;
-text-transform:uppercase;
-color:var(--mu);
-}
+<!-- ══ DETAILS STRIP ════════════════════════════════ -->
+<div class="strip" role="complementary" aria-label="Event details">
+  <div class="strip-in">
+    <div class="si">
+      <div class="si-l">Location</div>
+      <div class="si-v">Koramangala, Bengaluru</div>
+      <div class="si-n">Exact address on confirmation</div>
+    </div>
+    <div class="si">
+      <div class="si-l">When</div>
+      <div class="si-v">Every Sat &amp; Sun</div>
+      <div class="si-n">April 2026</div>
+    </div>
+    <div class="si">
+      <div class="si-l">Time</div>
+      <div class="si-v">7:30 PM</div>
+    </div>
+    <div class="si">
+      <div class="si-l">Seats</div>
+      <div class="si-v">Only 8 per evening</div>
+    </div>
+    <div class="si">
+      <div class="si-l">Menu</div>
+      <div class="si-v">5-course · <em>2.0</em></div>
+      <div class="si-n">All vegetarian</div>
+    </div>
+  </div>
+</div>
 
-.display{
-font-family:var(--sf);
-line-height:1.12;
-}
+<!-- ══ ABOUT ════════════════════════════════════════ -->
+<hr class="rl">
+<section class="sec" id="about" aria-labelledby="about-h">
+  <div class="w">
+    <div class="about-lay rev">
+      <div class="about-img">
+        <img src="assets/supper-club/supper-3.jpg" alt="Guests at a Not Just Dinner evening" loading="lazy">
+      </div>
+      <div class="about-txt">
+        <p class="eyebrow">The Experience</p>
+        <h2 class="display" id="about-h">More than a meal.</h2>
+        <p>Not Just Dinner is an intentionally hosted dining experience designed for people who appreciate thoughtful food, calm spaces, and meaningful moments.</p>
+        <p>Each evening is carefully planned, from the menu to the pacing of the meal — so guests can slow down, feel present, and enjoy a dinner that unfolds naturally.</p>
+      </div>
+    </div>
+  </div>
+</section>
 
-/* ══════════════════════════════════════════
-NAV
-══════════════════════════════════════════ */
-.nav{
-position:fixed;top:0;left:0;right:0;
-height:58px;
-background:rgba(240,234,214,.92);
-backdrop-filter:blur(16px);
-border-bottom:1px solid var(--rl);
-z-index:99;
-}
+<!-- ══ WHO IS THIS FOR ══════════════════════════════ -->
+<section class="sec sec-alt" aria-labelledby="for-h">
+  <div class="w">
+    <div class="sec-hd rev">
+      <p class="eyebrow">Who This Is For</p>
+      <h2 class="display" id="for-h" style="margin-top:12px;">Made for <em>you</em>, if…</h2>
+    </div>
+    <div class="for-grid rev">
+      <div class="for-card">
+        <div class="for-icon">🌹</div>
+        <div class="for-title">Date Nights</div>
+        <div class="for-desc">A beautiful, unhurried evening that does the talking for you.</div>
+      </div>
+      <div class="for-card">
+        <div class="for-icon">🍽</div>
+        <div class="for-title">Food Lovers</div>
+        <div class="for-desc">You care deeply about what's on the plate — and who made it.</div>
+      </div>
+      <div class="for-card">
+        <div class="for-icon">🌆</div>
+        <div class="for-title">New to Bengaluru</div>
+        <div class="for-desc">Find your people over a 5-course meal in someone's home.</div>
+      </div>
+      <div class="for-card">
+        <div class="for-icon">✦</div>
+        <div class="for-title">Meaningful Moments</div>
+        <div class="for-desc">You're tired of loud restaurants. You want presence, not performance.</div>
+      </div>
+    </div>
+  </div>
+</section>
 
-.nav .w{
-display:flex;
-justify-content:space-between;
-align-items:center;
-height:100%;
-}
+<!-- ══ GALLERY ══════════════════════════════════════ -->
+<section class="sec" aria-labelledby="gallery-h">
+  <div class="w">
+    <div class="sec-hd rev">
+      <p class="eyebrow">Moments from the Table</p>
+      <h2 class="display" id="gallery-h" style="margin-top:12px;">A glimpse into <em>past evenings</em></h2>
+    </div>
+    <div class="gal rev" role="list" aria-label="Gallery of dinner evenings">
+      <div class="gi" role="listitem"><img src="assets/supper-club/supper-1.jpg" alt="Dinner evening 1" loading="lazy"></div>
+      <div class="gi" role="listitem"><img src="assets/supper-club/supper-2.jpg" alt="Dinner evening 2" loading="lazy"></div>
+      <div class="gi" role="listitem"><img src="assets/supper-club/supper-3.jpg" alt="Dinner evening 3" loading="lazy"></div>
+      <div class="gi" role="listitem"><img src="assets/supper-club/supper-4.jpg" alt="Dinner evening 4" loading="lazy"></div>
+      <div class="gi" role="listitem"><img src="assets/supper-club/supper-5.jpg" alt="Dinner evening 5" loading="lazy"></div>
+      <div class="gi" role="listitem"><img src="assets/supper-club/supper-6.jpg" alt="Dinner evening 6" loading="lazy"></div>
+      <div class="gi" role="listitem"><img src="assets/supper-club/supper-7.jpg" alt="Dinner evening 7" loading="lazy"></div>
+      <div class="gi" role="listitem"><img src="assets/supper-club/supper-8.jpg" alt="Dinner evening 8" loading="lazy"></div>
+      <div class="gi" role="listitem"><img src="assets/supper-club/supper-9.jpg" alt="Dinner evening 9" loading="lazy"></div>
+    </div>
+  </div>
+</section>
 
-.nav-logo{height:28px}
+<!-- ══ MENU ═════════════════════════════════════════ -->
+<section class="sec sec-dark" id="menu" aria-labelledby="menu-h">
+  <div class="w">
+    <div class="menu-lay rev">
+      <div class="menu-l">
+        <p class="eyebrow" style="color:rgba(240,234,214,.3);margin-bottom:14px;">This Month's Feature</p>
+        <h2 class="display" id="menu-h" style="color:var(--cr);margin-bottom:10px;">Menu <em>2.0</em></h2>
+        <div class="rtag"><div class="blink"></div><span>Rotating monthly — new menu each edition</span></div>
+        <p class="menu-desc">Our menu is never the same twice. Each edition is a new 5-course journey — different ingredients, different stories. This month: <strong style="color:rgba(240,234,214,.8);font-weight:400">Menu 2.0</strong>.</p>
+      <p class="mnote">Dessert Keeps on chaning · All-vegetarian</p>
+      </div>
+      <div class="courses" aria-label="5 course menu">
+        <div class="cr"><span class="ci">i</span><div class="cdash"></div><span class="cn">Hibsicus Lemonade</span><span class="ct">Welcome</span></div>
+        <div class="cr"><span class="ci">ii</span><div class="cdash"></div><span class="cn">Summer Tomatoes</span><span class="ct">Starter</span></div>
+        <div class="cr"><span class="ci">iii</span><div class="cdash"></div><span class="cn">Chilli Burrata with Sourdough Bread</span><span class="ct">Intermezzo</span></div>
+        <div class="cr"><span class="ci">iv</span><div class="cdash"></div><span class="cn">Cabbage</span><span class="ct">Entrée</span></div>
+        <div class="cr"><span class="ci">v</span><div class="cdash"></div><span class="cn">Dessert - tart au chocolate</span><span class="ct">Finale</span></div>
+      </div>
+    </div>
+  </div>
+</section>
 
-.nav-cta{
-font-size:9px;
-letter-spacing:.18em;
-text-transform:uppercase;
-background:var(--ink);
-color:var(--cr);
-padding:9px 20px;
-}
+<!-- ══ TESTIMONIALS ══════════════════════════════════ -->
+<section class="sec sec-alt" aria-labelledby="testi-h">
+  <div class="w">
+    <div class="sec-hd rev">
+      <p class="eyebrow">Voices from the Table</p>
+      <h2 class="display" id="testi-h" style="margin-top:12px;">What guests <em>say</em></h2>
+    </div>
+    <div class="testi-grid rev">
+      <div class="tcard">
+        <div class="tstars">★★★★★</div>
+        <p class="tquote">I was feeling homesick in the beging of dinner, but not anymore</p>
+        <p class="tname">Gursimran. · Community Dining</p>
+      </div>
+      <div class="tcard">
+        <div class="tstars">★★★★★</div>
+        <p class="tquote">I came alone, left with three new friends. The food was extraordinary, but the conversation made it unforgettable.</p>
+        <p class="tname">Rohan M. · Community Dining</p>
+      </div>
+      <div class="tcard">
+        <div class="tstars">★★★★★</div>
+        <p class="tquote">We hosted our anniversary here as a Private Dining — Kiran and Priya made it feel like the evening was designed just for us.</p>
+        <p class="tname">Meghna & Dev · Private Dining</p>
+      </div>
+    </div>
+  </div>
+</section>
 
-/* ══════════════════════════════════════════
-SECTIONS
-══════════════════════════════════════════ */
-.sec{padding:84px 0}
-.sec-alt{background:var(--cr2)}
-.sec-dark{background:var(--ink)}
+<!-- ══ HOSTS ═════════════════════════════════════════ -->
+<hr class="rl">
+<section class="sec" id="hosts" aria-labelledby="hosts-h">
+  <div class="w">
+    <div class="sec-hd rev">
+      <p class="eyebrow">Behind the Evening</p>
+      <h2 class="display" id="hosts-h" style="margin-top:12px;">Meet Your <em>Hosts</em></h2>
+    </div>
+    <div class="hosts-grid rev">
+      <div class="hc">
+        <img src="assets/branding/host-kiran.jpg" alt="Kiran, chef and host" class="hav" onerror="this.style.display='none'">
+        <p class="h-role">The Dinner</p>
+        <h3 class="h-name">Kiran</h3>
+        <p class="h-bio">Kiran leads the "Dinner" experience — trained in Michelin-star kitchens and a graduate of Le Cordon Bleu, Paris.</p>
+        <a href="https://www.instagram.com/frenchhalwai" target="_blank" rel="noopener" class="s-icon" aria-label="Kiran on Instagram">
+          <svg viewBox="0 0 24 24"><rect x="2" y="2" width="20" height="20" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.5" cy="6.5" r="1.2" fill="currentColor" stroke="none"/></svg>
+        </a>
+      </div>
+      <div class="hc">
+        <img src="assets/branding/host-priya.jpg" alt="Priya, host and experience curator" class="hav" onerror="this.style.display='none'">
+        <p class="h-role">The Not Just</p>
+        <h3 class="h-name">Priya</h3>
+        <p class="h-bio">Priya looks after the "Not Just" part — the vibe, the flow, and making sure every evening feels warm and intentional.</p>
+        <a href="https://www.linkedin.com/in/priyabaheti/" target="_blank" rel="noopener" class="s-icon" aria-label="Priya on LinkedIn">
+          <svg viewBox="0 0 24 24"><path stroke="none" fill="currentColor" d="M4.98 3.5C4.98 4.88 3.88 6 2.5 6S0 4.88 0 3.5 1.12 1 2.5 1 4.98 2.12 4.98 3.5zM0 8h5v16H0zM8 8h4.8v2.2h.07c.67-1.27 2.3-2.6 4.73-2.6C22 7.6 24 10 24 14.5V24h-5v-8.4c0-2-.03-4.6-2.8-4.6-2.8 0-3.2 2.2-3.2 4.4V24H8z"/></svg>
+        </a>
+      </div>
+    </div>
+  </div>
+</section>
 
-hr.rl{
-border:none;
-border-top:1px solid var(--rl);
-}
+<!-- ══ BOOKING ════════════════════════════════════════ -->
+<hr class="rl">
+<section class="sec sec-alt" id="book" aria-labelledby="book-h">
+  <div class="w">
+    <div class="sec-hd rev">
+      <p class="eyebrow">Reserve Your Place</p>
+      <h2 class="display" id="book-h" style="margin-top:12px;">Choose Your <em>Experience</em></h2>
+    </div>
 
-/* remove last divider */
-hr.rl:last-of-type
+    <!-- TABS -->
+    <div class="tabs rev" role="tablist">
+      <div class="tab on" id="tab-community" role="tab" aria-selected="true" aria-controls="panel-community" tabindex="0" onclick="switchTab('community')" onkeydown="if(event.key==='Enter')switchTab('community')">
+        <div class="tab-name">Community <em>Dining</em></div>
+        <div class="tab-sub">Join the shared table · up to 8 guests · ₹1,999/person</div>
+      </div>
+      <div class="tab" id="tab-private" role="tab" aria-selected="false" aria-controls="panel-private" tabindex="0" onclick="switchTab('private')" onkeydown="if(event.key==='Enter')switchTab('private')">
+        <div class="tab-name">Private <em>Dining</em></div>
+        <div class="tab-sub">Your own exclusive evening · full table · ₹16,000</div>
+      </div>
+      <div class="tab" id="tab-gift" role="tab" aria-selected="false" aria-controls="panel-gift" tabindex="0" onclick="switchTab('gift')" onkeydown="if(event.key==='Enter')switchTab('gift')" style="position:relative">
+        <div class="new-tag">✦ New</div>
+        <div class="tab-name">Gift <em>a Seat</em></div>
+        <div class="tab-sub">Give the experience · flexible redemption</div>
+      </div>
+    </div>
 
-/* ══════════════════════════════════════════
-WHO IS THIS FOR
-══════════════════════════════════════════ */
-.for-grid{
-display:grid;
-grid-template-columns:repeat(4,1fr);
-gap:3px;
-margin-top:44px;
-}
+    <!-- ══ COMMUNITY PANEL ══ -->
+    <div class="panel on" id="panel-community" role="tabpanel" aria-labelledby="tab-community">
 
-.for-card{
-background:#F5EFE2;
-border:1px solid var(--rl);
-padding:28px 22px;
-}
+      <!-- Trust bar -->
+      <div class="trust-bar rev" aria-label="Trust signals">
+        <div class="trust-item"><span class="trust-check">✔</span><span class="trust-text">100+ guests hosted</span></div>
+        <div class="trust-item"><span class="trust-check">✔</span><span class="trust-text">Only 8 seats per evening</span></div>
+        <div class="trust-item"><span class="trust-check">✔</span><span class="trust-text">Instant WhatsApp confirmation</span></div>
+        <div class="trust-item"><span class="trust-check">✔</span><span class="trust-text">Full refund if not confirmed</span></div>
+      </div>
 
-/* ══════════════════════════════════════════
-HOSTS
-══════════════════════════════════════════ */
-.hosts-grid{
-display:grid;
-grid-template-columns:1fr 1fr;
-gap:3px;
-}
+      <!-- Step 1: Calendar -->
+      <div class="cal-shell rev">
+        <p class="eyebrow" style="margin-bottom:16px;">Step 1 — Pick your evening</p>
+        <div class="cal-loading" id="cal-loading" aria-live="polite">
+          <div class="cal-loading-dot"></div>
+          Checking live availability…
+        </div>
+        <div class="cal-head">April 2026</div>
+        <div class="cal-grid" id="cal-comm" role="grid" aria-label="April 2026 calendar">
+          <div class="day-lbl" role="columnheader">Sun</div>
+          <div class="day-lbl" role="columnheader">Mon</div>
+          <div class="day-lbl" role="columnheader">Tue</div>
+          <div class="day-lbl" role="columnheader">Wed</div>
+          <div class="day-lbl" role="columnheader">Thu</div>
+          <div class="day-lbl" role="columnheader">Fri</div>
+          <div class="day-lbl wknd" role="columnheader">Sat</div>
+        </div>
+        <p id="cal-err" role="alert" style="display:none">Please select a date to continue.</p>
+      </div>
 
-.hc{
-background:var(--cr);
-padding:56px 40px;
-text-align:center;
-border:1px solid var(--rl);
-}
+      <!-- Step 2: Guests -->
+      <div class="rev" style="margin-bottom:40px">
+        <p class="eyebrow" style="margin-bottom:16px;">Step 2 — Number of guests</p>
+        <div class="g-row">
+          <span class="g-lbl">Seats needed</span>
+          <div class="g-ctr" role="group" aria-label="Guest count">
+            <button class="g-btn" id="gc-" onclick="changeG(-1)" aria-label="Remove guest" disabled>−</button>
+            <div class="g-num" id="gc-n" aria-live="polite" aria-atomic="true">1</div>
+            <button class="g-btn" id="gc+" onclick="changeG(1)" aria-label="Add guest">+</button>
+          </div>
+          <span class="g-total" id="gc-tot" aria-live="polite">₹1,999</span>
+        </div>
+        <p class="g-err" id="g-err" role="alert">Community dining is intentionally kept to 4 guests — this space is personally held so you come and meet new people. For a larger group, choose Private Dining above.</p>
+      </div>
 
-.hav{
-width:130px;
-height:130px;
-margin:0 auto 24px;
-border-radius:50%;
-object-fit:cover;
-border:2px solid var(--rl);
-}
+      <!-- Step 3: Pay -->
+      <div class="rev" style="margin-bottom:40px">
+        <p class="eyebrow" style="margin-bottom:20px;">Step 3 — Complete payment</p>
+        <div class="pay-row">
+          <div>
+            <div class="p-amt" id="c-amt" aria-live="polite"><sup>₹</sup>1,999</div>
+            <div class="p-sub" id="c-sub">for 1 guest · all-inclusive</div>
+            <div class="steps">
+              <div class="step"><span class="s-n" aria-hidden="true">1.</span><div class="s-c"><strong>Pay via UPI</strong>Scan the QR or copy the UPI ID →</div></div>
+              <div class="step"><span class="s-n" aria-hidden="true">2.</span><div class="s-c"><strong>Fill details below</strong>One quick form per guest.</div></div>
+              <div class="step"><span class="s-n" aria-hidden="true">3.</span><div class="s-c"><strong>We confirm on WhatsApp</strong>Location sent before the evening.</div></div>
+            </div>
+          </div>
+          <div class="qr-blk">
+            <div class="qrf"><img src="assets/branding/payment-qr.jpeg" alt="Scan to pay via UPI"></div>
+            <div class="upi-row">
+              <span class="upi-txt" id="upiText">baheti.priya@yescred</span>
+              <button class="cp-btn" onclick="copyUPI()" aria-label="Copy UPI ID">
+                <svg viewBox="0 0 24 24"><rect x="9" y="9" width="13" height="13" rx="2"/><rect x="3" y="3" width="13" height="13" rx="2"/></svg>
+              </button>
+              <span id="copyMsg" class="cp-toast" aria-live="polite">Copied</span>
+            </div>
+          </div>
+        </div>
+      </div>
 
-/* ══════════════════════════════════════════
-TABS
-══════════════════════════════════════════ */
-.tabs{
-display:flex;
-border:1px solid var(--rl);
-margin-bottom:52px;
-}
+      <!-- What happens after -->
+      <div class="after-row rev" aria-label="What to expect after booking">
+        <div class="after-item">
+          <div class="after-icon">💬</div>
+          <div class="after-text"><strong>WhatsApp Confirmation</strong>Within a few hours of your booking.</div>
+        </div>
+        <div class="after-item">
+          <div class="after-icon">📍</div>
+          <div class="after-text"><strong>Location Shared</strong>Sent privately before the evening.</div>
+        </div>
+        <div class="after-item">
+          <div class="after-icon">🕯</div>
+          <div class="after-text"><strong>Evening Duration</strong>Approx 2–3 hours, unhurried.</div>
+        </div>
+      </div>
 
-.tab{
-flex:1;
-padding:28px 20px;
-text-align:center;
-cursor:pointer;
-border-right:1px solid var(--rl);
-background:var(--cr);
-}
+      <!-- Step 4: Guest Details -->
+      <div class="rev">
+        <p class="eyebrow" style="margin-bottom:20px;">Step 4 — Guest details</p>
+        <div id="member-forms" aria-live="polite"></div>
+        <button class="btn" id="comm-submit" onclick="submitCommunity()" aria-label="Submit community booking">I've Paid — Confirm My Seat(s)</button>
+        
+      </div>
 
-.tab:last-child
+    </div><!-- /community -->
 
-.tab.on{
-background:var(--ink);
-color:var(--cr);
-}
+    <!-- ══ PRIVATE PANEL ══ -->
+    <div class="panel" id="panel-private" role="tabpanel" aria-labelledby="tab-private">
 
-.tab-name{
-font-family:var(--sf);
-font-size:17px;
-margin-bottom:6px;
-}
+      <p class="pd-intro">Host an exclusive evening for your group. The full table is yours — we take care of the 5-course menu, the ambience, everything. Tell us your preferred date and we'll reach out.</p>
 
-.tab-sub{
-font-size:11px;
-color:var(--mu);
-line-height:1.5;
-}
+      <div class="pd-feats rev">
+        <div class="pd-feat"><div class="fi">🕯</div><div class="ft">Full Table</div><div class="fd">Exclusive use for up to 8 guests. No strangers — just your people.</div></div>
+        <div class="pd-feat"><div class="fi">🍽</div><div class="ft">5-Course Menu</div><div class="fd">The same thoughtfully curated menu, tailored to your group.</div></div>
+        <div class="pd-feat"><div class="fi">✦</div><div class="ft">Personalised</div><div class="fd">Custom welcome, dietary accommodations, and a truly memorable evening.</div></div>
+      </div>
 
-/* ══════════════════════════════════════════
-BUTTON
-══════════════════════════════════════════ */
-.btn{
-width:100%;
-margin-top:22px;
-font-size:9px;
-letter-spacing:.2em;
-text-transform:uppercase;
-background:var(--ink);
-color:var(--cr);
-padding:16px;
-border:none;
-cursor:pointer;
-}
+      <div class="rev" style="margin-bottom:36px">
+        <p class="eyebrow" style="margin-bottom:20px;">Complete payment first</p>
+        <div class="pay-row">
+          <div>
+            <div class="p-amt"><sup>₹</sup>16,000</div>
+            <div class="p-sub">full table · up to 8 guests · all-inclusive</div>
+            <div class="steps">
+              <div class="step"><span class="s-n" aria-hidden="true">1.</span><div class="s-c"><strong>Pay via UPI</strong>Scan the QR or copy the ID →</div></div>
+              <div class="step"><span class="s-n" aria-hidden="true">2.</span><div class="s-c"><strong>Fill your details below</strong>Takes 2 minutes.</div></div>
+              <div class="step"><span class="s-n" aria-hidden="true">3.</span><div class="s-c"><strong>We'll call you</strong>To finalise date and preferences.</div></div>
+            </div>
+          </div>
+          <div class="qr-blk">
+            <div class="qrf"><img src="assets/branding/payment-qr.jpeg" alt="Scan to pay via UPI"></div>
+            <div class="upi-row">
+              <span class="upi-txt">baheti.priya@yescred</span>
+              <button class="cp-btn" onclick="copyUPI()" aria-label="Copy UPI ID">
+                <svg viewBox="0 0 24 24"><rect x="9" y="9" width="13" height="13" rx="2"/><rect x="3" y="3" width="13" height="13" rx="2"/></svg>
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
 
-/* ══════════════════════════════════════════
-WHATSAPP (CLEAN VERSION)
-══════════════════════════════════════════ */
-.wa-private{
-margin-top:20px;
-text-align:center;
-}
+      <div class="rev">
+        <p class="eyebrow" style="margin-bottom:20px;">Your details</p>
+        <form id="privateForm"
+              action="https://script.google.com/macros/s/AKfycbzG7rbwL80ILaNIlxJUwlcI1PgRRllYP1RXHWdWJfhTUllEg0VCJYvKeDCetM3LrLppgw/exec"
+              method="POST" target="hidden_iframe_pd">
+          <div class="fgrid">
+            <div class="ff"><label for="pd-name">Your Full Name *</label><input type="text" name="name" id="pd-name" placeholder="Host name" required autocomplete="name"></div>
+            <div class="ff"><label for="pd-phone">WhatsApp Number *</label><input type="tel" name="whatsapp" id="pd-phone" placeholder="10-digit number" required autocomplete="tel"></div>
+            <div class="ff">
+              <label for="pd-guests">Number of Guests</label>
+              <select name="guest_count" id="pd-guests" aria-label="Number of guests">
+                <option value="">Select</option>
+                <option>2</option><option>3</option><option>4</option>
+                <option>5</option><option>6</option><option>7</option><option>8</option>
+              </select>
+            </div>
+            <div class="ff">
+              <label for="pd-date">Preferred Date in April 2026</label>
+              <select name="preferred_date" id="pd-date">
+                <option value="">Select a date</option>
+                <option>Saturday, 4 April</option><option>Sunday, 5 April</option>
+                <option>Saturday, 11 April</option><option>Sunday, 12 April</option>
+                <option>Saturday, 18 April</option><option>Sunday, 19 April</option>
+                <option>Saturday, 25 April</option><option>Sunday, 26 April</option>
+              </select>
+            </div>
+            <div class="ff"><label for="pd-diet">Dietary Notes</label><input type="text" name="dietary_notes" id="pd-diet" placeholder="Any allergies or preferences"></div>
+            <div class="ff"><label for="pd-occ">Occasion (optional)</label><input type="text" name="occasion" id="pd-occ" placeholder="Birthday, anniversary…"></div>
+            <div class="ff span2">
+              <label for="pd-src">How did you hear about us? *</label>
+              <select name="source" id="pd-src" required>
+                <option value="">Select one</option>
+                <option>Instagram</option><option>Twitter / X</option><option>Friend / Previous Guest</option>
+              </select>
+            </div>
+            <input type="hidden" name="booking_type" value="Private Dining">
+          </div>
+          <button type="submit" class="btn" id="pd-submit">I've Paid — Request Private Dining</button>
+        </form>
+        <iframe name="hidden_iframe_pd" style="display:none" title="Form submission frame"></iframe>
+      </div>
 
-.wa-text{
-font-size:12px;
-color:var(--mu);
-margin-bottom:6px;
-}
+      <div class="wa-private">
+          <p class="wa-text">Prefer to plan this over WhatsApp?</p>
+          <a href="https://wa.me/917218132167?text=Hi%2C%20I%27d%20like%20to%20book%20a%20private%20dining%20experience"
+             target="_blank" rel="noopener" class="wa-link">
+             Chat with us
+          </a>
+      </div>
+      
+    </div><!-- /private -->
 
-.wa-link{
-font-size:13px;
-font-style:italic;
-border-bottom:1px solid var(--ink);
-}
+    <!-- ══ GIFT PANEL ══ -->
+    <div class="panel" id="panel-gift" role="tabpanel" aria-labelledby="tab-gift">
 
-.wa-link:hover{
-opacity:.6;
-}
+      <div class="gift-banner rev">
+        <div class="gift-banner-inner">
+          <div class="gift-icon">🎁</div>
+          <h3 class="gift-title">Give the gift of an <em>evening</em></h3>
+          <p class="gift-sub">A seat at Not Just Dinner — for someone who deserves a beautiful, unhurried night. Valid for any Saturday or Sunday in April 2026.</p>
+        </div>
+      </div>
+
+      <!-- Live voucher preview -->
+      <div class="voucher-card rev" aria-label="Voucher preview">
+        <div class="vc-label">Gift Voucher Preview</div>
+        <div class="vc-title">Not Just Dinner</div>
+        <div class="vc-sub">A seat at the table · April 2026 · Bengaluru</div>
+        <div class="vc-badge" aria-hidden="true">✦<br><span style="font-size:8px">Gift</span></div>
+        <div class="vc-meta">
+          <div class="vc-mi"><div class="vc-ml">For</div><div class="vc-mv" id="vp-for">—</div></div>
+          <div class="vc-mi"><div class="vc-ml">From</div><div class="vc-mv" id="vp-from">—</div></div>
+          <div class="vc-mi"><div class="vc-ml">Seats</div><div class="vc-mv" id="vp-seats">1 guest</div></div>
+          <div class="vc-mi"><div class="vc-ml">Value</div><div class="vc-mv" id="vp-val">₹1,999</div></div>
+        </div>
+      </div>
+
+      <div class="rev" style="margin-bottom:36px">
+        <p class="eyebrow" style="margin-bottom:20px;">Complete payment first</p>
+        <div class="pay-row">
+          <div>
+            <div class="p-amt" id="g-amt"><sup>₹</sup>1,999</div>
+            <div class="p-sub" id="g-sub">for 1 seat · all-inclusive</div>
+            <div class="steps">
+              <div class="step"><span class="s-n" aria-hidden="true">1.</span><div class="s-c"><strong>Pay via UPI</strong>Scan the QR or copy the ID →</div></div>
+              <div class="step"><span class="s-n" aria-hidden="true">2.</span><div class="s-c"><strong>Fill the form below</strong>Tell us who the gift is for.</div></div>
+              <div class="step"><span class="s-n" aria-hidden="true">3.</span><div class="s-c"><strong>We send the voucher</strong>A beautiful PDF — to you or the recipient.</div></div>
+            </div>
+          </div>
+          <div class="qr-blk">
+            <div class="qrf"><img src="assets/branding/payment-qr.jpeg" alt="Scan to pay via UPI"></div>
+            <div class="upi-row">
+              <span class="upi-txt">baheti.priya@yescred</span>
+              <button class="cp-btn" onclick="copyUPI()" aria-label="Copy UPI ID">
+                <svg viewBox="0 0 24 24"><rect x="9" y="9" width="13" height="13" rx="2"/><rect x="3" y="3" width="13" height="13" rx="2"/></svg>
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="rev">
+        <p class="eyebrow" style="margin-bottom:20px;">Gift details</p>
+        <form id="giftForm"
+              action="https://script.google.com/macros/s/AKfycbw_MO48-U0Nr_S3PxwrDWr1LahqJqJ7wgCo8GroQoFW9Zz6e85OhGpoxwgNtN2_RXJj/exec"
+              method="POST" target="hidden_iframe_gf">
+          <div class="fgrid">
+            <div class="ff">
+              <label for="g-rec">Recipient's Name *</label>
+              <input type="text" name="recipient_name" id="g-rec" placeholder="Who is this for?" required
+                     oninput="document.getElementById('vp-for').textContent=this.value||'—'">
+            </div>
+            <div class="ff">
+              <label for="g-rec-wa">Recipient's WhatsApp</label>
+              <input type="tel" name="recipient_whatsapp" id="g-rec-wa" placeholder="Optional">
+            </div>
+            <div class="ff">
+              <label for="g-gifter">Your Name *</label>
+              <input type="text" name="gifter_name" id="g-gifter" placeholder="Your name" required
+                     oninput="document.getElementById('vp-from').textContent=this.value||'—'" autocomplete="name">
+            </div>
+            <div class="ff">
+              <label for="g-gifter-wa">Your WhatsApp *</label>
+              <input type="tel" name="gifter_whatsapp" id="g-gifter-wa" placeholder="10-digit number" required autocomplete="tel">
+            </div>
+            <div class="ff">
+              <label for="g-seats">Number of Seats *</label>
+              <select name="gift_seats" id="g-seats" required onchange="updateGiftPrice(this.value)" aria-label="Number of seats to gift">
+                <option value="1">1 seat — ₹1,999</option>
+                <option value="2">2 seats — ₹3,998</option>
+                <option value="3">3 seats — ₹5,997</option>
+                <option value="4">4 seats — ₹7,996</option>
+              </select>
+            </div>
+            <div class="ff">
+              <label for="g-occ">Occasion (optional)</label>
+              <input type="text" name="occasion" id="g-occ" placeholder="Birthday, anniversary…">
+            </div>
+            <div class="ff span2">
+              <label for="g-note">Personal Note (optional)</label>
+              <textarea name="personal_note" id="g-note" placeholder="A message that will appear on the voucher…"></textarea>
+            </div>
+            <div class="ff span2">
+              <label for="g-delivery">Voucher delivery</label>
+              <select name="voucher_delivery" id="g-delivery">
+                <option value="gifter">Send PDF to me — I'll hand it over</option>
+                <option value="recipient">Send directly to recipient on WhatsApp</option>
+              </select>
+            </div>
+            <div class="ff span2">
+              <label for="g-src">How did you hear about us? *</label>
+              <select name="source" id="g-src" required>
+                <option value="">Select one</option>
+                <option>Instagram</option><option>Twitter / X</option><option>Friend / Previous Guest</option>
+              </select>
+            </div>
+            <input type="hidden" name="booking_type" value="Gift Voucher">
+          </div>
+          <button type="submit" class="btn" id="gf-submit">I've Paid — Send the Voucher</button>
+        </form>
+        <iframe name="hidden_iframe_gf" style="display:none" title="Gift form submission"></iframe>
+      </div>
+
+    </div><!-- /gift -->
+
+  </div>
+</section>
+
+<!-- ══ MODALS ════════════════════════════════════════ -->
+<div id="m-community" class="modal-ov" role="dialog" aria-modal="true" aria-labelledby="mc-title">
+  <div class="modal-box">
+    <div class="m-icon">🕯</div>
+    <h3 class="m-title" id="mc-title">Seats Confirmed</h3>
+    <p class="m-body">Thank you for joining <strong style="font-weight:400">Not Just Dinner</strong>. We'll send the exact location and all details to your WhatsApp shortly.</p>
+    <button onclick="closeModal('m-community')" class="btn" style="width:auto;padding:12px 32px;margin-top:0">Done</button>
+  </div>
+</div>
+<div id="m-private" class="modal-ov" role="dialog" aria-modal="true" aria-labelledby="mp-title">
+  <div class="modal-box">
+    <div class="m-icon">✦</div>
+    <h3 class="m-title" id="mp-title">Request Received</h3>
+    <p class="m-body">Thank you for choosing <strong style="font-weight:400">Private Dining</strong>. We'll reach out on WhatsApp within 24 hours to confirm your date and details.</p>
+    <button onclick="closeModal('m-private')" class="btn" style="width:auto;padding:12px 32px;margin-top:0">Done</button>
+  </div>
+</div>
+<div id="m-gift" class="modal-ov" role="dialog" aria-modal="true" aria-labelledby="mg-title">
+  <div class="modal-box">
+    <div class="m-icon">🎁</div>
+    <h3 class="m-title" id="mg-title">Voucher on its way</h3>
+    <p class="m-body">The gift voucher will be sent shortly. <strong style="font-weight:400">Not Just Dinner</strong> — for someone who deserves a beautiful evening.</p>
+    <button onclick="closeModal('m-gift')" class="btn" style="width:auto;padding:12px 32px;margin-top:0">Done</button>
+  </div>
+</div>
+
+<!-- ══ FOOTER ════════════════════════════════════════ -->
+<footer class="ftr" role="contentinfo">
+  <div class="ftr-wm" aria-label="Not Just Dinner">
+    <span class="f1">Not</span>
+    <span class="f2">Just</span>
+    <span class="f3">Dinner</span>
+  </div>
+  <p class="ftr-sub">An Intentionally Hosted Evening · Bengaluru</p>
+  <div class="ftr-icons">
+    <a href="https://instagram.com/notjust.dinner" target="_blank" rel="noopener" aria-label="Instagram">
+      <svg viewBox="0 0 24 24"><rect x="2" y="2" width="20" height="20" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.5" cy="6.5" r="1.2" fill="currentColor" stroke="none"/></svg>
+    </a>
+    <a href="https://x.com/NotJustDinnerr" target="_blank" rel="noopener" aria-label="X / Twitter">
+      <svg viewBox="0 0 24 24"><path d="M4 4l16 16M20 4L4 20"/></svg>
+    </a>
+    <a href="https://chat.whatsapp.com/FWgqkihDAlhEJfXYPFlPjW" target="_blank" rel="noopener" aria-label="WhatsApp Community">
+      <svg viewBox="0 0 24 24"><path d="M12 2a10 10 0 0 0-8.94 14.5L2 22l5.7-1.9A10 10 0 1 0 12 2z"/></svg>
+    </a>
+  </div>
+  <p class="ftr-copy">Questions? Reach out above or join our WhatsApp Community.<br>© 2026 Not Just Dinner · Bengaluru</p>
+</footer>
+
+<script src="script.js"></script>
+</body>
+
+  <div id="successModal" class="modal-overlay">
+  <div class="modal-box">
+    <h3>Seat Confirmed 🎉</h3>
+    <p>
+      Thank you for confirming your seat at
+      <strong>Not Just Dinner</strong>.<br>
+      We’ll share the exact location with you on WhatsApp shortly.
+    </p>
+    <button onclick="closeModal()" class="btn">Done</button>
+  </div>
+</div>
+</html>
