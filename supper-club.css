@@ -285,10 +285,15 @@ hr.rl:last-of-type{
 .fgrid{
   display:grid;
   grid-template-columns:1fr 1fr;
-  gap:18px;
+  column-gap:18px;
+  row-gap:22px; /* THIS FIXES VERTICAL SPACE */
 }
 .fgrid .span2{grid-column:span 2}
-.ff{display:flex;flex-direction:column;gap:6px}
+.ff{
+  display:flex;
+  flex-direction:column;
+  gap:10px;
+}
 .ff label{
   font-size:9px;
   font-weight:500;
@@ -330,7 +335,12 @@ hr.rl:last-of-type{
   padding-right:30px;
 }
 .ff input:focus,.ff select:focus,.ff textarea:focus{border-color:var(--ink);background:var(--cr2)}
-.mbl{border:1px solid var(--rl);padding:26px;background:var(--cr);margin-bottom:14px}
+.mbl{
+  border:1px solid var(--rl);
+  padding:32px 28px;
+  background:var(--cr);
+  margin-bottom:22px;
+}
 .mbl-title{font-family:var(--sf);font-size:15px;color:var(--ink);margin-bottom:16px;
   padding-bottom:11px;border-bottom:1px solid var(--rl)}
 
@@ -398,7 +408,7 @@ hr.rl:last-of-type{
 /* ══════════════════════════════════════════
    SUBMIT BTN
 ══════════════════════════════════════════ */
-.btn{width:100%;margin-top:22px;
+.btn{margin-top:30px; width:100%;margin-top:22px;
   font-family:var(--ss);font-size:9px;font-weight:500;letter-spacing:.2em;text-transform:uppercase;
   color:var(--cr);background:var(--ink);border:none;padding:16px;cursor:pointer;transition:opacity .2s}
 .btn:hover{opacity:.75}
