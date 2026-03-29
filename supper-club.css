@@ -285,15 +285,15 @@ hr.rl:last-of-type{
 .fgrid{
   display:grid;
   grid-template-columns:1fr 1fr;
-  column-gap:20px;
-  row-gap:8px; /* reduce this */
+  column-gap:24px;
+  row-gap:32px; /* INCREASE THIS */
+  align-items:start; /* IMPORTANT */
 }
 .fgrid .span2{grid-column:span 2}
 .ff{
   display:flex;
   flex-direction:column;
-  gap:10px;
-  margin-bottom:12px; /* THIS FIXES YOUR ISSUE */
+  gap:8px;
 }
 .ff label{
   font-size:9px;
@@ -318,6 +318,7 @@ hr.rl:last-of-type{
   transition:all .2s;
   border-radius:0;
   width:100%;
+   margin-top:6px;
 
   /* THIS FIXES ALIGNMENT */
   line-height:1.4;
