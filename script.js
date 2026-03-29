@@ -326,7 +326,7 @@ window.submitCommunity = function () {
   const payload = {
     Booking_Type  : 'Community Dining',
     Date          : selectedDate,
-    Guest_Count   : gCount,
+    guest_Count   : gCount,
     Source        : val('guest_source')
   };
 
