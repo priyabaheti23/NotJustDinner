@@ -3,7 +3,7 @@
 /* ═══════════════════════════════════════
    CONFIG
 ═══════════════════════════════════════ */
-const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbyCeVslM1jAHj-aLjyhHyElGIyfRvJjpJT0HV1wRNRLyogMmPPZwnfXEthFpMwoYUTryA/exec';
+const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbx-6k9hrMJc9YkOKSS1wy-1JH5xOT9cvJyQ8N3sFDdiv_QL3MkMJw2C_O5n7Sx-EWAHwQ/exec';
 const MAX_SEATS  = 8;
 const PRICE      = 1999;
 const SAT        = [4, 11, 18, 25];
