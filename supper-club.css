@@ -173,9 +173,22 @@ hr.rl:last-of-type{
    HOSTS
 ══════════════════════════════════════════ */
 .hosts-grid{display:grid;grid-template-columns:1fr 1fr;gap:3px}
-.hc{background:var(--cr);padding:48px 40px;border:1px solid var(--rl)}
-.hav{width:96px;height:96px;border-radius:50%;object-fit:cover;
-  margin-bottom:22px;border:2px solid var(--rl);filter:sepia(8%)}
+.hc{
+  background:var(--cr);
+  padding:56px 40px;
+  border:1px solid var(--rl);
+  text-align:center;
+}
+
+.hav{
+  width:130px;
+  height:130px;
+  border-radius:50%;
+  object-fit:cover;
+  margin:0 auto 24px;
+  border:2px solid var(--rl);
+  filter:sepia(8%);
+}
 .h-role{font-size:9px;font-weight:500;letter-spacing:.2em;text-transform:uppercase;color:var(--mu);margin-bottom:7px}
 .h-name{font-family:var(--sf);font-size:26px;font-weight:400;color:var(--ink);margin-bottom:12px}
 .h-bio{font-size:14px;color:var(--br);line-height:1.72;margin-bottom:22px}
