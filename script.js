@@ -27,7 +27,7 @@ function postToSheet(payload) {
 
   return fetch(SCRIPT_URL, {
     method : 'POST',
-    mode   : 'no-cors',
+    mode   : 'cors',
     headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
     body
   });
@@ -330,13 +330,16 @@ window.submitCommunity = function () {
   btn.textContent = 'Submitting…';
 
   /* Build payload — field IDs match renderForms() exactly */
-  const payload = {
-    booking_type : 'Community Dining',
-    dinner_date  : selectedDate,
-    guest_count  : gCount,
-    source       : val('guest_source'),
-    timestamp    : new Date().toLocaleString('en-IN', { timeZone: 'Asia/Kolkata' }),
-  };
+const payload = {
+  "Timestamp": new Date().toLocaleString("en-IN"),
+  "Booking Type": "Community Dining",
+  "Date": selectedDate,
+  "Guest Count": gCount,
+  "Name": val("guest_name_1"),
+  "WhatsApp": val("guest_wa_1"),
+  "Diet": val("guest_diet_1"),
+  "Source": val("guest_source")
+};
 
   for (let i = 1; i <= gCount; i++) {
     payload[`g${i}_name`]     = val(`guest_name_${i}`);
