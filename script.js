@@ -579,3 +579,26 @@ window.onload = function () {
   initPrivateForm();
   initGiftForm();
 };
+
+document.addEventListener('DOMContentLoaded', function () {
+  const dateInput = document.getElementById('pd-date');
+  if (!dateInput) return;
+
+  const today = new Date();
+
+  // 👉 START DATE = today + 2 days
+  const minDateObj = new Date();
+  minDateObj.setDate(today.getDate() + 2);
+
+  // 👉 END DATE = today + 3 months
+  const maxDateObj = new Date();
+  maxDateObj.setMonth(today.getMonth() + 3);
+
+  // 👉 convert to YYYY-MM-DD format
+  const minDate = minDateObj.toISOString().split('T')[0];
+  const maxDate = maxDateObj.toISOString().split('T')[0];
+
+  // 👉 apply to input
+  dateInput.setAttribute('min', minDate);
+  dateInput.setAttribute('max', maxDate);
+});
