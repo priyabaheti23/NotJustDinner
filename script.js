@@ -584,21 +584,22 @@ document.addEventListener('DOMContentLoaded', function () {
   const dateInput = document.getElementById('pd-date');
   if (!dateInput) return;
 
-  const today = new Date();
-
-  // 👉 START DATE = today + 2 days
+  // Min = today + 2 days
   const minDateObj = new Date();
-  minDateObj.setDate(today.getDate() + 2);
+  minDateObj.setDate(minDateObj.getDate() + 2);
 
-  // 👉 END DATE = today + 3 months
+  // Max = today + 3 months
   const maxDateObj = new Date();
-  maxDateObj.setMonth(today.getMonth() + 3);
+  maxDateObj.setMonth(maxDateObj.getMonth() + 3);
 
-  // 👉 convert to YYYY-MM-DD format
-  const minDate = minDateObj.toISOString().split('T')[0];
-  const maxDate = maxDateObj.toISOString().split('T')[0];
+  // Use local date (not UTC) to avoid date shifting for IST users
+  function toLocalISO(d) {
+    const y = d.getFullYear();
+    const m = String(d.getMonth() + 1).padStart(2, '0');
+    const day = String(d.getDate()).padStart(2, '0');
+    return `${y}-${m}-${day}`;
+  }
 
-  // 👉 apply to input
-  dateInput.setAttribute('min', minDate);
-  dateInput.setAttribute('max', maxDate);
+  dateInput.setAttribute('min', toLocalISO(minDateObj));
+  dateInput.setAttribute('max', toLocalISO(maxDateObj));
 });
