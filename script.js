@@ -202,8 +202,8 @@ function renderForms() {
           <label>Dietary Preference *</label>
           <select id="guest_diet_${i}">
             <option value="">Select</option>
-            <option value="Egg OK">Egg OK</option>
-            <option value="No Egg">No Egg</option>
+            <option value="Egg OK">Ok with Egg</option>
+            <option value="No Egg">Prefer Eggless</option>
           </select>
           <p id="err_diet_${i}" class="ferr"></p>
         </div>
