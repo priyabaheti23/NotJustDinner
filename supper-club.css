@@ -46,7 +46,7 @@ a{color:inherit;text-decoration:none}
   display:flex;align-items:center;justify-content:center;overflow:hidden;
   border:none;outline:none;}
 .hero-bg{position:absolute;inset:0;
-  background:url('assets/supper-club/supper-2.jpg') center/cover no-repeat;
+  background:url('assets/supper-club/supper-0.jpg') center/cover no-repeat;
   filter:brightness(.62);transition:transform 9s ease;
   border:none;outline:none;}
 .hero:hover .hero-bg{transform:scale(1.03)}
