@@ -603,3 +603,13 @@ document.addEventListener('DOMContentLoaded', function () {
   dateInput.setAttribute('min', toLocalISO(minDateObj));
   dateInput.setAttribute('max', toLocalISO(maxDateObj));
 });
+
+document.addEventListener('DOMContentLoaded', function () {
+  flatpickr("#pd-date", {
+    minDate: new Date().fp_incr(2), // after 2 days
+    maxDate: new Date().fp_incr(90), // next 3 months
+    dateFormat: "d-m-Y",
+    disableMobile: true // forces same UI on mobile
+  });
+});
+
