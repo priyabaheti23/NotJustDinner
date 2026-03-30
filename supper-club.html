@@ -79,7 +79,7 @@
         <img src="assets/supper-club/supper-00.jpg" alt="Guests at a Not Just Dinner evening" loading="lazy">
       </div>
       <div class="about-txt">
-        <p class="eyebrow">The Experience, More than a meal.</h2>
+        <p class="eyebrow">The Experience, More than a meal.</p>
         <p>Not Just Dinner is an intentionally hosted dining experience designed for people who appreciate thoughtful food, calm spaces, and meaningful moments.</p>
         <p>Each evening is carefully planned, from the menu to the pacing of the meal, so guests can slow down, feel present, and enjoy a dinner that unfolds naturally.</p>
       </div>
@@ -149,14 +149,14 @@
         <h2 class="display" id="menu-h" style="color:var(--cr);margin-bottom:10px;">Menu <em>2.0</em></h2>
         <div class="rtag"><div class="blink"></div><span>Rotating monthly — new menu each edition</span></div>
         <p class="menu-desc">Our menu is never the same twice. Each edition is a new 5-course journey — different ingredients, different stories. This month: <strong style="color:rgba(240,234,214,.8);font-weight:400">Menu 2.0</strong>.</p>
-      <p class="mnote">Dessert might change based on the season · All-vegetarian</p>
+        <p class="mnote">Dessert might change based on the season · All-vegetarian</p>
       </div>
       <div class="courses" aria-label="5 course menu">
-        <div class="cr"><span class="ci">i</span><div class="cdash"></div><span class="cn">Hibsicus Lemonade</span><span class="ct"></span></div>
+        <div class="cr"><span class="ci">i</span><div class="cdash"></div><span class="cn">Hibiscus Lemonade</span><span class="ct"></span></div>
         <div class="cr"><span class="ci">ii</span><div class="cdash"></div><span class="cn">Summer Tomatoes</span><span class="ct"></span></div>
-        <div class="cr"><span class="ci">iii</span><div class="cdash"></div><span class="cn">Chilli Burrata </span><span class="ct"></span></div>
+        <div class="cr"><span class="ci">iii</span><div class="cdash"></div><span class="cn">Chilli Burrata</span><span class="ct"></span></div>
         <div class="cr"><span class="ci">iv</span><div class="cdash"></div><span class="cn">Miso Cabbage</span><span class="ct"></span></div>
-        <div class="cr"><span class="ci">v</span><div class="cdash"></div><span class="cn">Tart au chocolate</span><span class="ct"></span></div>
+        <div class="cr"><span class="ci">v</span><div class="cdash"></div><span class="cn">Tart au Chocolat</span><span class="ct"></span></div>
       </div>
     </div>
   </div>
@@ -172,7 +172,7 @@
     <div class="testi-grid rev">
       <div class="tcard">
         <div class="tstars">★★★★★</div>
-        <p class="tquote">I was feeling homesick in the beging of dinner, but not anymore</p>
+        <p class="tquote">I was feeling homesick in the beginning of dinner, but not anymore</p>
         <p class="tname">Gursimran. · Community Dining</p>
       </div>
       <div class="tcard">
@@ -297,20 +297,21 @@
           </div>
           <div class="qr-blk">
             <div class="qrf"><img src="assets/branding/payment-qr.jpeg" alt="Scan to pay via UPI"></div>
+            <!-- CHANGE 8: Community UPI block - kept as original reference -->
             <div class="upi-row">
-              <span class="upi-txt" id="upiText">baheti.priya@yescred</span>
-              <button class="cp-btn" onclick="copyUPI()" aria-label="Copy UPI ID">
+              <span class="upi-txt" id="upiText-comm">baheti.priya@yescred</span>
+              <button class="cp-btn" onclick="copyUPIById('upiText-comm','copyMsg-comm')" aria-label="Copy UPI ID">
                 <svg viewBox="0 0 24 24"><rect x="9" y="9" width="13" height="13" rx="2"/><rect x="3" y="3" width="13" height="13" rx="2"/></svg>
               </button>
-              <span id="copyMsg" class="cp-toast" aria-live="polite">Copied</span>
+              <span id="copyMsg-comm" class="cp-toast" aria-live="polite">Copied</span>
             </div>
           </div>
         </div>
       </div>
 
       <div class="no-refund-note">
-  All bookings are non-refundable. No cancellations or rescheduling.
-</div>
+        All bookings are non-refundable. No cancellations or rescheduling.
+      </div>
 
       <!-- What happens after -->
       <div class="after-row rev" aria-label="What to expect after booking">
@@ -333,7 +334,6 @@
         <p class="eyebrow" style="margin-bottom:20px;">Step 4 — Guest details</p>
         <div id="member-forms" aria-live="polite"></div>
         <button class="btn" id="comm-submit" onclick="submitCommunity()" aria-label="Submit community booking">I've Paid — Confirm My Seat(s)</button>
-        
       </div>
 
     </div><!-- /community -->
@@ -361,13 +361,15 @@
               <div class="step"><span class="s-n" aria-hidden="true">3.</span><div class="s-c"><strong>We'll call you</strong>To finalise date and preferences.</div></div>
             </div>
           </div>
+          <!-- CHANGE 8: Private UPI - unique IDs so copy works correctly -->
           <div class="qr-blk">
             <div class="qrf"><img src="assets/branding/payment-qr.jpeg" alt="Scan to pay via UPI"></div>
             <div class="upi-row">
-              <span class="upi-txt">baheti.priya@yescred</span>
-              <button class="cp-btn" onclick="copyUPI()" aria-label="Copy UPI ID">
+              <span class="upi-txt" id="upiText-private">baheti.priya@yescred</span>
+              <button class="cp-btn" onclick="copyUPIById('upiText-private','copyMsg-private')" aria-label="Copy UPI ID">
                 <svg viewBox="0 0 24 24"><rect x="9" y="9" width="13" height="13" rx="2"/><rect x="3" y="3" width="13" height="13" rx="2"/></svg>
               </button>
+              <span id="copyMsg-private" class="cp-toast" aria-live="polite">Copied</span>
             </div>
           </div>
         </div>
@@ -389,10 +391,10 @@
                 <option>5</option><option>6</option><option>7</option><option>8</option>
               </select>
             </div>
-                        <!-- REPLACE WITH THIS -->
+            <!-- CHANGE 6: Fixed date input alignment — wrapped in proper ff div, flatpickr will render inline -->
             <div class="ff">
               <label for="pd-date">Preferred Date</label>
-              <input type="date" name="preferred_date" id="pd-date">
+              <input type="text" name="preferred_date" id="pd-date" placeholder="Select a date" readonly>
             </div>
             <div class="ff"><label for="pd-diet">Dietary Notes</label><input type="text" name="dietary_notes" id="pd-diet" placeholder="Any allergies or preferences"></div>
             <div class="ff"><label for="pd-occ">Occasion (optional)</label><input type="text" name="occasion" id="pd-occ" placeholder="Birthday, anniversary…"></div>
@@ -417,31 +419,36 @@
              Chat with us
           </a>
       </div>
-      
+
     </div><!-- /private -->
 
     <!-- ══ GIFT PANEL ══ -->
     <div class="panel" id="panel-gift" role="tabpanel" aria-labelledby="tab-gift">
 
+      <!-- CHANGE 2 & 3: Rephrased validity + richer gift banner text -->
       <div class="gift-banner rev">
         <div class="gift-banner-inner">
           <div class="gift-icon">🎁</div>
           <h3 class="gift-title">Give the gift of an <em>evening</em></h3>
-          <p class="gift-sub">A seat at Not Just Dinner — for someone who deserves a beautiful, unhurried night. Valid for any Saturday or Sunday in April 2026.</p>
+          <p class="gift-sub">A seat at Not Just Dinner — for someone who deserves a beautiful, unhurried night.</p>
+          <p class="gift-validity">Valid for the next 3 months · Community Dining only · Redeemable on any Saturday or Sunday evening</p>
         </div>
       </div>
 
-      <!-- Live voucher preview -->
+      <!-- CHANGE 3: Richer voucher preview card -->
       <div class="voucher-card rev" aria-label="Voucher preview">
         <div class="vc-label">Gift Voucher Preview</div>
         <div class="vc-title">Not Just Dinner</div>
-        <div class="vc-sub">A seat at the table · April 2026 · Bengaluru</div>
+        <div class="vc-sub">An evening of intention, conversation &amp; beautiful food</div>
         <div class="vc-badge" aria-hidden="true">✦<br><span style="font-size:8px">Gift</span></div>
         <div class="vc-meta">
           <div class="vc-mi"><div class="vc-ml">For</div><div class="vc-mv" id="vp-for">—</div></div>
           <div class="vc-mi"><div class="vc-ml">From</div><div class="vc-mv" id="vp-from">—</div></div>
           <div class="vc-mi"><div class="vc-ml">Seats</div><div class="vc-mv" id="vp-seats">1 guest</div></div>
           <div class="vc-mi"><div class="vc-ml">Value</div><div class="vc-mv" id="vp-val">₹1,999</div></div>
+        </div>
+        <div class="vc-footer-note">
+          Valid for the next 3 months · Community Dining only · Koramangala, Bengaluru · 7:30 PM
         </div>
       </div>
 
@@ -457,13 +464,15 @@
               <div class="step"><span class="s-n" aria-hidden="true">3.</span><div class="s-c"><strong>We send the voucher</strong>A beautiful PDF — to you or the recipient.</div></div>
             </div>
           </div>
+          <!-- CHANGE 8: Gift UPI - unique IDs so copy works correctly -->
           <div class="qr-blk">
             <div class="qrf"><img src="assets/branding/payment-qr.jpeg" alt="Scan to pay via UPI"></div>
             <div class="upi-row">
-              <span class="upi-txt">baheti.priya@yescred</span>
-              <button class="cp-btn" onclick="copyUPI()" aria-label="Copy UPI ID">
+              <span class="upi-txt" id="upiText-gift">baheti.priya@yescred</span>
+              <button class="cp-btn" onclick="copyUPIById('upiText-gift','copyMsg-gift')" aria-label="Copy UPI ID">
                 <svg viewBox="0 0 24 24"><rect x="9" y="9" width="13" height="13" rx="2"/><rect x="3" y="3" width="13" height="13" rx="2"/></svg>
               </button>
+              <span id="copyMsg-gift" class="cp-toast" aria-live="polite">Copied</span>
             </div>
           </div>
         </div>
@@ -537,12 +546,15 @@
 </section>
 
 <!-- ══ MODALS ════════════════════════════════════════ -->
+<!-- CHANGE 5: Done button is now properly centered via modal-actions wrapper -->
 <div id="m-community" class="modal-ov" role="dialog" aria-modal="true" aria-labelledby="mc-title">
   <div class="modal-box">
     <div class="m-icon">🕯</div>
     <h3 class="m-title" id="mc-title">Seats Confirmed</h3>
     <p class="m-body">Thank you for joining <strong style="font-weight:400">Not Just Dinner</strong>. We'll send the exact location and all details to your WhatsApp shortly.</p>
-    <button onclick="closeModal('m-community')" class="btn" style="width:auto;padding:12px 32px;margin-top:0">Done</button>
+    <div class="modal-actions">
+      <button onclick="closeModal('m-community')" class="btn modal-btn">Done</button>
+    </div>
   </div>
 </div>
 <div id="m-private" class="modal-ov" role="dialog" aria-modal="true" aria-labelledby="mp-title">
@@ -550,7 +562,9 @@
     <div class="m-icon">✦</div>
     <h3 class="m-title" id="mp-title">Request Received</h3>
     <p class="m-body">Thank you for choosing <strong style="font-weight:400">Private Dining</strong>. We'll reach out on WhatsApp within 24 hours to confirm your date and details.</p>
-    <button onclick="closeModal('m-private')" class="btn" style="width:auto;padding:12px 32px;margin-top:0">Done</button>
+    <div class="modal-actions">
+      <button onclick="closeModal('m-private')" class="btn modal-btn">Done</button>
+    </div>
   </div>
 </div>
 <div id="m-gift" class="modal-ov" role="dialog" aria-modal="true" aria-labelledby="mg-title">
@@ -558,7 +572,9 @@
     <div class="m-icon">🎁</div>
     <h3 class="m-title" id="mg-title">Voucher on its way</h3>
     <p class="m-body">The gift voucher will be sent shortly. <strong style="font-weight:400">Not Just Dinner</strong> — for someone who deserves a beautiful evening.</p>
-    <button onclick="closeModal('m-gift')" class="btn" style="width:auto;padding:12px 32px;margin-top:0">Done</button>
+    <div class="modal-actions">
+      <button onclick="closeModal('m-gift')" class="btn modal-btn">Done</button>
+    </div>
   </div>
 </div>
 
@@ -586,16 +602,4 @@
 
 <script src="script.js"></script>
 </body>
-
-  <div id="successModal" class="modal-overlay">
-  <div class="modal-box">
-    <h3>Seat Confirmed 🎉</h3>
-    <p>
-      Thank you for confirming your seat at
-      <strong>Not Just Dinner</strong>.<br>
-      We’ll share the exact location with you on WhatsApp shortly.
-    </p>
-    <button onclick="closeModal()" class="btn">Done</button>
-  </div>
-</div>
 </html>
