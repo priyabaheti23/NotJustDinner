@@ -201,13 +201,20 @@ function renderForms() {
         </div>
 
         <div class="ff">
-          <label>Social Platform</label>
-          <select id="guest_platform_${i}">
-            <option value="">Select (optional)</option>
-            <option value="Instagram">Instagram</option>
-            <option value="Twitter / X">Twitter / X</option>
-            <option value="LinkedIn">LinkedIn</option>
-          </select>
+<div class="ff">
+  <label>Where do you follow us? *</label>
+  <div class="radio-group">
+    <label class="radio-option">
+      <input type="radio" name="guest_platform_${i}" value="Instagram"> Instagram
+    </label>
+    <label class="radio-option">
+      <input type="radio" name="guest_platform_${i}" value="Twitter"> Twitter
+    </label>
+    <label class="radio-option">
+      <input type="radio" name="guest_platform_${i}" value="LinkedIn"> LinkedIn
+    </label>
+  </div>
+</div>
         </div>
 
         <div class="ff span2">
