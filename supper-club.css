@@ -641,3 +641,10 @@ hr.rl:last-of-type{display:none;}
   font-family: 'Playfair Display', serif;
 }
 
+@media (max-width: 768px) {
+  .flatpickr-calendar {
+    width: 100% !important;
+    left: 0 !important;
+    right: 0 !important;
+  }
+}
