@@ -67,10 +67,8 @@ function fetchAvailability() {
     .then(r => r.json())
     .then(data => {
       availability = {};
-      // Convert whatever date format the sheet returns into 2026-04-11
       Object.entries(data || {}).forEach(([key, value]) => {
         let dateKey = key;
-        // If it looks like "Sat Apr 11 2026 00:00:00 GMT+0530..."
         if (key.includes('GMT') || key.includes('Apr') || key.includes('2026')) {
           const d = new Date(key);
           if (!isNaN(d)) {
@@ -155,7 +153,7 @@ function hideErr(id) {
 }
 
 /* ═══════════════════════════════════════
-   GET FIELD VALUE SAFELY
+   GET FIELD VALUE SAFELY (inputs / selects)
 ═══════════════════════════════════════ */
 function val(id) {
   const el = document.getElementById(id);
@@ -164,7 +162,17 @@ function val(id) {
 }
 
 /* ═══════════════════════════════════════
+   GET RADIO VALUE — reads checked radio by name
+═══════════════════════════════════════ */
+function getRadio(name) {
+  const checked = document.querySelector(`input[name="${name}"]:checked`);
+  return checked ? checked.value : '';
+}
+
+/* ═══════════════════════════════════════
    RENDER GUEST FORMS
+   - Label renamed to "Your Social Media (optional to share)"
+   - Radio group id added for validation reference
 ═══════════════════════════════════════ */
 function renderForms() {
   const wrap = document.getElementById('member-forms');
@@ -201,25 +209,23 @@ function renderForms() {
         </div>
 
         <div class="ff">
-<div class="ff">
-  <label>Where do you follow us? *</label>
-  <div class="radio-group">
-    <label class="radio-option">
-      <input type="radio" name="guest_platform_${i}" value="Instagram"> Instagram
-    </label>
-    <label class="radio-option">
-      <input type="radio" name="guest_platform_${i}" value="Twitter"> Twitter
-    </label>
-    <label class="radio-option">
-      <input type="radio" name="guest_platform_${i}" value="LinkedIn"> LinkedIn
-    </label>
-  </div>
-</div>
+          <label>Your Social Media (optional to share)</label>
+          <div class="radio-group" id="radio_group_${i}">
+            <label class="radio-option">
+              <input type="radio" name="guest_platform_${i}" value="Instagram"> Instagram
+            </label>
+            <label class="radio-option">
+              <input type="radio" name="guest_platform_${i}" value="Twitter"> Twitter
+            </label>
+            <label class="radio-option">
+              <input type="radio" name="guest_platform_${i}" value="LinkedIn"> LinkedIn
+            </label>
+          </div>
         </div>
 
         <div class="ff span2">
-          <label>Social Username</label>
-          <input type="text" id="guest_username_${i}" placeholder="@handle (optional)" autocomplete="off">
+          <label>Social Username (optional)</label>
+          <input type="text" id="guest_username_${i}" placeholder="@handle" autocomplete="off">
         </div>
 
         ${i === 1 ? `
@@ -339,7 +345,7 @@ function validateCommunity() {
 
 /* ═══════════════════════════════════════
    SUBMIT — COMMUNITY
-   ✅ FIXED: Booking_Type (underscore, no space)
+   FIX: uses getRadio() to correctly capture radio values
 ═══════════════════════════════════════ */
 window.submitCommunity = function () {
   if (!validateCommunity()) return;
@@ -356,11 +362,12 @@ window.submitCommunity = function () {
   };
 
   for (let i = 1; i <= gCount; i++) {
-    payload[`g${i}_name`]     = val(`guest_name_${i}`);
-    payload[`g${i}_whatsapp`] = val(`guest_wa_${i}`);
-    payload[`g${i}_diet`]     = val(`guest_diet_${i}`);
-    payload[`g${i}_platform`] = val(`guest_platform_${i}`);
-    payload[`g${i}_username`] = val(`guest_username_${i}`);
+    payload[`g${i}_name`]         = val(`guest_name_${i}`);
+    payload[`g${i}_whatsapp`]     = val(`guest_wa_${i}`);
+    payload[`g${i}_diet`]         = val(`guest_diet_${i}`);
+    // FIX: use getRadio() instead of val() — radio buttons don't have IDs
+    payload[`g${i}_social_media`] = getRadio(`guest_platform_${i}`);
+    payload[`g${i}_username`]     = val(`guest_username_${i}`);
   }
 
   console.log('Community payload:', payload);
@@ -395,7 +402,6 @@ function resetCommunityForm() {
 
 /* ═══════════════════════════════════════
    PRIVATE DINING FORM
-   ✅ FIXED: Booking_Type (underscore, no space)
 ═══════════════════════════════════════ */
 function initPrivateForm() {
   const form = document.getElementById('privateForm');
@@ -461,7 +467,6 @@ function initPrivateForm() {
 
 /* ═══════════════════════════════════════
    GIFT VOUCHER FORM
-   ✅ FIXED: Booking_Type (underscore, no space)
 ═══════════════════════════════════════ */
 function initGiftForm() {
   const form = document.getElementById('giftForm');
@@ -584,15 +589,12 @@ document.addEventListener('DOMContentLoaded', function () {
   const dateInput = document.getElementById('pd-date');
   if (!dateInput) return;
 
-  // Min = today + 2 days
   const minDateObj = new Date();
   minDateObj.setDate(minDateObj.getDate() + 2);
 
-  // Max = today + 3 months
   const maxDateObj = new Date();
   maxDateObj.setMonth(maxDateObj.getMonth() + 3);
 
-  // Use local date (not UTC) to avoid date shifting for IST users
   function toLocalISO(d) {
     const y = d.getFullYear();
     const m = String(d.getMonth() + 1).padStart(2, '0');
@@ -606,10 +608,9 @@ document.addEventListener('DOMContentLoaded', function () {
 
 document.addEventListener('DOMContentLoaded', function () {
   flatpickr("#pd-date", {
-    minDate: new Date().fp_incr(2), // after 2 days
-    maxDate: new Date().fp_incr(90), // next 3 months
+    minDate: new Date().fp_incr(2),
+    maxDate: new Date().fp_incr(90),
     dateFormat: "d-m-Y",
-    disableMobile: true // forces same UI on mobile
+    disableMobile: true
   });
 });
-
