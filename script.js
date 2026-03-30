@@ -346,7 +346,7 @@ window.submitCommunity = function () {
 
   const btn = document.getElementById('comm-submit');
   btn.disabled    = true;
-  btn.innerHTML = '<span class="loader"></span> Submitting...';
+  btn.textContent = 'Submitting…';
 
   const payload = {
     Booking_Type  : 'Community Dining',
