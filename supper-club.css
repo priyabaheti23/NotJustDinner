@@ -618,3 +618,26 @@ hr.rl:last-of-type{display:none;}
 }
 @keyframes spin { to { transform: rotate(360deg); } }
 
+.flatpickr-calendar {
+  font-family: 'DM Sans', sans-serif;
+  border: 1px solid rgba(46,18,8,.1);
+  box-shadow: none;
+}
+
+.flatpickr-day.selected {
+  background: #2E1208;
+  border-color: #2E1208;
+}
+
+.flatpickr-day:hover {
+  background: #E8DFC8;
+}
+
+.flatpickr-months {
+  background: #F0EAD6;
+}
+
+.flatpickr-current-month {
+  font-family: 'Playfair Display', serif;
+}
+
