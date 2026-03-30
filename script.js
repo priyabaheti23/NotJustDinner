@@ -170,9 +170,9 @@ function getRadio(name) {
 }
 
 /* ═══════════════════════════════════════
-   RENDER GUEST FORMS
-   - Label renamed to "Your Social Media (optional to share)"
-   - Radio group id added for validation reference
+   CHANGE 7 — RENDER GUEST FORMS
+   Social media platform: mandatory radio
+   Handle: mandatory text input
 ═══════════════════════════════════════ */
 function renderForms() {
   const wrap = document.getElementById('member-forms');
@@ -209,7 +209,7 @@ function renderForms() {
         </div>
 
         <div class="ff">
-          <label>Your Social Media (optional to share)</label>
+          <label>Social Media Platform *</label>
           <div class="radio-group" id="radio_group_${i}">
             <label class="radio-option">
               <input type="radio" name="guest_platform_${i}" value="Instagram"> Instagram
@@ -221,11 +221,13 @@ function renderForms() {
               <input type="radio" name="guest_platform_${i}" value="LinkedIn"> LinkedIn
             </label>
           </div>
+          <p id="err_platform_${i}" class="ferr"></p>
         </div>
 
         <div class="ff span2">
-          <label>Social Username (optional)</label>
-          <input type="text" id="guest_username_${i}" placeholder="@handle" autocomplete="off">
+          <label>Social Handle *</label>
+          <input type="text" id="guest_username_${i}" placeholder="@yourhandle" autocomplete="off">
+          <p id="err_username_${i}" class="ferr"></p>
         </div>
 
         ${i === 1 ? `
@@ -243,6 +245,7 @@ function renderForms() {
       </div>`;
     wrap.appendChild(div);
 
+    /* Inline blur validation */
     document.getElementById(`guest_name_${i}`).addEventListener('blur', function() {
       this.value.trim()
         ? hideErr(`err_name_${i}`)
@@ -263,6 +266,17 @@ function renderForms() {
       this.value
         ? hideErr(`err_diet_${i}`)
         : showErr(`err_diet_${i}`, 'Please select a dietary preference');
+    });
+
+    document.getElementById(`guest_username_${i}`).addEventListener('blur', function() {
+      this.value.trim()
+        ? hideErr(`err_username_${i}`)
+        : showErr(`err_username_${i}`, 'Social handle is required');
+    });
+
+    /* Radio group — clear error when any option is selected */
+    document.querySelectorAll(`input[name="guest_platform_${i}"]`).forEach(radio => {
+      radio.addEventListener('change', () => hideErr(`err_platform_${i}`));
     });
 
     if (i === 1) {
@@ -306,17 +320,41 @@ window.changeG = function (delta) {
 };
 
 /* ═══════════════════════════════════════
-   COPY UPI
+   CHANGE 8 — COPY UPI (works for all panels)
+   Replaces old copyUPI() that relied on a
+   single fixed id="upiText"
 ═══════════════════════════════════════ */
+window.copyUPIById = function (textId, toastId) {
+  const textEl  = document.getElementById(textId);
+  const toastEl = document.getElementById(toastId);
+  if (!textEl) return;
+  const text = textEl.textContent.trim();
+  navigator.clipboard.writeText(text).catch(() => {
+    /* fallback for older browsers / non-https */
+    const ta = document.createElement('textarea');
+    ta.value = text;
+    ta.style.position = 'fixed';
+    ta.style.opacity  = '0';
+    document.body.appendChild(ta);
+    ta.select();
+    document.execCommand('copy');
+    document.body.removeChild(ta);
+  });
+  if (toastEl) {
+    toastEl.style.opacity = '1';
+    setTimeout(() => { toastEl.style.opacity = '0'; }, 1600);
+  }
+};
+
+/* Keep old copyUPI as an alias for any lingering references */
 window.copyUPI = function () {
-  const text = document.getElementById('upiText')?.textContent || 'baheti.priya@yescred';
-  navigator.clipboard.writeText(text).catch(() => {});
-  const msg = document.getElementById('copyMsg');
-  if (msg) { msg.style.opacity = 1; setTimeout(() => msg.style.opacity = 0, 1500); }
+  window.copyUPIById('upiText-comm', 'copyMsg-comm');
 };
 
 /* ═══════════════════════════════════════
-   VALIDATE COMMUNITY FORM
+   CHANGE 7 — VALIDATE COMMUNITY FORM
+   Now validates social media platform (radio)
+   AND social handle as mandatory
 ═══════════════════════════════════════ */
 function validateCommunity() {
   let ok = true;
@@ -328,13 +366,17 @@ function validateCommunity() {
   }
 
   for (let i = 1; i <= gCount; i++) {
-    const name = val(`guest_name_${i}`);
-    const wa   = val(`guest_wa_${i}`);
-    const diet = val(`guest_diet_${i}`);
+    const name     = val(`guest_name_${i}`);
+    const wa       = val(`guest_wa_${i}`);
+    const diet     = val(`guest_diet_${i}`);
+    const platform = getRadio(`guest_platform_${i}`);
+    const handle   = val(`guest_username_${i}`);
 
-    if (!name) { showErr(`err_name_${i}`, 'Name is required'); ok = false; }
+    if (!name)     { showErr(`err_name_${i}`,     'Name is required'); ok = false; }
     if (!/^\d{10}$/.test(wa)) { showErr(`err_wa_${i}`, 'Enter a valid 10-digit WhatsApp number'); ok = false; }
-    if (!diet) { showErr(`err_diet_${i}`, 'Please select a dietary preference'); ok = false; }
+    if (!diet)     { showErr(`err_diet_${i}`,     'Please select a dietary preference'); ok = false; }
+    if (!platform) { showErr(`err_platform_${i}`, 'Please select a social media platform'); ok = false; }
+    if (!handle)   { showErr(`err_username_${i}`, 'Social handle is required'); ok = false; }
   }
 
   const src = val('guest_source');
@@ -345,7 +387,8 @@ function validateCommunity() {
 
 /* ═══════════════════════════════════════
    SUBMIT — COMMUNITY
-   FIX: uses getRadio() to correctly capture radio values
+   Social media platform & handle now included
+   in payload sent to Google Sheet
 ═══════════════════════════════════════ */
 window.submitCommunity = function () {
   if (!validateCommunity()) return;
@@ -354,25 +397,29 @@ window.submitCommunity = function () {
   btn.disabled    = true;
   btn.textContent = 'Submitting…';
 
-  const payload = {
-    Booking_Type  : 'Community Dining',
-    Date          : selectedDate,
-    guest_count   : gCount,
-    Source        : val('guest_source')
-  };
+  // Sheet writes ONE ROW PER GUEST:
+  // Timestamp | Date | Total Guests in Booking | Guest # | Guest Name | WhatsApp | Diet | Social Platform | Social Username | Source
+  const source = val('guest_source');
+  const posts  = [];
 
   for (let i = 1; i <= gCount; i++) {
-    payload[`g${i}_name`]         = val(`guest_name_${i}`);
-    payload[`g${i}_whatsapp`]     = val(`guest_wa_${i}`);
-    payload[`g${i}_diet`]         = val(`guest_diet_${i}`);
-    // FIX: use getRadio() instead of val() — radio buttons don't have IDs
-    payload[`g${i}_social_media`] = getRadio(`guest_platform_${i}`);
-    payload[`g${i}_username`]     = val(`guest_username_${i}`);
+    posts.push(postToSheet({
+      Booking_Type              : 'Community Dining',
+      'Date'                    : selectedDate,
+      'Total Guests in Booking' : String(gCount),
+      'Guest #'                 : String(i),
+      'Guest Name'              : val(`guest_name_${i}`),
+      'WhatsApp'                : val(`guest_wa_${i}`),
+      'Diet'                    : val(`guest_diet_${i}`),
+      'Social Platform'         : getRadio(`guest_platform_${i}`),
+      'Social Username'         : val(`guest_username_${i}`),
+      'Source'                  : source
+    }));
   }
 
-  console.log('Community payload:', payload);
+  console.log('Community: sending', gCount, 'row(s) to sheet');
 
-  postToSheet(payload).finally(() => {
+  Promise.allSettled(posts).finally(() => {
     availability[selectedDate] = (availability[selectedDate] || 0) + gCount;
     buildCal();
     openModal('m-community');
@@ -444,14 +491,14 @@ function initPrivateForm() {
     btn.textContent = 'Submitting…';
 
     const payload = {
-      Booking_Type   : 'Private Dining',
-      name           : name,
-      whatsapp       : phone,
-      guest_count    : document.getElementById('pd-guests')?.value || '',
-      preferred_date : document.getElementById('pd-date')?.value   || '',
-      dietary_notes  : document.getElementById('pd-diet')?.value   || '',
-      occasion       : document.getElementById('pd-occ')?.value    || '',
-      source         : src
+      Booking_Type      : 'Private Dining',
+      'Preferred Date'  : document.getElementById('pd-date')?.value   || '',
+      'Guest Count'     : document.getElementById('pd-guests')?.value || '',
+      'Host Name'       : name,
+      'WhatsApp'        : phone,
+      'Dietary Notes'   : document.getElementById('pd-diet')?.value   || '',
+      'Occasion'        : document.getElementById('pd-occ')?.value    || '',
+      'Source'          : src
     };
 
     console.log('Private payload:', payload);
@@ -516,17 +563,17 @@ function initGiftForm() {
 
     const seats = document.getElementById('g-seats')?.value || '1';
     const payload = {
-      Booking_Type       : 'Gift Voucher',
-      recipient_name     : recName,
-      recipient_whatsapp : document.getElementById('g-rec-wa')?.value.trim() || '',
-      gifter_name        : gifter,
-      gifter_whatsapp    : gifterWa,
-      gift_seats         : seats,
-      gift_value         : PRICE * Number(seats),
-      occasion           : document.getElementById('g-occ')?.value   || '',
-      personal_note      : document.getElementById('g-note')?.value  || '',
-      voucher_delivery   : document.getElementById('g-delivery')?.value || '',
-      source             : src
+      Booking_Type           : 'Gift Voucher',
+      'Recipient Name'       : recName,
+      'Recipient WhatsApp'   : document.getElementById('g-rec-wa')?.value.trim() || '',
+      'Gifter Name'          : gifter,
+      'Gifter WhatsApp'      : gifterWa,
+      'Gift Seats'           : seats,
+      'Gift Value'           : PRICE * Number(seats),
+      'Occasion'             : document.getElementById('g-occ')?.value   || '',
+      'Personal Note'        : document.getElementById('g-note')?.value  || '',
+      'Voucher Delivery'     : document.getElementById('g-delivery')?.value || '',
+      'Source'               : src
     };
 
     console.log('Gift payload:', payload);
@@ -585,32 +632,24 @@ window.onload = function () {
   initGiftForm();
 };
 
+/* ═══════════════════════════════════════
+   CHANGE 6 — FLATPICKR for Private Date
+   Uses text input (not type=date) so the
+   calendar icon and alignment are consistent
+═══════════════════════════════════════ */
 document.addEventListener('DOMContentLoaded', function () {
   const dateInput = document.getElementById('pd-date');
   if (!dateInput) return;
 
-  const minDateObj = new Date();
-  minDateObj.setDate(minDateObj.getDate() + 2);
-
-  const maxDateObj = new Date();
-  maxDateObj.setMonth(maxDateObj.getMonth() + 3);
-
-  function toLocalISO(d) {
-    const y = d.getFullYear();
-    const m = String(d.getMonth() + 1).padStart(2, '0');
-    const day = String(d.getDate()).padStart(2, '0');
-    return `${y}-${m}-${day}`;
-  }
-
-  dateInput.setAttribute('min', toLocalISO(minDateObj));
-  dateInput.setAttribute('max', toLocalISO(maxDateObj));
-});
-
-document.addEventListener('DOMContentLoaded', function () {
-  flatpickr("#pd-date", {
-    minDate: new Date().fp_incr(2),
-    maxDate: new Date().fp_incr(90),
-    dateFormat: "d-m-Y",
-    disableMobile: true
+  flatpickr(dateInput, {
+    minDate      : new Date().fp_incr(2),
+    maxDate      : new Date().fp_incr(90),
+    dateFormat   : 'D, d M Y',        /* e.g. "Sat, 05 Apr 2026" */
+    disableMobile: true,
+    allowInput   : false,
+    onReady      : function (_, __, fp) {
+      /* ensure the calendar icon in CSS is always visible */
+      fp.input.setAttribute('readonly', true);
+    }
   });
 });
