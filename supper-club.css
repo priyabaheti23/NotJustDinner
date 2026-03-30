@@ -322,6 +322,26 @@ hr.rl:last-of-type{display:none;}
   padding-right:30px;
 }
 
+/* Date input — restore native picker */
+.ff input[type="date"] {
+  -webkit-appearance: auto;
+  appearance: auto;
+  padding-right: 10px;
+  color-scheme: light;
+  cursor: pointer;
+  background-image: none;
+}
+
+.ff input[type="date"]::-webkit-calendar-picker-indicator {
+  opacity: 1;
+  cursor: pointer;
+  background-color: transparent;
+  padding: 4px;
+  margin-right: 2px;
+  filter: brightness(0.3);   /* makes icon dark to match your --ink color */
+}
+
+
 /* ── Date input — cross-browser fix ── */
 .ff input[type="date"] {
   -webkit-appearance: textfield;
@@ -584,6 +604,12 @@ hr.rl:last-of-type{display:none;}
    FIX 4: about gap on mobile
 ══════════════════════════════════════════ */
 @media(max-width:660px){
+   .ff input[type="date"] {
+  font-size: 16px;       /* already set for inputs, but re-assert */
+  min-height: 48px;
+  box-sizing: border-box;
+  width: 100%;
+}
   .strip-in{grid-template-columns:1fr 1fr;padding-block:2px}
   .si{padding:14px 6px;border-right:none;border-bottom:1px solid rgba(240,234,214,.06)}
   .si:last-child{border-bottom:none}
