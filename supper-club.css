@@ -321,6 +321,26 @@ hr.rl:last-of-type{display:none;}
   background-position:right 12px center;
   padding-right:30px;
 }
+
+/* ── Date input — cross-browser fix ── */
+.ff input[type="date"] {
+  -webkit-appearance: textfield;
+  appearance: textfield;
+  background-image: none;        /* remove the select arrow */
+  padding-right: 14px;           /* restore normal padding */
+  cursor: pointer;
+  color-scheme: light;           /* forces light calendar popup on Android */
+}
+
+/* Show the native calendar icon on iOS/Safari */
+.ff input[type="date"]::-webkit-calendar-picker-indicator {
+  opacity: 1;
+  cursor: pointer;
+  filter: none;                  /* don't inherit any color inversion */
+  width: 18px;
+  height: 18px;
+}
+
 .ff input:focus,.ff select:focus,.ff textarea:focus{border-color:var(--ink);background:var(--cr2)}
 .mbl{border:1px solid var(--rl);padding:32px 28px;background:var(--cr);margin-bottom:22px;}
 .mbl-title{font-family:var(--sf);font-size:15px;color:var(--ink);margin-bottom:16px;
@@ -591,6 +611,7 @@ hr.rl:last-of-type{display:none;}
   .after-item{border-right:none;border-bottom:1px solid var(--rl)}
   .after-item:last-child{border-bottom:none}
   .cal-grid{max-width:100%}
+   .day { min-height: 44px; }   /* tap target size */
   .vc-meta{flex-direction:column;gap:12px}
   .mbl{padding:22px 16px;}
   .radio-group{gap:10px;}
