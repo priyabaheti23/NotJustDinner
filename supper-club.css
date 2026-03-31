@@ -543,8 +543,14 @@ hr.rl:last-of-type{display:none;}
 }
 .ftr-wm .f1{display:block;font-family:var(--sf);font-size:10px;font-weight:300;
   letter-spacing:.32em;text-transform:uppercase;color:rgba(240,234,214,.28)}
-.ftr-wm .f2{display:block;font-family:var(--sf);font-style:italic;font-size:38px;
-  font-weight:300;color:rgba(240,234,214,.72)}
+.ftr-wm .f2{
+  font-family:var(--accent);   /* CHANGE */
+  font-style:italic;
+  font-size:38px;
+  font-weight:400;
+  color:#E8DFC8;               /* slightly warmer than pure white */
+  letter-spacing:0.02em;
+}
 .ftr-wm .f3{display:block;font-family:var(--sf);font-size:10px;font-weight:600;
   letter-spacing:.3em;text-transform:uppercase;color:rgba(240,234,214,.28)}
 .ftr-sub{font-size:9px;letter-spacing:.2em;text-transform:uppercase;
