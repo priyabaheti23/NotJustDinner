@@ -57,7 +57,7 @@ a{color:inherit;text-decoration:none}
   opacity:0;animation:lift 1.1s .2s ease forwards}
 .hero-copy .l1{display:block;font-family:var(--sf);font-weight:300;font-size:clamp(12px,2vw,17px);
   letter-spacing:.36em;text-transform:uppercase;color:rgba(240,234,214,.65);margin-bottom:4px}
-.hero-copy .l2{display:block;font-family:var(--sf);font-style:italic;font-weight:300;
+.hero-copy .l2{display:block;font-family: 'Cormorant Garamond', serif;  /* changed */;font-style:italic;font-weight:300;
   font-size:clamp(68px,13vw,128px);line-height:.84;color:rgba(240,234,214,1)}
 .hero-copy .l3{display:block;font-family:var(--sf);font-weight:600;
   font-size:clamp(26px,4.8vw,50px);letter-spacing:.2em;text-transform:uppercase;
