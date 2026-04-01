@@ -56,6 +56,11 @@ window.switchTab = function (tab) {
     document.getElementById('tab-'   + id).classList.toggle('on', id === tab);
     document.getElementById('panel-' + id).classList.toggle('on', id === tab);
   });
+
+  // Hide the prompt once any tab is selected
+  const prompt = document.getElementById('tab-prompt');
+  if (prompt) prompt.style.display = 'none';
+
   if (tab === 'community') renderForms();
 };
 
@@ -113,8 +118,13 @@ function buildCal() {
         cell.className = 'day full';
         cell.innerHTML += `<span class="day-seats">Full</span>`;
       } else {
-        cell.className = 'day avail' + (remaining <= 2 ? ' almost' : '');
-        cell.innerHTML += `<span class="day-seats">${remaining} left</span>`;
+                        if (remaining <= 3) {
+                  cell.className = 'day avail almost';
+                  cell.innerHTML += `<span class="day-seats">Almost full</span>`;
+                } else {
+                  cell.className = 'day avail';
+                  // no seat count shown
+                }
         cell.onclick   = () => selectDate(key, cell, remaining);
       }
     } else {
@@ -653,3 +663,30 @@ document.addEventListener('DOMContentLoaded', function () {
     }
   });
 });
+
+
+/* ══ TESTIMONIAL SLIDER ══ */
+let currentSlide = 0;
+let sliderTimer  = null;
+
+window.goToSlide = function (n) {
+  const slides = document.querySelectorAll('.tslide');
+  const dots   = document.querySelectorAll('.tdot');
+  slides[currentSlide].classList.remove('active');
+  dots[currentSlide].classList.remove('active');
+  currentSlide = n;
+  slides[currentSlide].classList.add('active');
+  dots[currentSlide].classList.add('active');
+  resetSliderTimer();
+};
+
+function resetSliderTimer() {
+  clearInterval(sliderTimer);
+  sliderTimer = setInterval(() => {
+    const total = document.querySelectorAll('.tslide').length;
+    goToSlide((currentSlide + 1) % total);
+  }, 5000);
+}
+
+// Auto-start
+resetSliderTimer();
