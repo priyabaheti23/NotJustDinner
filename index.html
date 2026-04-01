@@ -26,7 +26,6 @@
       <img src="assets/branding/logo.png" class="nav-logo" alt="Not Just Dinner"
            onerror="this.outerHTML='<span class=\'nav-logo-fb\'>Not <em>Just</em> Dinner</span>'">
     </a>
-    <a href="#book" class="nav-cta" aria-label="Book a seat">Book a Seat</a>
   </div>
 </nav>
 
@@ -37,6 +36,9 @@
     <span class="l3">Not</span>
     <span class="l2">Just</span>
     <span class="l3">Dinner</span>
+
+    <a href="#book" class="hero-cta">Reserve a Seat</a>
+
   </div>
 </section>
 
@@ -168,23 +170,45 @@
       <p class="eyebrow">Voices from the Table</p>
       <h2 class="display" id="testi-h" style="margin-top:12px;">What guests <em>say</em></h2>
     </div>
-    <div class="testi-grid rev">
-      <div class="tcard">
-        <div class="tstars">★★★★★</div>
-        <p class="tquote">I arrived feeling homesick, but somewhere between the courses, that feeling quietly faded away.</p>
-        <p class="tname">Gursimran · Community Dining</p>
-      </div>
-      <div class="tcard">
-        <div class="tstars">★★★★★</div>
-        <p class="tquote">The evening felt like walking into a family gathering where you don’t know many people at first, but slowly, you start connecting. Like meeting distant cousins and unexpectedly having easy, meaningful conversations.</p>
-        <p class="tname">Raashi · Community Dining</p>
-      </div>
-      <div class="tcard">
-        <div class="tstars">★★★★★</div>
-        <p class="tquote">The evening flowed so effortlessly that I didn’t even think of checking my phone, it’s been a long time since I felt that present.</p>
-        <p class="tname">Harsh · Community Dining</p>
-      </div>
+    
+    <div class="testi-slider" id="testi-slider">
+
+  <div class="tslide active">
+    <div class="tstars">★★★★★</div>
+    <p class="tquote">I arrived feeling homesick, but somewhere between the courses, that feeling quietly faded away.</p>
+    <div class="tauthor">
+      <img src="assets/branding/guest1.jpeg" class="tav" alt="Gursimran">
+      <p class="tname">Gursimran · Community Dining</p>
     </div>
+  </div>
+
+  <div class="tslide">
+    <div class="tstars">★★★★★</div>
+    <p class="tquote">The evening felt like walking into a family gathering where you don't know many people at first, but slowly, you start connecting. Like meeting distant cousins and unexpectedly having easy, meaningful conversations.</p>
+    <div class="tauthor">
+      <img src="assets/branding/guest2.jpeg" class="tav" alt="Raashi">
+      <p class="tname">Raashi · Community Dining</p>
+    </div>
+  </div>
+
+  <div class="tslide">
+    <div class="tstars">★★★★★</div>
+    <p class="tquote">The evening flowed so effortlessly that I didn't even think of checking my phone, it's been a long time since I felt that present.</p>
+    <div class="tauthor">
+      <img src="assets/branding/guest3.jpeg" class="tav" alt="Harsh">
+      <p class="tname">Harsh · Community Dining</p>
+    </div>
+  </div>
+
+</div>
+
+<!-- Dots -->
+<div class="testi-dots" id="testi-dots">
+  <button class="tdot active" onclick="goToSlide(0)" aria-label="Slide 1"></button>
+  <button class="tdot" onclick="goToSlide(1)" aria-label="Slide 2"></button>
+  <button class="tdot" onclick="goToSlide(2)" aria-label="Slide 3"></button>
+</div>
+
   </div>
 </section>
 
@@ -228,7 +252,7 @@
 
     <!-- TABS -->
     <div class="tabs rev" role="tablist">
-      <div class="tab on" id="tab-community" role="tab" aria-selected="true" aria-controls="panel-community" tabindex="0" onclick="switchTab('community')" onkeydown="if(event.key==='Enter')switchTab('community')">
+      <div class="tab" id="tab-community" role="tab" aria-selected="true" aria-controls="panel-community" tabindex="0" onclick="switchTab('community')" onkeydown="if(event.key==='Enter')switchTab('community')">
         <div class="tab-name">Community <em>Dining</em></div>
         <div class="tab-sub">Join the shared table · Up to 8 guests </div>
       </div>
@@ -243,8 +267,15 @@
       </div>
     </div>
 
+            <div class="tab-prompt" id="tab-prompt">
+          <div class="tp-inner">
+            <div class="tp-arrow">↑</div>
+            <p class="tp-text">Choose an experience above to continue</p>
+          </div>
+        </div>
+
     <!-- ══ COMMUNITY PANEL ══ -->
-    <div class="panel on" id="panel-community" role="tabpanel" aria-labelledby="tab-community">
+    <div class="panel" id="panel-community" role="tabpanel" aria-labelledby="tab-community">
 
       <!-- Step 1: Calendar -->
       <div class="cal-shell rev">
