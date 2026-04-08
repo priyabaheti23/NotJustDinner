@@ -6,6 +6,8 @@
 const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbx0oc-UL4prXW5j_v5WDHVpzeqDPEE3iFtdlaq1EcLPYqrvSQI-WMMm9leWBclvFFBbbQ/exec';
 const MAX_SEATS  = 8;
 const PRICE      = 1999;
+const SAT        = [4, 11, 18, 25];
+const SUN        = [5, 12, 19, 26];
 
 /* ═══════════════════════════════════════
    STATE
@@ -21,6 +23,7 @@ function postToSheet(payload) {
   const body = Object.entries(payload)
     .map(([k, v]) => encodeURIComponent(k) + '=' + encodeURIComponent(v ?? ''))
     .join('&');
+
   return fetch(SCRIPT_URL, {
     method : 'POST',
     mode   : 'cors',
@@ -53,8 +56,11 @@ window.switchTab = function (tab) {
     document.getElementById('tab-'   + id).classList.toggle('on', id === tab);
     document.getElementById('panel-' + id).classList.toggle('on', id === tab);
   });
+
+  // Hide the prompt once any tab is selected
   const prompt = document.getElementById('tab-prompt');
   if (prompt) prompt.style.display = 'none';
+
   if (tab === 'community') renderForms();
 };
 
@@ -71,10 +77,10 @@ function fetchAvailability() {
         if (key.includes('GMT') || key.includes('Apr') || key.includes('2026')) {
           const d = new Date(key);
           if (!isNaN(d)) {
-            const y   = d.getFullYear();
-            const m   = String(d.getMonth() + 1).padStart(2, '0');
+            const y = d.getFullYear();
+            const m = String(d.getMonth() + 1).padStart(2, '0');
             const day = String(d.getDate()).padStart(2, '0');
-            dateKey   = `${y}-${m}-${day}`;
+            dateKey = `${y}-${m}-${day}`;
           }
         }
         availability[dateKey] = (availability[dateKey] || 0) + value;
@@ -86,78 +92,44 @@ function fetchAvailability() {
 
 /* ═══════════════════════════════════════
    CALENDAR
-   - Week starts Monday (Mon=0 … Sun=6 in our grid)
-   - Saturday is col 5, Sunday is col 6 → together
-   - Past dates greyed and unclickable
-   - Month heading computed dynamically
 ═══════════════════════════════════════ */
 function buildCal() {
   const grid = document.getElementById('cal-comm');
   if (!grid) return;
-
-  // Keep the 7 day-label headers, remove old day cells
   while (grid.children.length > 7) grid.removeChild(grid.lastChild);
 
-  const now       = new Date();
-  const today     = new Date(now.getFullYear(), now.getMonth(), now.getDate());
-
-  // ── Event month ──────────────────────────────
-  const viewYear  = 2026;
-  const viewMonth = 3; // April (0-indexed)
-
-  // Update heading
-  const monthNames = ['January','February','March','April','May','June',
-                      'July','August','September','October','November','December'];
-  const headEl = document.getElementById('cal-head');
-  if (headEl) headEl.textContent = `${monthNames[viewMonth]} ${viewYear}`;
-
-  // ── Mon-first offset ─────────────────────────
-  // JS getDay(): Sun=0, Mon=1 … Sat=6
-  // We want:     Mon=0, Tue=1 … Sun=6
-  const jsFirstDay    = new Date(viewYear, viewMonth, 1).getDay(); // for April 2026: Wed=3
-  const monFirstOffset = (jsFirstDay + 6) % 7; // Wed → (3+6)%7 = 2 → 2 empty cells before day 1
-
-  for (let i = 0; i < monFirstOffset; i++) {
+  for (let i = 0; i < 3; i++) {
     const e = document.createElement('div');
     e.className = 'day empty';
     grid.appendChild(e);
   }
 
-  const daysInMonth = new Date(viewYear, viewMonth + 1, 0).getDate();
-
-  for (let d = 1; d <= daysInMonth; d++) {
-    const cell      = document.createElement('div');
-    const thisDate  = new Date(viewYear, viewMonth, d);
-    const jsDay     = thisDate.getDay();          // 0=Sun … 6=Sat
-    const isSat     = jsDay === 6;
-    const isSun     = jsDay === 0;
-    const isWeekend = isSat || isSun;
-    const isPast    = thisDate < today;
-    const key       = `${viewYear}-${String(viewMonth + 1).padStart(2,'0')}-${String(d).padStart(2,'0')}`;
-
+  for (let d = 1; d <= 30; d++) {
+    const cell    = document.createElement('div');
+    const isAvail = SAT.includes(d) || SUN.includes(d);
     cell.innerHTML = `<span class="day-num">${d}</span>`;
 
-    if (isPast) {
-      cell.className = 'day past';
-    } else if (isWeekend) {
+    if (isAvail) {
+      const key       = `2026-04-${String(d).padStart(2, '0')}`;
       const booked    = availability[key] || 0;
       const remaining = MAX_SEATS - booked;
 
       if (remaining <= 0) {
         cell.className = 'day full';
         cell.innerHTML += `<span class="day-seats">Full</span>`;
-      } else if (remaining <= 3) {
-        cell.className = 'day avail almost';
-        cell.innerHTML += `<span class="day-seats">Almost full</span>`;
-        cell.onclick   = () => selectDate(key, cell, remaining);
       } else {
-        cell.className = 'day avail';
+                        if (remaining <= 3) {
+                  cell.className = 'day avail almost';
+                  cell.innerHTML += `<span class="day-seats">Almost full</span>`;
+                } else {
+                  cell.className = 'day avail';
+                  // no seat count shown
+                }
         cell.onclick   = () => selectDate(key, cell, remaining);
       }
     } else {
       cell.className = 'day other';
     }
-
     grid.appendChild(cell);
   }
 
@@ -191,20 +163,26 @@ function hideErr(id) {
 }
 
 /* ═══════════════════════════════════════
-   FIELD VALUE HELPERS
+   GET FIELD VALUE SAFELY (inputs / selects)
 ═══════════════════════════════════════ */
 function val(id) {
   const el = document.getElementById(id);
   if (!el) return '';
   return el.value ? el.value.trim() : '';
 }
+
+/* ═══════════════════════════════════════
+   GET RADIO VALUE — reads checked radio by name
+═══════════════════════════════════════ */
 function getRadio(name) {
   const checked = document.querySelector(`input[name="${name}"]:checked`);
   return checked ? checked.value : '';
 }
 
 /* ═══════════════════════════════════════
-   RENDER GUEST FORMS
+   CHANGE 7 — RENDER GUEST FORMS
+   Social media platform: mandatory radio
+   Handle: mandatory text input
 ═══════════════════════════════════════ */
 function renderForms() {
   const wrap = document.getElementById('member-forms');
@@ -277,29 +255,45 @@ function renderForms() {
       </div>`;
     wrap.appendChild(div);
 
+    /* Inline blur validation */
     document.getElementById(`guest_name_${i}`).addEventListener('blur', function() {
-      this.value.trim() ? hideErr(`err_name_${i}`) : showErr(`err_name_${i}`, 'Name is required');
+      this.value.trim()
+        ? hideErr(`err_name_${i}`)
+        : showErr(`err_name_${i}`, 'Name is required');
     });
+
     document.getElementById(`guest_wa_${i}`).addEventListener('blur', function() {
       /^\d{10}$/.test(this.value.trim())
         ? hideErr(`err_wa_${i}`)
         : showErr(`err_wa_${i}`, 'Enter a valid 10-digit WhatsApp number');
     });
+
     document.getElementById(`guest_wa_${i}`).addEventListener('input', function() {
       this.value = this.value.replace(/\D/g, '');
     });
+
     document.getElementById(`guest_diet_${i}`).addEventListener('change', function() {
-      this.value ? hideErr(`err_diet_${i}`) : showErr(`err_diet_${i}`, 'Please select a dietary preference');
+      this.value
+        ? hideErr(`err_diet_${i}`)
+        : showErr(`err_diet_${i}`, 'Please select a dietary preference');
     });
+
     document.getElementById(`guest_username_${i}`).addEventListener('blur', function() {
-      this.value.trim() ? hideErr(`err_username_${i}`) : showErr(`err_username_${i}`, 'Social handle is required');
+      this.value.trim()
+        ? hideErr(`err_username_${i}`)
+        : showErr(`err_username_${i}`, 'Social handle is required');
     });
-    document.querySelectorAll(`input[name="guest_platform_${i}"]`).forEach(r => {
-      r.addEventListener('change', () => hideErr(`err_platform_${i}`));
+
+    /* Radio group — clear error when any option is selected */
+    document.querySelectorAll(`input[name="guest_platform_${i}"]`).forEach(radio => {
+      radio.addEventListener('change', () => hideErr(`err_platform_${i}`));
     });
+
     if (i === 1) {
       document.getElementById('guest_source').addEventListener('change', function() {
-        this.value ? hideErr('err_source') : showErr('err_source', 'Please tell us how you heard about us');
+        this.value
+          ? hideErr('err_source')
+          : showErr('err_source', 'Please tell us how you heard about us');
       });
     }
   }
@@ -311,15 +305,18 @@ function renderForms() {
 window.changeG = function (delta) {
   const next = gCount + delta;
   if (next < 1 || next > 4) return;
+
   gCount = next;
-  document.getElementById('gc-n').textContent = gCount;
-  document.getElementById('gc-').disabled      = gCount === 1;
-  document.getElementById('gc+').disabled      = gCount === 4;
+  document.getElementById('gc-n').textContent  = gCount;
+  document.getElementById('gc-').disabled       = gCount === 1;
+  document.getElementById('gc+').disabled       = gCount === 4;
   hideErr('g-err');
+
   const total = PRICE * gCount;
-  document.getElementById('gc-tot').textContent = '₹' + total.toLocaleString('en-IN');
-  document.getElementById('c-amt').innerHTML    = `<sup>₹</sup>${total.toLocaleString('en-IN')}`;
-  document.getElementById('c-sub').textContent  = `for ${gCount} guest${gCount > 1 ? 's' : ''} · all-inclusive`;
+  document.getElementById('gc-tot').textContent  = '₹' + total.toLocaleString('en-IN');
+  document.getElementById('c-amt').innerHTML     = `<sup>₹</sup>${total.toLocaleString('en-IN')}`;
+  document.getElementById('c-sub').textContent   = `for ${gCount} guest${gCount > 1 ? 's' : ''} · all-inclusive`;
+
   if (selectedDate) {
     const remaining = MAX_SEATS - (availability[selectedDate] || 0);
     if (remaining < gCount) {
@@ -328,11 +325,14 @@ window.changeG = function (delta) {
       document.querySelectorAll('.day.sel').forEach(c => c.classList.remove('sel'));
     }
   }
+
   renderForms();
 };
 
 /* ═══════════════════════════════════════
-   COPY UPI
+   CHANGE 8 — COPY UPI (works for all panels)
+   Replaces old copyUPI() that relied on a
+   single fixed id="upiText"
 ═══════════════════════════════════════ */
 window.copyUPIById = function (textId, toastId) {
   const textEl  = document.getElementById(textId);
@@ -340,9 +340,11 @@ window.copyUPIById = function (textId, toastId) {
   if (!textEl) return;
   const text = textEl.textContent.trim();
   navigator.clipboard.writeText(text).catch(() => {
+    /* fallback for older browsers / non-https */
     const ta = document.createElement('textarea');
     ta.value = text;
-    ta.style.cssText = 'position:fixed;opacity:0';
+    ta.style.position = 'fixed';
+    ta.style.opacity  = '0';
     document.body.appendChild(ta);
     ta.select();
     document.execCommand('copy');
@@ -353,45 +355,63 @@ window.copyUPIById = function (textId, toastId) {
     setTimeout(() => { toastEl.style.opacity = '0'; }, 1600);
   }
 };
-window.copyUPI = function () { window.copyUPIById('upiText-comm', 'copyMsg-comm'); };
+
+/* Keep old copyUPI as an alias for any lingering references */
+window.copyUPI = function () {
+  window.copyUPIById('upiText-comm', 'copyMsg-comm');
+};
 
 /* ═══════════════════════════════════════
-   VALIDATE COMMUNITY
+   CHANGE 7 — VALIDATE COMMUNITY FORM
+   Now validates social media platform (radio)
+   AND social handle as mandatory
 ═══════════════════════════════════════ */
 function validateCommunity() {
   let ok = true;
+
   if (!selectedDate) {
     showErr('cal-err', 'Please select a date to continue.');
     document.getElementById('cal-err').scrollIntoView({ behavior: 'smooth', block: 'center' });
     ok = false;
   }
+
   for (let i = 1; i <= gCount; i++) {
     const name     = val(`guest_name_${i}`);
     const wa       = val(`guest_wa_${i}`);
     const diet     = val(`guest_diet_${i}`);
     const platform = getRadio(`guest_platform_${i}`);
     const handle   = val(`guest_username_${i}`);
-    if (!name)                { showErr(`err_name_${i}`,     'Name is required'); ok = false; }
-    if (!/^\d{10}$/.test(wa)) { showErr(`err_wa_${i}`,       'Enter a valid 10-digit WhatsApp number'); ok = false; }
-    if (!diet)                { showErr(`err_diet_${i}`,     'Please select a dietary preference'); ok = false; }
-    if (!platform)            { showErr(`err_platform_${i}`, 'Please select a social media platform'); ok = false; }
-    if (!handle)              { showErr(`err_username_${i}`, 'Social handle is required'); ok = false; }
+
+    if (!name)     { showErr(`err_name_${i}`,     'Name is required'); ok = false; }
+    if (!/^\d{10}$/.test(wa)) { showErr(`err_wa_${i}`, 'Enter a valid 10-digit WhatsApp number'); ok = false; }
+    if (!diet)     { showErr(`err_diet_${i}`,     'Please select a dietary preference'); ok = false; }
+    if (!platform) { showErr(`err_platform_${i}`, 'Please select a social media platform'); ok = false; }
+    if (!handle)   { showErr(`err_username_${i}`, 'Social handle is required'); ok = false; }
   }
+
   const src = val('guest_source');
   if (!src) { showErr('err_source', 'Please tell us how you heard about us'); ok = false; }
+
   return ok;
 }
 
 /* ═══════════════════════════════════════
    SUBMIT — COMMUNITY
+   Social media platform & handle now included
+   in payload sent to Google Sheet
 ═══════════════════════════════════════ */
 window.submitCommunity = function () {
   if (!validateCommunity()) return;
+
   const btn = document.getElementById('comm-submit');
   btn.disabled    = true;
   btn.textContent = 'Submitting…';
+
+  // Sheet writes ONE ROW PER GUEST:
+  // Timestamp | Date | Total Guests in Booking | Guest # | Guest Name | WhatsApp | Diet | Social Platform | Social Username | Source
   const source = val('guest_source');
   const posts  = [];
+
   for (let i = 1; i <= gCount; i++) {
     posts.push(postToSheet({
       Booking_Type              : 'Community Dining',
@@ -406,6 +426,9 @@ window.submitCommunity = function () {
       'Source'                  : source
     }));
   }
+
+  console.log('Community: sending', gCount, 'row(s) to sheet');
+
   Promise.allSettled(posts).finally(() => {
     availability[selectedDate] = (availability[selectedDate] || 0) + gCount;
     buildCal();
@@ -422,6 +445,7 @@ window.submitCommunity = function () {
 function resetCommunityForm() {
   selectedDate = null;
   document.querySelectorAll('.day.sel').forEach(c => c.classList.remove('sel'));
+
   gCount = 1;
   document.getElementById('gc-n').textContent  = '1';
   document.getElementById('gc-').disabled       = true;
@@ -429,6 +453,7 @@ function resetCommunityForm() {
   document.getElementById('gc-tot').textContent = '₹1,999';
   document.getElementById('c-amt').innerHTML    = '<sup>₹</sup>1,999';
   document.getElementById('c-sub').textContent  = 'for 1 guest · all-inclusive';
+
   renderForms();
 }
 
@@ -438,14 +463,14 @@ function resetCommunityForm() {
 function initPrivateForm() {
   const form = document.getElementById('privateForm');
   if (!form) return;
-  addErrEl('pd-name',  'err-pd-name');
-  addErrEl('pd-phone', 'err-pd-phone');
-  addErrEl('pd-src',   'err-pd-src');
+
   document.getElementById('pd-name')?.addEventListener('blur', function() {
     this.value.trim() ? hideErr('err-pd-name') : showErr('err-pd-name', 'Name is required');
   });
   document.getElementById('pd-phone')?.addEventListener('blur', function() {
-    /^\d{10}$/.test(this.value.trim()) ? hideErr('err-pd-phone') : showErr('err-pd-phone', 'Enter a valid 10-digit number');
+    /^\d{10}$/.test(this.value.trim())
+      ? hideErr('err-pd-phone')
+      : showErr('err-pd-phone', 'Enter a valid 10-digit number');
   });
   document.getElementById('pd-phone')?.addEventListener('input', function() {
     this.value = this.value.replace(/\D/g, '');
@@ -453,29 +478,41 @@ function initPrivateForm() {
   document.getElementById('pd-src')?.addEventListener('change', function() {
     this.value ? hideErr('err-pd-src') : showErr('err-pd-src', 'Please tell us how you heard about us');
   });
+
+  addErrEl('pd-name',  'err-pd-name');
+  addErrEl('pd-phone', 'err-pd-phone');
+  addErrEl('pd-src',   'err-pd-src');
+
   form.addEventListener('submit', function (e) {
     e.preventDefault();
+
     let ok    = true;
     const name  = document.getElementById('pd-name')?.value.trim()  || '';
     const phone = document.getElementById('pd-phone')?.value.trim() || '';
     const src   = document.getElementById('pd-src')?.value          || '';
+
     if (!name)                   { showErr('err-pd-name',  'Name is required'); ok = false; }
     if (!/^\d{10}$/.test(phone)) { showErr('err-pd-phone', 'Enter a valid 10-digit number'); ok = false; }
     if (!src)                    { showErr('err-pd-src',   'Please tell us how you heard about us'); ok = false; }
     if (!ok) return;
+
     const btn = document.getElementById('pd-submit');
     btn.disabled    = true;
     btn.textContent = 'Submitting…';
+
     const payload = {
-      Booking_Type     : 'Private Dining',
-      'Preferred Date' : document.getElementById('pd-date')?.value   || '',
-      'Guest Count'    : document.getElementById('pd-guests')?.value || '',
-      'Host Name'      : name,
-      'WhatsApp'       : phone,
-      'Dietary Notes'  : document.getElementById('pd-diet')?.value   || '',
-      'Occasion'       : document.getElementById('pd-occ')?.value    || '',
-      'Source'         : src
+      Booking_Type      : 'Private Dining',
+      'Preferred Date'  : document.getElementById('pd-date')?.value   || '',
+      'Guest Count'     : document.getElementById('pd-guests')?.value || '',
+      'Host Name'       : name,
+      'WhatsApp'        : phone,
+      'Dietary Notes'   : document.getElementById('pd-diet')?.value   || '',
+      'Occasion'        : document.getElementById('pd-occ')?.value    || '',
+      'Source'          : src
     };
+
+    console.log('Private payload:', payload);
+
     postToSheet(payload).finally(() => {
       openModal('m-private');
       form.reset();
@@ -491,10 +528,7 @@ function initPrivateForm() {
 function initGiftForm() {
   const form = document.getElementById('giftForm');
   if (!form) return;
-  addErrEl('g-rec',       'err-g-rec');
-  addErrEl('g-gifter',    'err-g-gifter');
-  addErrEl('g-gifter-wa', 'err-g-gifter-wa');
-  addErrEl('g-src',       'err-g-src');
+
   document.getElementById('g-rec')?.addEventListener('blur', function() {
     this.value.trim() ? hideErr('err-g-rec') : showErr('err-g-rec', "Recipient's name is required");
   });
@@ -502,7 +536,9 @@ function initGiftForm() {
     this.value.trim() ? hideErr('err-g-gifter') : showErr('err-g-gifter', 'Your name is required');
   });
   document.getElementById('g-gifter-wa')?.addEventListener('blur', function() {
-    /^\d{10}$/.test(this.value.trim()) ? hideErr('err-g-gifter-wa') : showErr('err-g-gifter-wa', 'Enter a valid 10-digit number');
+    /^\d{10}$/.test(this.value.trim())
+      ? hideErr('err-g-gifter-wa')
+      : showErr('err-g-gifter-wa', 'Enter a valid 10-digit number');
   });
   document.getElementById('g-gifter-wa')?.addEventListener('input', function() {
     this.value = this.value.replace(/\D/g, '');
@@ -510,35 +546,48 @@ function initGiftForm() {
   document.getElementById('g-src')?.addEventListener('change', function() {
     this.value ? hideErr('err-g-src') : showErr('err-g-src', 'Please tell us how you heard about us');
   });
+
+  addErrEl('g-rec',       'err-g-rec');
+  addErrEl('g-gifter',    'err-g-gifter');
+  addErrEl('g-gifter-wa', 'err-g-gifter-wa');
+  addErrEl('g-src',       'err-g-src');
+
   form.addEventListener('submit', function (e) {
     e.preventDefault();
+
     let ok = true;
     const recName  = document.getElementById('g-rec')?.value.trim()       || '';
     const gifter   = document.getElementById('g-gifter')?.value.trim()    || '';
     const gifterWa = document.getElementById('g-gifter-wa')?.value.trim() || '';
     const src      = document.getElementById('g-src')?.value              || '';
+
     if (!recName)                   { showErr('err-g-rec',       "Recipient's name is required"); ok = false; }
     if (!gifter)                    { showErr('err-g-gifter',    'Your name is required'); ok = false; }
     if (!/^\d{10}$/.test(gifterWa)) { showErr('err-g-gifter-wa','Enter a valid 10-digit number'); ok = false; }
     if (!src)                       { showErr('err-g-src',       'Please tell us how you heard about us'); ok = false; }
     if (!ok) return;
+
     const btn = document.getElementById('gf-submit');
     btn.disabled    = true;
     btn.textContent = 'Submitting…';
+
     const seats = document.getElementById('g-seats')?.value || '1';
     const payload = {
-      Booking_Type        : 'Gift Voucher',
-      'Recipient Name'    : recName,
-      'Recipient WhatsApp': document.getElementById('g-rec-wa')?.value.trim() || '',
-      'Gifter Name'       : gifter,
-      'Gifter WhatsApp'   : gifterWa,
-      'Gift Seats'        : seats,
-      'Gift Value'        : PRICE * Number(seats),
-      'Occasion'          : document.getElementById('g-occ')?.value   || '',
-      'Personal Note'     : document.getElementById('g-note')?.value  || '',
-      'Voucher Delivery'  : document.getElementById('g-delivery')?.value || '',
-      'Source'            : src
+      Booking_Type           : 'Gift Voucher',
+      'Recipient Name'       : recName,
+      'Recipient WhatsApp'   : document.getElementById('g-rec-wa')?.value.trim() || '',
+      'Gifter Name'          : gifter,
+      'Gifter WhatsApp'      : gifterWa,
+      'Gift Seats'           : seats,
+      'Gift Value'           : PRICE * Number(seats),
+      'Occasion'             : document.getElementById('g-occ')?.value   || '',
+      'Personal Note'        : document.getElementById('g-note')?.value  || '',
+      'Voucher Delivery'     : document.getElementById('g-delivery')?.value || '',
+      'Source'               : src
     };
+
+    console.log('Gift payload:', payload);
+
     postToSheet(payload).finally(() => {
       openModal('m-gift');
       form.reset();
@@ -566,7 +615,7 @@ window.updateGiftPrice = function (seats) {
 };
 
 /* ═══════════════════════════════════════
-   HELPER — insert error element after input
+   HELPER — insert error element
 ═══════════════════════════════════════ */
 function addErrEl(inputId, errorId) {
   if (document.getElementById(errorId)) return;
@@ -579,48 +628,6 @@ function addErrEl(inputId, errorId) {
 }
 
 /* ═══════════════════════════════════════
-   LIGHTBOX
-═══════════════════════════════════════ */
-let lbImages = [];
-let lbIndex  = 0;
-
-function initLightbox() {
-  const items = document.querySelectorAll('.gi img');
-  lbImages = Array.from(items).map(img => img.src);
-  items.forEach((img, i) => {
-    img.parentElement.addEventListener('click', () => openLightbox(i));
-  });
-  document.addEventListener('keydown', e => {
-    const lb = document.getElementById('lightbox');
-    if (!lb || !lb.classList.contains('open')) return;
-    if (e.key === 'Escape')     closeLightbox();
-    if (e.key === 'ArrowLeft')  lbNav(-1);
-    if (e.key === 'ArrowRight') lbNav(1);
-  });
-}
-
-window.openLightbox = function (i) {
-  lbIndex = i;
-  document.getElementById('lb-img').src = lbImages[i];
-  document.getElementById('lightbox').classList.add('open');
-  document.body.style.overflow = 'hidden';
-};
-window.closeLightbox = function () {
-  document.getElementById('lightbox').classList.remove('open');
-  document.body.style.overflow = 'auto';
-};
-window.lbNav = function (dir, e) {
-  if (e) e.stopPropagation();
-  lbIndex = (lbIndex + dir + lbImages.length) % lbImages.length;
-  const img = document.getElementById('lb-img');
-  img.style.opacity = '0';
-  setTimeout(() => {
-    img.src = lbImages[lbIndex];
-    img.style.opacity = '1';
-  }, 120);
-};
-
-/* ═══════════════════════════════════════
    INIT
 ═══════════════════════════════════════ */
 window.onload = function () {
@@ -628,32 +635,37 @@ window.onload = function () {
   document.querySelectorAll('.cr').forEach((el, i) => {
     setTimeout(() => el.classList.add('vis'), i * 100);
   });
+
   renderForms();
   fetchAvailability();
   initPrivateForm();
   initGiftForm();
-  initLightbox();
 };
 
 /* ═══════════════════════════════════════
-   FLATPICKR for Private Date
+   CHANGE 6 — FLATPICKR for Private Date
+   Uses text input (not type=date) so the
+   calendar icon and alignment are consistent
 ═══════════════════════════════════════ */
 document.addEventListener('DOMContentLoaded', function () {
   const dateInput = document.getElementById('pd-date');
   if (!dateInput) return;
+
   flatpickr(dateInput, {
     minDate      : new Date().fp_incr(2),
     maxDate      : new Date().fp_incr(90),
-    dateFormat   : 'D, d M Y',
+    dateFormat   : 'D, d M Y',        /* e.g. "Sat, 05 Apr 2026" */
     disableMobile: true,
     allowInput   : false,
-    onReady      : function (_, __, fp) { fp.input.setAttribute('readonly', true); }
+    onReady      : function (_, __, fp) {
+      /* ensure the calendar icon in CSS is always visible */
+      fp.input.setAttribute('readonly', true);
+    }
   });
 });
 
-/* ═══════════════════════════════════════
-   TESTIMONIAL SLIDER
-═══════════════════════════════════════ */
+
+/* ══ TESTIMONIAL SLIDER ══ */
 let currentSlide = 0;
 let sliderTimer  = null;
 
@@ -676,4 +688,5 @@ function resetSliderTimer() {
   }, 5000);
 }
 
+// Auto-start
 resetSliderTimer();
