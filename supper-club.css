@@ -626,7 +626,7 @@ hr.rl{border:none;border-top:1px solid var(--rl)}
   .for-grid{grid-template-columns:1fr 1fr}
 
   /* Gallery — 2 col on mobile for bigger photos */
-  .gal{grid-template-columns:1fr 1fr}
+  .gal{grid-template-columns:repeat(3,1fr)}
 
   /* Lightbox */
   .lb-prev{left:4px;font-size:24px;padding:7px 11px}
@@ -693,7 +693,6 @@ hr.rl{border:none;border-top:1px solid var(--rl)}
   .hero-copy .l2{font-size:54px}
   .hero-copy .l3{font-size:18px}
   .for-grid{grid-template-columns:1fr}
-  .gal{grid-template-columns:1fr 1fr}
 }
 
 /* misc */
