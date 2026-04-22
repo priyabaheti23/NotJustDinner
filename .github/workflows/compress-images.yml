@@ -1,0 +1,30 @@
+name: Compress images
+
+on:
+  push:
+    paths:
+      - 'assets/**/*.jpg'
+      - 'assets/**/*.jpeg'
+      - 'assets/**/*.png'
+      - 'assets/**/*.webp'
+
+jobs:
+  compress:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Compress images
+        uses: calibreapp/image-actions@main
+        with:
+          githubToken: ${{ secrets.GITHUB_TOKEN }}
+          avifQuality: '75'
+          webpQuality: '75'
+          jpegQuality: '75'
+          pngQuality: '75'
+          ignorePaths: 'assets/branding/payment-qr.jpeg'
+
+      - name: Commit compressed images
+        uses: stefanzweifel/git-auto-commit-action@v5
+        with:
+          commit_message: 'chore: compress images [skip ci]'
