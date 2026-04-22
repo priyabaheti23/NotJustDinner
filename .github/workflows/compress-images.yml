@@ -7,7 +7,6 @@ on:
       - 'assets/**/*.jpg'
       - 'assets/**/*.jpeg'
       - 'assets/**/*.png'
-      - 'assets/**/*.webp'
 
 jobs:
   compress:
@@ -15,15 +14,21 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
+      - name: Install imagemagick
+        run: sudo apt-get install -y imagemagick
+
       - name: Compress images
-        uses: calibreapp/image-actions@main
-        with:
-          githubToken: ${{ secrets.GITHUB_TOKEN }}
-          avifQuality: '75'
-          webpQuality: '75'
-          jpegQuality: '75'
-          pngQuality: '75'
-          ignorePaths: 'assets/branding/payment-qr.jpeg'
+        run: |
+          find assets -type f \( -name "*.jpg" -o -name "*.jpeg" \) \
+            ! -name "payment-qr*" \
+            -exec bash -c '
+              orig=$(identify -format "%wx%h" "$1")
+              convert "$1" -quality 75 -resize "800x800>" "$1"
+              echo "Compressed $1 ($orig)"
+            ' _ {} \;
+          find assets -type f -name "*.png" \
+            ! -name "payment-qr*" \
+            -exec convert {} -quality 75 {} \;
 
       - name: Commit compressed images
         uses: stefanzweifel/git-auto-commit-action@v5
