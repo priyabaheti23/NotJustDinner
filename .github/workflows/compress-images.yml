@@ -1,6 +1,7 @@
 name: Compress images
 
 on:
+  workflow_dispatch:
   push:
     paths:
       - 'assets/**/*.jpg'
