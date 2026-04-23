@@ -14,8 +14,17 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="supper-club.css">
 <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,300;0,400;0,600;1,300;1,400&family=Cormorant+Garamond:ital,wght@0,400;0,500;1,400&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
-<script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css" media="print" onload="this.media='all'">
+<script>
+  window.addEventListener('load', function() {
+    var script = document.createElement('script');
+    script.src = 'https://cdn.jsdelivr.net/npm/flatpickr';
+    script.onload = function() {
+      if (typeof initFlatpickr === 'function') initFlatpickr();
+    };
+    document.body.appendChild(script);
+  });
+</script>
 </head>
 <body>
 
