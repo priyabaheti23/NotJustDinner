@@ -638,7 +638,7 @@ window.onload = function () {
 /* ═══════════════════════════════════════
    FLATPICKR for Private Date
 ═══════════════════════════════════════ */
-document.addEventListener('DOMContentLoaded', function () {
+function initFlatpickr() {
   const dateInput = document.getElementById('pd-date');
   if (!dateInput) return;
   flatpickr(dateInput, {
@@ -649,8 +649,7 @@ document.addEventListener('DOMContentLoaded', function () {
     allowInput   : false,
     onReady      : function (_, __, fp) { fp.input.setAttribute('readonly', true); }
   });
-});
-
+}
 /* ═══════════════════════════════════════
    TESTIMONIAL SLIDER
 ═══════════════════════════════════════ */
