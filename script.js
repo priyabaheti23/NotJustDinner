@@ -143,20 +143,19 @@ function buildCal() {
       const booked    = availability[key] || 0;
       const remaining = MAX_SEATS - booked;
 
-      if (remaining <= 0) {
-        cell.className = 'day full';
-        cell.innerHTML += `<span class="day-seats">Full</span>`;
-      } else if (remaining <= 3) {
-        cell.className = 'day avail almost';
-        cell.innerHTML += `<span class="day-seats">Almost full</span>`;
-        cell.onclick   = () => selectDate(key, cell, remaining);
-      } else {
-        cell.className = 'day avail';
-        cell.onclick   = () => selectDate(key, cell, remaining);
-      }
-    } else {
-      cell.className = 'day other';
-    }
+if (remaining <= 0) {
+  cell.className = 'day full';
+  cell.innerHTML += `<span class="day-seats">Full</span>`;
+
+} else if (remaining === 4 || remaining === 2 || remaining === 1) {
+  cell.className = 'day avail almost';
+  cell.innerHTML += `<span class="day-seats">Almost full</span>`;
+  cell.onclick   = () => selectDate(key, cell, remaining);
+
+} else {
+  cell.className = 'day avail';
+  cell.onclick   = () => selectDate(key, cell, remaining);
+}
 
     grid.appendChild(cell);
   }
