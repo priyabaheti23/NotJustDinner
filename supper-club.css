@@ -606,10 +606,16 @@ hr.rl{border:none;border-top:1px solid var(--rl)}
 ══════════════════════════════════════════ */
 @media(max-width:660px){
 
-  /* Nav */
-  .nav-wa span{display:none}
-  .nav-wa{padding:7px 9px;border-radius:50%}
-  .nav-wa-icon{width:15px;height:15px}
+   .nav-wa{
+     padding:7px 13px;
+     background:var(--ink);
+     border-color:var(--ink);
+     color:var(--cr);
+     font-size:8px;
+     letter-spacing:.12em;
+   }
+   .nav-wa span{font-size:8px;letter-spacing:.12em}
+   .nav-wa-icon{width:13px;height:13px}
 
   /* Hero */
   .hero-copy .l2{font-size:clamp(58px,17vw,96px)}
