@@ -353,8 +353,28 @@ hr.rl{border:none;border-top:1px solid var(--rl)}
 .day-num{font-size:13px;line-height:1}
 .day-seats{font-size:7px;letter-spacing:.03em;color:var(--mu);font-family:var(--ss);font-weight:400}
 .day.avail.sel .day-seats{color:rgba(240,234,214,.55)}
+
+/* Almost full — 3 remaining */
 .day.almost .day-seats{color:#8B2500;font-weight:600;font-size:7px}
 .day.almost{background:rgba(139,37,0,.07);border-color:rgba(139,37,0,.22)!important}
+
+/* Last 2 seats */
+.day.last-two .day-seats{color:#8B2500;font-weight:600;font-size:7px}
+.day.last-two{background:rgba(139,37,0,.11);border-color:rgba(139,37,0,.35)!important}
+
+/* Last seat */
+.day.last-one .day-seats{color:#6B0000;font-weight:700;font-size:7px;letter-spacing:.01em}
+.day.last-one{background:rgba(107,0,0,.1);border-color:rgba(107,0,0,.45)!important;
+  animation:pulse-urgent 2s ease-in-out infinite}
+@keyframes pulse-urgent{
+  0%,100%{border-color:rgba(107,0,0,.45)!important}
+  50%{border-color:rgba(107,0,0,.9)!important}
+}
+
+/* Filling fast — 4 remaining */
+.day.filling .day-seats{color:#7A5500;font-weight:500;font-size:7px}
+.day.filling{background:rgba(122,85,0,.06);border-color:rgba(122,85,0,.2)!important}
+
 #cal-err{font-size:12px;color:var(--red);font-style:italic;margin-top:8px;display:none}
 .cal-loading{font-size:12px;color:var(--mu);font-style:italic;margin-bottom:10px;
   display:flex;align-items:center;gap:6px}
