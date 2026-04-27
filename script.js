@@ -140,20 +140,34 @@ function buildCal() {
     if (isPast) {
       cell.className = 'day past';
     } else if (isWeekend) {
+
       const booked    = availability[key] || 0;
       const remaining = MAX_SEATS - booked;
 
       if (remaining <= 0) {
         cell.className = 'day full';
         cell.innerHTML += `<span class="day-seats">Full</span>`;
-      } else if (remaining <= 3) {
+      } else if (remaining === 1) {
+        cell.className = 'day avail last-one';
+        cell.innerHTML += `<span class="day-seats">Last seat!</span>`;
+        cell.onclick   = () => selectDate(key, cell, remaining);
+      } else if (remaining === 2) {
+        cell.className = 'day avail last-two';
+        cell.innerHTML += `<span class="day-seats">2 left</span>`;
+        cell.onclick   = () => selectDate(key, cell, remaining);
+      } else if (remaining === 3) {
         cell.className = 'day avail almost';
         cell.innerHTML += `<span class="day-seats">Almost full</span>`;
+        cell.onclick   = () => selectDate(key, cell, remaining);
+      } else if (remaining === 4) {
+        cell.className = 'day avail filling';
+        cell.innerHTML += `<span class="day-seats">Filling fast</span>`;
         cell.onclick   = () => selectDate(key, cell, remaining);
       } else {
         cell.className = 'day avail';
         cell.onclick   = () => selectDate(key, cell, remaining);
       }
+       
     } else {
       cell.className = 'day other';
     }
