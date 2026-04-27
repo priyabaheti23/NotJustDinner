@@ -606,16 +606,22 @@ hr.rl{border:none;border-top:1px solid var(--rl)}
 ══════════════════════════════════════════ */
 @media(max-width:660px){
 
-   .nav-wa{
-     padding:7px 13px;
-     background:var(--ink);
-     border-color:var(--ink);
-     color:var(--cr);
-     font-size:8px;
-     letter-spacing:.12em;
-   }
-   .nav-wa span{font-size:8px;letter-spacing:.12em}
-   .nav-wa-icon{width:13px;height:13px}
+      .nav-wa{
+        padding:5px 10px;
+        background:transparent;
+        border-color:rgba(46,18,8,.18);
+        color:var(--mu);
+        flex-direction:column;
+        gap:1px;
+        line-height:1;
+      }
+      .nav-wa-icon{width:13px;height:13px;color:var(--mu)}
+      .nav-wa span{
+        font-size:7px;
+        letter-spacing:.1em;
+        display:block;
+        color:var(--mu);
+      }
 
   /* Hero */
   .hero-copy .l2{font-size:clamp(58px,17vw,96px)}
