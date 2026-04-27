@@ -103,7 +103,7 @@ function buildCal() {
 
   // ── Event month ──────────────────────────────
   const viewYear  = 2026;
-  const viewMonth = 3; // April (0-indexed)
+  const viewMonth = 4; // May (0-indexed)
 
   // Update heading
   const monthNames = ['January','February','March','April','May','June',
