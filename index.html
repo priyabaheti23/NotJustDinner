@@ -161,64 +161,69 @@
       <h2 class="display" style="margin-top:12px;">What guests <em>say</em></h2>
     </div>
 
-    <div class="testi-slider" id="testi-slider">
+  <div class="testi-wrap" style="display:flex;align-items:flex-start;gap:12px;margin-top:32px">
+  <button class="t-arrow" onclick="prevSlide()" aria-label="Previous" style="flex-shrink:0;margin-top:32px;width:38px;height:38px;background:var(--cr2);border:1px solid var(--rl);cursor:pointer;font-size:22px;font-family:serif;display:flex;align-items:center;justify-content:center;transition:background .2s">‹</button>
 
-      <div class="tslide active">
-        <div class="tstars">★★★★★</div>
-        <p class="tquote">I arrived feeling homesick, but somewhere between the courses, that feeling quietly faded away.</p>
-        <div class="tauthor">
-          <img src="assets/branding/guest1.jpeg" class="tav" alt="Gursimran">
-          <p class="tname">Gursimran · Community Dining</p>
-        </div>
+  <div class="testi-slider" id="testi-slider" style="flex:1">
+
+    <div class="tslide active">
+      <div class="tstars">★★★★★</div>
+      <p class="tquote">I arrived feeling homesick, but somewhere between the courses, that feeling quietly faded away.</p>
+      <div class="tauthor">
+        <img src="assets/branding/guest1.jpeg" class="tav" alt="Gursimran">
+        <p class="tname">Gursimran · Community Dining</p>
       </div>
-
-      <div class="tslide">
-        <div class="tstars">★★★★★</div>
-        <p class="tquote">The evening felt like walking into a family gathering where you don't know many people at first, but slowly, you start connecting. Like meeting distant cousins and unexpectedly having easy, meaningful conversations.</p>
-        <div class="tauthor">
-          <img src="assets/branding/guest2.jpeg" class="tav" alt="Raashi">
-          <p class="tname">Raashi · Community Dining</p>
-        </div>
-      </div>
-
-      <div class="tslide">
-        <div class="tstars">★★★★★</div>
-        <p class="tquote">The evening flowed so effortlessly that I didn't even think of checking my phone, it's been a long time since I felt that present.</p>
-        <div class="tauthor">
-          <img src="assets/branding/guest3.jpeg" class="tav" alt="Harsh">
-          <p class="tname">Harsh · Community Dining</p>
-        </div>
-      </div>
-
-      <div class="tslide">
-        <div class="tstars">★★★★★</div>
-        <p class="tquote">Honestly, I was a bit nervous about coming alone, but five minutes in, I forgot I didn't know anyone. It’s rare to find a space that feels this cozy and intentional without being performative.</p>
-        <div class="tauthor">
-          <img src="assets/branding/guest4.jpeg" class="tav" alt="Guest 4">
-          <p class="tname">Muskan · Community Dining</p>
-        </div>
-      </div>
-
-      <div class="tslide">
-        <div class="tstars">★★★★★</div>
-        <p class="tquote"> The night was just too magical to be Just Dinner.</p>
-        <div class="tauthor">
-          <img src="assets/branding/guest5.jpeg" class="tav" alt="Guest 5">
-          <p class="tname">Manpreet · Community Dining</p>
-        </div>
-      </div>
-
     </div>
 
-    <div class="testi-dots" id="testi-dots">
-      <button class="tdot active" onclick="goToSlide(0)" aria-label="Slide 1"></button>
-      <button class="tdot" onclick="goToSlide(1)" aria-label="Slide 2"></button>
-      <button class="tdot" onclick="goToSlide(2)" aria-label="Slide 3"></button>
-      <button class="tdot" onclick="goToSlide(3)" aria-label="Slide 4"></button>
-      <button class="tdot" onclick="goToSlide(4)" aria-label="Slide 5"></button>
+    <div class="tslide">
+      <div class="tstars">★★★★★</div>
+      <p class="tquote">The evening felt like walking into a family gathering where you don't know many people at first, but slowly, you start connecting. Like meeting distant cousins and unexpectedly having easy, meaningful conversations.</p>
+      <div class="tauthor">
+        <img src="assets/branding/guest2.jpeg" class="tav" alt="Raashi">
+        <p class="tname">Raashi · Community Dining</p>
+      </div>
+    </div>
+
+    <div class="tslide">
+      <div class="tstars">★★★★★</div>
+      <p class="tquote">The evening flowed so effortlessly that I didn't even think of checking my phone, it's been a long time since I felt that present.</p>
+      <div class="tauthor">
+        <img src="assets/branding/guest3.jpeg" class="tav" alt="Harsh">
+        <p class="tname">Harsh · Community Dining</p>
+      </div>
+    </div>
+
+    <div class="tslide">
+      <div class="tstars">★★★★★</div>
+      <p class="tquote">Honestly, I was a bit nervous about coming alone, but five minutes in, I forgot I didn't know anyone. It's rare to find a space that feels this cozy and intentional without being performative.</p>
+      <div class="tauthor">
+        <img src="assets/branding/guest4.jpeg" class="tav" alt="Guest 4">
+        <p class="tname">Muskan · Community Dining</p>
+      </div>
+    </div>
+
+    <div class="tslide">
+      <div class="tstars">★★★★★</div>
+      <p class="tquote">The night was just too magical to be Just Dinner.</p>
+      <div class="tauthor">
+        <img src="assets/branding/guest5.jpeg" class="tav" alt="Guest 5">
+        <p class="tname">Manpreet · Community Dining</p>
+      </div>
     </div>
 
   </div>
+
+  <button class="t-arrow" onclick="nextSlide()" aria-label="Next" style="flex-shrink:0;margin-top:32px;width:38px;height:38px;background:var(--cr2);border:1px solid var(--rl);cursor:pointer;font-size:22px;font-family:serif;display:flex;align-items:center;justify-content:center;transition:background .2s">›</button>
+</div>
+
+<div class="testi-dots" id="testi-dots">
+  <button class="tdot active" onclick="goToSlide(0)" aria-label="Slide 1"></button>
+  <button class="tdot" onclick="goToSlide(1)" aria-label="Slide 2"></button>
+  <button class="tdot" onclick="goToSlide(2)" aria-label="Slide 3"></button>
+  <button class="tdot" onclick="goToSlide(3)" aria-label="Slide 4"></button>
+  <button class="tdot" onclick="goToSlide(4)" aria-label="Slide 5"></button>
+</div>
+    
 </section>
 
 <!-- ══ MENU ═════════════════════════════════════════ -->
