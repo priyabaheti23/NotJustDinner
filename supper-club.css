@@ -213,23 +213,31 @@ hr.rl{border:none;border-top:1px solid var(--rl)}
 /* ══════════════════════════════════════════
    TESTIMONIALS
 ══════════════════════════════════════════ */
-.testi-slider{position:relative;overflow:hidden;margin-top:32px}
+.testi-wrap{display:flex;align-items:center;gap:12px;margin-top:32px}
+.testi-slider{flex:1;position:relative;min-height:220px}
 .tslide{
-  display:none;animation:tfade .5s ease;
+  position:absolute;inset:0;
+  opacity:0;pointer-events:none;
+  transition:opacity .5s ease;
   background:var(--cr);border:1px solid var(--rl);
-  padding:32px 40px;position:relative;
+  padding:32px 40px;
 }
 .tslide::before{
   content:'"';font-family:var(--sf);font-size:68px;line-height:1;
   color:var(--cr3);position:absolute;top:10px;left:20px;
 }
-.tslide.active{display:block}
-@keyframes tfade{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
-.tstars{color:var(--br);font-size:11px;margin-bottom:12px;letter-spacing:2px}
-.tquote{
-  font-family:var(--sf);font-size:clamp(14px,2vw,18px);font-style:italic;
-  color:var(--ink);line-height:1.62;margin-bottom:22px;padding-top:14px;max-width:640px;
+.tslide.active{opacity:1;pointer-events:auto;position:relative}
+
+/* Arrow buttons */
+.t-arrow{
+  flex-shrink:0;width:40px;height:40px;
+  background:var(--cr2);border:1px solid var(--rl);cursor:pointer;
+  font-size:22px;color:var(--ink);font-family:serif;
+  display:flex;align-items:center;justify-content:center;
+  transition:background .2s,border-color .2s;align-self:center;
+  user-select:none;
 }
+.t-arrow:hover{background:var(--ink);color:var(--cr);border-color:var(--ink)}
 .tauthor{display:flex;align-items:center;gap:10px}
 .tav{
   width:34px;height:34px;border-radius:50%;object-fit:cover;
