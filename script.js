@@ -5,12 +5,12 @@
 ═══════════════════════════════════════ */
 const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbx0oc-UL4prXW5j_v5WDHVpzeqDPEE3iFtdlaq1EcLPYqrvSQI-WMMm9leWBclvFFBbbQ/exec';
 const MAX_SEATS  = 8;
-const PRICE      = 1999;
+const PRICE      = 2999;
 
 /* ═══════════════════════════════════════
    STATE
 ═══════════════════════════════════════ */
-let selectedDate = null;
+let selectedDate = '2026-06-20';
 let availability = {};
 let gCount       = 1;
 
@@ -337,9 +337,11 @@ window.changeG = function (delta) {
   if (selectedDate) {
     const remaining = MAX_SEATS - (availability[selectedDate] || 0);
     if (remaining < gCount) {
-      showErr('cal-err', `Only ${remaining} seat(s) left on this date. Pick another date.`);
-      selectedDate = null;
-      document.querySelectorAll('.day.sel').forEach(c => c.classList.remove('sel'));
+      showErr('cal-err', `Only ${remaining} seat(s) left for 20 June.`);
+      gCount = remaining;
+      document.getElementById('gc-n').textContent = gCount;
+      document.getElementById('gc-').disabled = gCount === 1;
+      document.getElementById('gc+').disabled = true;
     }
   }
   renderForms();
@@ -434,14 +436,14 @@ window.submitCommunity = function () {
    RESET COMMUNITY FORM
 ═══════════════════════════════════════ */
 function resetCommunityForm() {
-  selectedDate = null;
+  selectedDate = '2026-06-20';
   document.querySelectorAll('.day.sel').forEach(c => c.classList.remove('sel'));
   gCount = 1;
   document.getElementById('gc-n').textContent  = '1';
   document.getElementById('gc-').disabled       = true;
   document.getElementById('gc+').disabled       = false;
-  document.getElementById('gc-tot').textContent = '₹1,999';
-  document.getElementById('c-amt').innerHTML    = '<sup>₹</sup>1,999';
+  document.getElementById('gc-tot').textContent = '₹2,999';
+  document.getElementById('c-amt').innerHTML    = '<sup>₹</sup>2,999';
   document.getElementById('c-sub').textContent  = 'for 1 guest · all-inclusive';
   renderForms();
 }
@@ -673,18 +675,31 @@ let sliderTimer  = null;
 window.goToSlide = function (n) {
   const slides = document.querySelectorAll('.tslide');
   const dots   = document.querySelectorAll('.tdot');
-  slides[currentSlide].classList.remove('active');
-  dots[currentSlide].classList.remove('active');
+  const total  = slides.length;
+  if (!total) return;
+  if (n < 0) n = total - 1;
+  if (n >= total) n = 0;
+  slides[currentSlide]?.classList.remove('active');
+  dots[currentSlide]?.classList.remove('active');
   currentSlide = n;
   slides[currentSlide].classList.add('active');
   dots[currentSlide].classList.add('active');
   resetSliderTimer();
 };
 
+window.prevSlide = function () {
+  goToSlide(currentSlide - 1);
+};
+
+window.nextSlide = function () {
+  goToSlide(currentSlide + 1);
+};
+
 function resetSliderTimer() {
   clearInterval(sliderTimer);
   sliderTimer = setInterval(() => {
     const total = document.querySelectorAll('.tslide').length;
+    if (!total) return;
     goToSlide((currentSlide + 1) % total);
   }, 5000);
 }
