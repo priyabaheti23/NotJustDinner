@@ -65,8 +65,8 @@
     </div>
     <div class="si">
       <div class="si-l">When</div>
-      <div class="si-v">Every Sat &amp; Sun</div>
-      <div class="si-n">May 2026</div>
+      <div class="si-v">20 June</div>
+      <div class="si-n">Saturday</div>
     </div>
     <div class="si">
       <div class="si-l">Time</div>
@@ -78,7 +78,7 @@
     </div>
     <div class="si">
       <div class="si-l">Menu</div>
-      <div class="si-v">5-course · <em>2.0</em></div>
+      <div class="si-v">5-course · <em>3.0</em></div>
       <div class="si-n">All vegetarian</div>
     </div>
   </div>
@@ -161,68 +161,68 @@
       <h2 class="display" style="margin-top:12px;">What guests <em>say</em></h2>
     </div>
 
-  <div class="testi-wrap" style="display:flex;align-items:flex-start;gap:12px;margin-top:32px">
-  <button class="t-arrow" onclick="prevSlide()" aria-label="Previous" style="flex-shrink:0;margin-top:32px;width:38px;height:38px;background:var(--cr2);border:1px solid var(--rl);cursor:pointer;font-size:22px;font-family:serif;display:flex;align-items:center;justify-content:center;transition:background .2s">‹</button>
+  <div class="testi-card">
+    <div class="testi-slider" id="testi-slider" aria-live="polite">
 
-  <div class="testi-slider" id="testi-slider" style="flex:1">
-
-    <div class="tslide active">
-      <div class="tstars">★★★★★</div>
-      <p class="tquote">I arrived feeling homesick, but somewhere between the courses, that feeling quietly faded away.</p>
-      <div class="tauthor">
-        <img src="assets/branding/guest1.jpeg" class="tav" alt="Gursimran">
-        <p class="tname">Gursimran · Community Dining</p>
+      <div class="tslide active">
+        <div class="tstars">★★★★★</div>
+        <p class="tquote">I arrived feeling homesick, but somewhere between the courses, that feeling quietly faded away.</p>
+        <div class="tauthor">
+          <img src="assets/branding/guest1.jpeg" class="tav" alt="Gursimran">
+          <p class="tname">Gursimran · Community Dining</p>
+        </div>
       </div>
+
+      <div class="tslide">
+        <div class="tstars">★★★★★</div>
+        <p class="tquote">The evening felt like walking into a family gathering where you don't know many people at first, but slowly, you start connecting. Like meeting distant cousins and unexpectedly having easy, meaningful conversations.</p>
+        <div class="tauthor">
+          <img src="assets/branding/guest2.jpeg" class="tav" alt="Raashi">
+          <p class="tname">Raashi · Community Dining</p>
+        </div>
+      </div>
+
+      <div class="tslide">
+        <div class="tstars">★★★★★</div>
+        <p class="tquote">The evening flowed so effortlessly that I didn't even think of checking my phone, it's been a long time since I felt that present.</p>
+        <div class="tauthor">
+          <img src="assets/branding/guest3.jpeg" class="tav" alt="Harsh">
+          <p class="tname">Harsh · Community Dining</p>
+        </div>
+      </div>
+
+      <div class="tslide">
+        <div class="tstars">★★★★★</div>
+        <p class="tquote">Honestly, I was a bit nervous about coming alone, but five minutes in, I forgot I didn't know anyone. It's rare to find a space that feels this cozy and intentional without being performative.</p>
+        <div class="tauthor">
+          <img src="assets/branding/guest4.jpeg" class="tav" alt="Guest 4">
+          <p class="tname">Muskan · Community Dining</p>
+        </div>
+      </div>
+
+      <div class="tslide">
+        <div class="tstars">★★★★★</div>
+        <p class="tquote">The night was just too magical to be Just Dinner.</p>
+        <div class="tauthor">
+          <img src="assets/branding/guest5.jpeg" class="tav" alt="Guest 5">
+          <p class="tname">Manpreet · Community Dining</p>
+        </div>
+      </div>
+
     </div>
 
-    <div class="tslide">
-      <div class="tstars">★★★★★</div>
-      <p class="tquote">The evening felt like walking into a family gathering where you don't know many people at first, but slowly, you start connecting. Like meeting distant cousins and unexpectedly having easy, meaningful conversations.</p>
-      <div class="tauthor">
-        <img src="assets/branding/guest2.jpeg" class="tav" alt="Raashi">
-        <p class="tname">Raashi · Community Dining</p>
+    <div class="testi-controls">
+      <button class="t-arrow" onclick="prevSlide()" aria-label="Previous testimonial">‹</button>
+      <div class="testi-dots" id="testi-dots">
+        <button class="tdot active" onclick="goToSlide(0)" aria-label="Slide 1"></button>
+        <button class="tdot" onclick="goToSlide(1)" aria-label="Slide 2"></button>
+        <button class="tdot" onclick="goToSlide(2)" aria-label="Slide 3"></button>
+        <button class="tdot" onclick="goToSlide(3)" aria-label="Slide 4"></button>
+        <button class="tdot" onclick="goToSlide(4)" aria-label="Slide 5"></button>
       </div>
+      <button class="t-arrow" onclick="nextSlide()" aria-label="Next testimonial">›</button>
     </div>
-
-    <div class="tslide">
-      <div class="tstars">★★★★★</div>
-      <p class="tquote">The evening flowed so effortlessly that I didn't even think of checking my phone, it's been a long time since I felt that present.</p>
-      <div class="tauthor">
-        <img src="assets/branding/guest3.jpeg" class="tav" alt="Harsh">
-        <p class="tname">Harsh · Community Dining</p>
-      </div>
-    </div>
-
-    <div class="tslide">
-      <div class="tstars">★★★★★</div>
-      <p class="tquote">Honestly, I was a bit nervous about coming alone, but five minutes in, I forgot I didn't know anyone. It's rare to find a space that feels this cozy and intentional without being performative.</p>
-      <div class="tauthor">
-        <img src="assets/branding/guest4.jpeg" class="tav" alt="Guest 4">
-        <p class="tname">Muskan · Community Dining</p>
-      </div>
-    </div>
-
-    <div class="tslide">
-      <div class="tstars">★★★★★</div>
-      <p class="tquote">The night was just too magical to be Just Dinner.</p>
-      <div class="tauthor">
-        <img src="assets/branding/guest5.jpeg" class="tav" alt="Guest 5">
-        <p class="tname">Manpreet · Community Dining</p>
-      </div>
-    </div>
-
   </div>
-
-  <button class="t-arrow" onclick="nextSlide()" aria-label="Next" style="flex-shrink:0;margin-top:32px;width:38px;height:38px;background:var(--cr2);border:1px solid var(--rl);cursor:pointer;font-size:22px;font-family:serif;display:flex;align-items:center;justify-content:center;transition:background .2s">›</button>
-</div>
-
-<div class="testi-dots" id="testi-dots">
-  <button class="tdot active" onclick="goToSlide(0)" aria-label="Slide 1"></button>
-  <button class="tdot" onclick="goToSlide(1)" aria-label="Slide 2"></button>
-  <button class="tdot" onclick="goToSlide(2)" aria-label="Slide 3"></button>
-  <button class="tdot" onclick="goToSlide(3)" aria-label="Slide 4"></button>
-  <button class="tdot" onclick="goToSlide(4)" aria-label="Slide 5"></button>
-</div>
     
 </section>
 
@@ -232,18 +232,18 @@
     <div class="menu-lay rev">
       <div class="menu-l">
         <p class="eyebrow" style="color:rgba(240,234,214,.3);margin-bottom:14px;">This Month's Feature</p>
-        <h2 class="display" id="menu-h" style="color:var(--cr);margin-bottom:10px;">Menu <em>2.0</em></h2>
+        <h2 class="display" id="menu-h" style="color:var(--cr);margin-bottom:10px;">Menu <em>3.0</em></h2>
         <div class="rtag"><div class="blink"></div><span>Rotating monthly — new menu each edition</span></div>
-        <p class="menu-desc">Our menu is never the same twice. Each edition is a new 5-course journey. This month: <strong style="color:rgba(240,234,214,.8);font-weight:400">Menu 2.0</strong>.</p>
+        <p class="menu-desc">Our menu is never the same twice. Each edition is a new 5-course journey. This month: <strong style="color:rgba(240,234,214,.8);font-weight:400">Menu 3.0</strong>.</p>
         <p class="mnote">All-vegetarian · Dessert may change with the season</p>
         <p class="allergy-note">🌿 Have any allergies or dietary needs? We'll check in with you on WhatsApp when we confirm your booking.</p>
       </div>
       <div class="courses" aria-label="5 course menu">
-        <div class="cr"><span class="ci">i</span><div class="cdash"></div><span class="cn">Hibiscus Lemonade</span><span class="ct"></span></div>
-        <div class="cr"><span class="ci">ii</span><div class="cdash"></div><span class="cn">Summer Tomatoes</span><span class="ct"></span></div>
-        <div class="cr"><span class="ci">iii</span><div class="cdash"></div><span class="cn">Chilli Burrata</span><span class="ct"></span></div>
-        <div class="cr"><span class="ci">iv</span><div class="cdash"></div><span class="cn">Miso Cabbage</span><span class="ct"></span></div>
-        <div class="cr"><span class="ci">v</span><div class="cdash"></div><span class="cn">Tart au Chocolat</span><span class="ct"></span></div>
+        <div class="cr"><span class="ci">i</span><div class="cdash"></div><span class="cn">Reveals this Monday</span><span class="ct"></span></div>
+        <div class="cr"><span class="ci">ii</span><div class="cdash"></div><span class="cn">Reveals this Monday</span><span class="ct"></span></div>
+        <div class="cr"><span class="ci">iii</span><div class="cdash"></div><span class="cn">Reveals this Monday</span><span class="ct"></span></div>
+        <div class="cr"><span class="ci">iv</span><div class="cdash"></div><span class="cn">Reveals this Monday</span><span class="ct"></span></div>
+        <div class="cr"><span class="ci">v</span><div class="cdash"></div><span class="cn">Reveals this Monday</span><span class="ct"></span></div>
       </div>
     </div>
   </div>
@@ -315,22 +315,10 @@
 
       <div class="cal-shell rev">
         <p class="eyebrow" style="margin-bottom:16px;">Step 1 — Pick your evening</p>
-        <div class="cal-loading" id="cal-loading" aria-live="polite">
-          <div class="cal-loading-dot"></div>
-          Checking live availability…
+        <div class="booking-note" style="padding:24px 22px;background:var(--cr);border:1px solid var(--rl);border-radius:20px;max-width:640px;">
+          <p style="font-size:1rem;font-weight:700;margin:0 0 8px;">Booking is open for <strong>20 June 2026</strong> only.</p>
+          <p style="margin:0;color:var(--mu);">There is no calendar selection required — this booking is fixed to Saturday, 20 June.</p>
         </div>
-        <div class="cal-head" id="cal-head">April 2026</div>
-        <!-- Week starts Monday, Sat+Sun together at the end -->
-        <div class="cal-grid" id="cal-comm" role="grid" aria-label="Calendar">
-          <div class="day-lbl" role="columnheader">Mon</div>
-          <div class="day-lbl" role="columnheader">Tue</div>
-          <div class="day-lbl" role="columnheader">Wed</div>
-          <div class="day-lbl" role="columnheader">Thu</div>
-          <div class="day-lbl" role="columnheader">Fri</div>
-          <div class="day-lbl wknd" role="columnheader">Sat</div>
-          <div class="day-lbl wknd" role="columnheader">Sun</div>
-        </div>
-        <p id="cal-err" role="alert" style="display:none">Please select a date to continue.</p>
       </div>
 
       <div class="rev" style="margin-bottom:36px">
@@ -342,7 +330,7 @@
             <div class="g-num" id="gc-n" aria-live="polite" aria-atomic="true">1</div>
             <button class="g-btn" id="gc+" onclick="changeG(1)" aria-label="Add guest">+</button>
           </div>
-          <span class="g-total" id="gc-tot" aria-live="polite">₹1,999</span>
+          <span class="g-total" id="gc-tot" aria-live="polite">₹2,999</span>
         </div>
         <p class="g-err" id="g-err" role="alert">Community dining is intentionally kept to 4 guests — this space is personally held so you come and meet new people. For a larger group, choose Private Dining above.</p>
       </div>
@@ -351,7 +339,7 @@
         <p class="eyebrow" style="margin-bottom:20px;">Step 3 — Complete payment</p>
         <div class="pay-row">
           <div>
-            <div class="p-amt" id="c-amt" aria-live="polite"><sup>₹</sup>1,999</div>
+            <div class="p-amt" id="c-amt" aria-live="polite"><sup>₹</sup>2,999</div>
             <div class="p-sub" id="c-sub">for 1 guest · all-inclusive</div>
             <div class="steps">
               <div class="step"><span class="s-n" aria-hidden="true">1.</span><div class="s-c"><strong>Pay via UPI</strong>Scan the QR or copy the UPI ID →</div></div>
@@ -412,7 +400,7 @@
         <p class="eyebrow" style="margin-bottom:20px;">Complete payment first</p>
         <div class="pay-row">
           <div>
-            <div class="p-amt"><sup>₹</sup>16,000</div>
+            <div class="p-amt"><sup>₹</sup>20,000</div>
             <div class="p-sub">Full table · Up to 8 guests · All-inclusive</div>
             <div class="steps">
               <div class="step"><span class="s-n" aria-hidden="true">1.</span><div class="s-c"><strong>Pay via UPI</strong>Scan the QR or copy the ID →</div></div>
@@ -497,7 +485,7 @@
           <div class="vc-mi"><div class="vc-ml">For</div><div class="vc-mv" id="vp-for">—</div></div>
           <div class="vc-mi"><div class="vc-ml">From</div><div class="vc-mv" id="vp-from">—</div></div>
           <div class="vc-mi"><div class="vc-ml">Seats</div><div class="vc-mv" id="vp-seats">1 guest</div></div>
-          <div class="vc-mi"><div class="vc-ml">Value</div><div class="vc-mv" id="vp-val">₹1,999</div></div>
+          <div class="vc-mi"><div class="vc-ml">Value</div><div class="vc-mv" id="vp-val">₹2,999</div></div>
         </div>
         <div class="vc-footer-note">Valid for the next 3 months · Community Dining only · Koramangala, Bengaluru · 7:30 PM</div>
       </div>
@@ -506,7 +494,7 @@
         <p class="eyebrow" style="margin-bottom:20px;">Complete payment first</p>
         <div class="pay-row">
           <div>
-            <div class="p-amt" id="g-amt"><sup>₹</sup>1,999</div>
+            <div class="p-amt" id="g-amt"><sup>₹</sup>2,999</div>
             <div class="p-sub" id="g-sub">for 1 seat · all-inclusive</div>
             <div class="steps">
               <div class="step"><span class="s-n" aria-hidden="true">1.</span><div class="s-c"><strong>Pay via UPI</strong>Scan the QR or copy the ID →</div></div>
@@ -554,10 +542,10 @@
             <div class="ff">
               <label for="g-seats">Number of Seats *</label>
               <select name="gift_seats" id="g-seats" required onchange="updateGiftPrice(this.value)">
-                <option value="1">1 seat — ₹1,999</option>
-                <option value="2">2 seats — ₹3,998</option>
-                <option value="3">3 seats — ₹5,997</option>
-                <option value="4">4 seats — ₹7,996</option>
+                <option value="1">1 seat — ₹2,999</option>
+                <option value="2">2 seats — ₹5,998</option>
+                <option value="3">3 seats — ₹8,997</option>
+                <option value="4">4 seats — ₹11,996</option>
               </select>
             </div>
             <div class="ff">
