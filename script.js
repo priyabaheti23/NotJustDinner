@@ -436,7 +436,7 @@ window.submitCommunity = function () {
    RESET COMMUNITY FORM
 ═══════════════════════════════════════ */
 function resetCommunityForm() {
-  selectedDate = '2026-06-20';
+  selectedDate = 'null';
   document.querySelectorAll('.day.sel').forEach(c => c.classList.remove('sel'));
   gCount = 1;
   document.getElementById('gc-n').textContent  = '1';
