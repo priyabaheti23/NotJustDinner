@@ -314,13 +314,24 @@
     <!-- ══ COMMUNITY PANEL ══ -->
     <div class="panel" id="panel-community" role="tabpanel" aria-labelledby="tab-community">
 
-      <div class="cal-shell rev">
-        <p class="eyebrow" style="margin-bottom:16px;">Step 1 — Pick your evening</p>
-        <div class="booking-note" style="padding:24px 22px;background:var(--cr);border:1px solid var(--rl);border-radius:20px;max-width:640px;">
-          <p style="font-size:1rem;font-weight:700;margin:0 0 8px;"><p style="...">Booking is open for <strong>July 2026 weekends</strong> — pick your Saturday or Sunday below.</p>
-        </div>
-      </div>
-
+              <div class="cal-shell rev">
+                <p class="eyebrow" style="margin-bottom:16px;">Step 1 — Pick your evening</p>
+                <div class="cal-loading" id="cal-loading" aria-live="polite">
+                  <div class="cal-loading-dot"></div>
+                  Checking live availability…
+                </div>
+                <div class="cal-head" id="cal-head">July 2026</div>
+                <div class="cal-grid" id="cal-comm" role="grid" aria-label="Calendar">
+                  <div class="day-lbl" role="columnheader">Mon</div>
+                  <div class="day-lbl" role="columnheader">Tue</div>
+                  <div class="day-lbl" role="columnheader">Wed</div>
+                  <div class="day-lbl" role="columnheader">Thu</div>
+                  <div class="day-lbl" role="columnheader">Fri</div>
+                  <div class="day-lbl wknd" role="columnheader">Sat</div>
+                  <div class="day-lbl wknd" role="columnheader">Sun</div>
+                </div>
+                <p id="cal-err" role="alert" style="display:none">Please select a date to continue.</p>
+              </div>
       <div class="rev" style="margin-bottom:36px">
         <p class="eyebrow" style="margin-bottom:16px;">Step 2 — Number of guests</p>
         <div class="g-row">
