@@ -87,10 +87,15 @@ function fetchAvailability() {
 /* ═══════════════════════════════════════
    CALENDAR
    - Week starts Monday (Mon=0 … Sun=6 in our grid)
-   - Saturday is col 5, Sunday is col 6 → together
+   - Only OPEN_DATES are bookable (specific evenings,
+     not every Saturday/Sunday in the month)
    - Past dates greyed and unclickable
    - Month heading computed dynamically
 ═══════════════════════════════════════ */
+
+// Only these evenings are open for booking this edition.
+const OPEN_DATES = ['2026-08-01', '2026-08-15', '2026-08-29'];
+
 function buildCal() {
   const grid = document.getElementById('cal-comm');
   if (!grid) return;
@@ -103,7 +108,7 @@ function buildCal() {
 
   // ── Event month ──────────────────────────────
   const viewYear  = 2026;
-  const viewMonth = 6; // July (0-indexed)
+  const viewMonth = 7; // August (0-indexed)
 
   // Update heading
   const monthNames = ['January','February','March','April','May','June',
@@ -114,8 +119,8 @@ function buildCal() {
   // ── Mon-first offset ─────────────────────────
   // JS getDay(): Sun=0, Mon=1 … Sat=6
   // We want:     Mon=0, Tue=1 … Sun=6
-  const jsFirstDay    = new Date(viewYear, viewMonth, 1).getDay(); // for April 2026: Wed=3
-  const monFirstOffset = (jsFirstDay + 6) % 7; // Wed → (3+6)%7 = 2 → 2 empty cells before day 1
+  const jsFirstDay    = new Date(viewYear, viewMonth, 1).getDay();
+  const monFirstOffset = (jsFirstDay + 6) % 7;
 
   for (let i = 0; i < monFirstOffset; i++) {
     const e = document.createElement('div');
@@ -129,17 +134,16 @@ function buildCal() {
     const cell      = document.createElement('div');
     const thisDate  = new Date(viewYear, viewMonth, d);
     const jsDay     = thisDate.getDay();          // 0=Sun … 6=Sat
-    const isSat     = jsDay === 6;
-    const isSun     = jsDay === 0;
-    const isWeekend = isSat || isSun;
+    const isWeekend = jsDay === 6 || jsDay === 0;
     const isPast    = thisDate < today;
     const key       = `${viewYear}-${String(viewMonth + 1).padStart(2,'0')}-${String(d).padStart(2,'0')}`;
+    const isOpen    = OPEN_DATES.includes(key);
 
     cell.innerHTML = `<span class="day-num">${d}</span>`;
 
     if (isPast) {
       cell.className = 'day past';
-    } else if (isWeekend) {
+    } else if (isOpen) {
 
       const booked    = availability[key] || 0;
       const remaining = MAX_SEATS - booked;
@@ -167,7 +171,10 @@ function buildCal() {
         cell.className = 'day avail';
         cell.onclick   = () => selectDate(key, cell, remaining);
       }
-       
+
+    } else if (isWeekend) {
+      // Weekend but not one of the open evenings this edition
+      cell.className = 'day other';
     } else {
       cell.className = 'day other';
     }
@@ -337,7 +344,7 @@ window.changeG = function (delta) {
   if (selectedDate) {
     const remaining = MAX_SEATS - (availability[selectedDate] || 0);
     if (remaining < gCount) {
-      showErr('cal-err', `Only ${remaining} seat(s) left for 20 June.`);
+      showErr('cal-err', `Only ${remaining} seat(s) left for this date.`);
       gCount = remaining;
       document.getElementById('gc-n').textContent = gCount;
       document.getElementById('gc-').disabled = gCount === 1;
