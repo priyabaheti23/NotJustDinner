@@ -94,7 +94,7 @@ function fetchAvailability() {
 ═══════════════════════════════════════ */
 
 // Only these evenings are open for booking this edition.
-const OPEN_DATES = ['2026-08-01', '2026-08-15', '2026-08-29'];
+const OPEN_DATES = ['2026-08-01', '2026-08-15', '2026-08-29', '2026-08-22'];
 
 function buildCal() {
   const grid = document.getElementById('cal-comm');
