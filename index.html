@@ -1,10 +1,11 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" class="no-js">
 <head>
+<script>document.documentElement.classList.remove('no-js');</script>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Not Just Dinner</title>
-<meta name="description" content="An intimate supper club in Bengaluru with only 8 seats per evening. 6-course vegetarian menu. Every Saturday & Sunday in April 2026.">
+<meta name="description" content="An intimate supper club in Bengaluru with only 8 seats per evening. 6-course vegetarian menu. Every Saturday.">
 <meta property="og:title" content="Not Just Dinner · Bengaluru">
 <meta property="og:description" content="A beautiful, intentional dining experience. Limited to 8 seats.">
 <meta property="og:image" content="assets/supper-club/supper-0.jpg">
@@ -14,17 +15,6 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="supper-club.css">
 <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,300;0,400;0,600;1,300;1,400&family=Cormorant+Garamond:ital,wght@0,400;0,500;1,400&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css" media="print" onload="this.media='all'">
-<script>
-  window.addEventListener('load', function() {
-    var script = document.createElement('script');
-    script.src = 'https://cdn.jsdelivr.net/npm/flatpickr';
-    script.onload = function() {
-      if (typeof initFlatpickr === 'function') initFlatpickr();
-    };
-    document.body.appendChild(script);
-  });
-</script>
 </head>
 <body>
 
@@ -53,6 +43,7 @@
     <span class="l3">Dinner</span>
     <a href="#book" class="hero-cta">Reserve a Seat</a>
   </div>
+  <a href="#about" class="scroll-cue" aria-label="Scroll to explore">↓</a>
 </section>
 
 <!-- ══ DETAILS STRIP ════════════════════════════════ -->
@@ -65,8 +56,8 @@
     </div>
     <div class="si">
       <div class="si-l">When</div>
-      <div class="si-v">1st & 15th August</div>
-      <div class="si-n">Saturday</div>
+      <div class="si-v">Every Saturday</div>
+      <div class="si-n">This month · see calendar below</div>
     </div>
     <div class="si">
       <div class="si-l">Time</div>
@@ -89,8 +80,10 @@
 <section class="sec sec-about" id="about" aria-labelledby="about-h">
   <div class="w">
     <div class="about-lay rev">
-      <div class="about-img">
-        <img src="assets/supper-club/supper-00.jpg" alt="Guests at a Not Just Dinner evening" loading="lazy">
+      <div class="about-img-frame">
+        <div class="about-img">
+          <img src="assets/supper-club/supper-00.jpg" alt="Guests at a Not Just Dinner evening" loading="lazy">
+        </div>
       </div>
       <div class="about-txt">
         <p class="eyebrow">The Experience · More than a meal</p>
@@ -289,303 +282,211 @@
     </div>
 
     <div class="tabs rev" role="tablist">
-      <div class="tab" id="tab-community" role="tab" aria-selected="true" aria-controls="panel-community" tabindex="0" onclick="switchTab('community')" onkeydown="if(event.key==='Enter')switchTab('community')">
+      <div class="tab on" id="tab-community" role="tab" aria-selected="true" aria-controls="panel-community" tabindex="0" onclick="switchTab('community')" onkeydown="if(event.key==='Enter')switchTab('community')">
+        <div class="ic-badge" aria-hidden="true">🍽</div>
         <div class="tab-name">Community <em>Dining</em></div>
         <div class="tab-sub">Join the shared table · Up to 8 guests</div>
       </div>
-      <div class="tab" id="tab-private" role="tab" aria-selected="false" aria-controls="panel-private" tabindex="0" onclick="switchTab('private')" onkeydown="if(event.key==='Enter')switchTab('private')">
-        <div class="tab-name">Private <em>Dining</em></div>
-        <div class="tab-sub">Your own exclusive evening · Full table</div>
-      </div>
-      <div class="tab" id="tab-gift" role="tab" aria-selected="false" aria-controls="panel-gift" tabindex="0" onclick="switchTab('gift')" onkeydown="if(event.key==='Enter')switchTab('gift')" style="position:relative">
-        <div class="new-tag">✦ New</div>
+      <div class="tab" id="tab-gift" role="tab" aria-selected="false" aria-controls="panel-gift" tabindex="0" onclick="switchTab('gift')" onkeydown="if(event.key==='Enter')switchTab('gift')">
+        <div class="ic-badge" aria-hidden="true">🎁</div>
         <div class="tab-name">Gift <em>a Seat</em></div>
         <div class="tab-sub">Give the experience · Flexible redemption</div>
       </div>
     </div>
 
-    <div class="tab-prompt" id="tab-prompt">
-      <div class="tp-inner">
-        <div class="tp-arrow">↑</div>
-        <p class="tp-text">Choose an experience above to continue</p>
-      </div>
-    </div>
-
     <!-- ══ COMMUNITY PANEL ══ -->
-    <div class="panel" id="panel-community" role="tabpanel" aria-labelledby="tab-community">
+    <div class="panel on" id="panel-community" role="tabpanel" aria-labelledby="tab-community">
 
-              <div class="cal-shell rev">
-                <p class="eyebrow" style="margin-bottom:16px;">Step 1 — Pick your evening</p>
-                <div class="cal-loading" id="cal-loading" aria-live="polite">
-                  <div class="cal-loading-dot"></div>
-                  Checking live availability…
-                </div>
-                <div class="cal-head" id="cal-head">July 2026</div>
-                <div class="cal-grid" id="cal-comm" role="grid" aria-label="Calendar">
-                  <div class="day-lbl" role="columnheader">Mon</div>
-                  <div class="day-lbl" role="columnheader">Tue</div>
-                  <div class="day-lbl" role="columnheader">Wed</div>
-                  <div class="day-lbl" role="columnheader">Thu</div>
-                  <div class="day-lbl" role="columnheader">Fri</div>
-                  <div class="day-lbl wknd" role="columnheader">Sat</div>
-                  <div class="day-lbl wknd" role="columnheader">Sun</div>
-                </div>
-                <p id="cal-err" role="alert" style="display:none">Please select a date to continue.</p>
+      <div class="wiz-progress rev" id="wiz-progress" role="list" aria-label="Booking steps">
+        <div class="wiz-dot active" data-step="1" role="listitem"><span class="wiz-n">1</span><span class="wiz-lbl">Evening &amp; Guests</span></div>
+        <div class="wiz-line"></div>
+        <div class="wiz-dot" data-step="2" role="listitem"><span class="wiz-n">2</span><span class="wiz-lbl">Details &amp; Pay</span></div>
+      </div>
+
+      <!-- STEP 1 — DATE + GUEST COUNT -->
+      <div class="wiz-step active" id="wiz-step-1">
+        <div class="bk-sec cal-shell rev">
+          <p class="eyebrow" style="margin-bottom:16px;">Pick your evening</p>
+          <div class="cal-loading" id="cal-loading" aria-live="polite">
+            <div class="cal-loading-dot"></div>
+            Checking live availability…
+          </div>
+          <div class="cal-head" id="cal-head">July 2026</div>
+          <div class="cal-grid" id="cal-comm" role="grid" aria-label="Calendar">
+            <div class="day-lbl" role="columnheader">Mon</div>
+            <div class="day-lbl" role="columnheader">Tue</div>
+            <div class="day-lbl" role="columnheader">Wed</div>
+            <div class="day-lbl" role="columnheader">Thu</div>
+            <div class="day-lbl" role="columnheader">Fri</div>
+            <div class="day-lbl wknd" role="columnheader">Sat</div>
+            <div class="day-lbl wknd" role="columnheader">Sun</div>
+          </div>
+          <p id="cal-err" role="alert" style="display:none">Please select a date to continue.</p>
+        </div>
+
+        <div class="bk-sec rev">
+          <p class="eyebrow" style="margin-bottom:16px;">Number of guests</p>
+          <div class="g-row">
+            <span class="g-lbl">Seats needed</span>
+            <div class="g-ctr" role="group" aria-label="Guest count">
+              <button class="g-btn" id="gc-" onclick="changeG(-1)" aria-label="Remove guest" disabled>−</button>
+              <div class="g-num" id="gc-n" aria-live="polite" aria-atomic="true">1</div>
+              <button class="g-btn" id="gc+" onclick="changeG(1)" aria-label="Add guest">+</button>
+            </div>
+            <span class="g-total" id="gc-tot" aria-live="polite">₹2,999</span>
+          </div>
+          <p class="g-err" id="g-err" role="alert">Community dining is intentionally kept to 4 guests — this space is personally held so you come and meet new people. For a larger group, <a href="https://wa.me/917218132167?text=Hi%2C%20I%27d%20like%20to%20book%20for%20a%20larger%20group" target="_blank" rel="noopener">message us on WhatsApp</a>.</p>
+        </div>
+
+        <div class="wiz-nav">
+          <button class="wiz-btn wiz-next" id="wiz-next-1" onclick="wizNext(1)" disabled>Continue</button>
+        </div>
+      </div>
+
+      <!-- STEP 2 — GUEST DETAILS + REVIEW & PAY -->
+      <div class="wiz-step" id="wiz-step-2">
+        <div class="bk-sec rev">
+          <p class="eyebrow" style="margin-bottom:20px;">Guest details</p>
+          <div id="member-forms" aria-live="polite"></div>
+        </div>
+
+        <div class="bk-sec-divider"></div>
+
+        <div class="bk-sec rev">
+          <p class="eyebrow" style="margin-bottom:20px;">Review &amp; pay</p>
+
+          <div class="coupon-row">
+            <div class="ff">
+              <label>Coupon Code (optional)</label>
+              <input type="text" id="coupon-code" placeholder="Enter code" autocomplete="off" style="text-transform:uppercase">
+            </div>
+            <button type="button" class="coupon-apply" id="coupon-apply-btn" onclick="applyCoupon()">Apply</button>
+          </div>
+          <p id="coupon-msg" class="coupon-msg" role="alert"></p>
+
+          <div class="pay-row">
+            <div>
+              <div class="p-amt" id="c-amt" aria-live="polite"><sup>₹</sup>2,999</div>
+              <div class="p-sub" id="c-sub">for 1 guest · all-inclusive</div>
+              <div class="steps">
+                <div class="step"><span class="s-n" aria-hidden="true">✓</span><div class="s-c"><strong>Secure checkout</strong>Pay by card, UPI, or netbanking via Razorpay.</div></div>
+                <div class="step"><span class="s-n" aria-hidden="true">✓</span><div class="s-c"><strong>Instant confirmation</strong>Your seats lock the moment payment succeeds.</div></div>
+                <div class="step"><span class="s-n" aria-hidden="true">✓</span><div class="s-c"><strong>WhatsApp follow-up</strong>Location shared before the evening.</div></div>
               </div>
-      <div class="rev" style="margin-bottom:36px">
-        <p class="eyebrow" style="margin-bottom:16px;">Step 2 — Number of guests</p>
-        <div class="g-row">
-          <span class="g-lbl">Seats needed</span>
-          <div class="g-ctr" role="group" aria-label="Guest count">
-            <button class="g-btn" id="gc-" onclick="changeG(-1)" aria-label="Remove guest" disabled>−</button>
-            <div class="g-num" id="gc-n" aria-live="polite" aria-atomic="true">1</div>
-            <button class="g-btn" id="gc+" onclick="changeG(1)" aria-label="Add guest">+</button>
-          </div>
-          <span class="g-total" id="gc-tot" aria-live="polite">₹2,999</span>
-        </div>
-        <p class="g-err" id="g-err" role="alert">Community dining is intentionally kept to 4 guests — this space is personally held so you come and meet new people. For a larger group, choose Private Dining above.</p>
-      </div>
-
-      <div class="rev" style="margin-bottom:36px">
-        <p class="eyebrow" style="margin-bottom:20px;">Step 3 — Complete payment</p>
-        <div class="pay-row">
-          <div>
-            <div class="p-amt" id="c-amt" aria-live="polite"><sup>₹</sup>2,999</div>
-            <div class="p-sub" id="c-sub">for 1 guest · all-inclusive</div>
-            <div class="steps">
-              <div class="step"><span class="s-n" aria-hidden="true">1.</span><div class="s-c"><strong>Pay via UPI</strong>Scan the QR or copy the UPI ID →</div></div>
-              <div class="step"><span class="s-n" aria-hidden="true">2.</span><div class="s-c"><strong>Fill details below</strong>One quick form per guest.</div></div>
-              <div class="step"><span class="s-n" aria-hidden="true">3.</span><div class="s-c"><strong>We confirm on WhatsApp</strong>Location sent before the evening.</div></div>
+            </div>
+            <div style="display:flex;flex-direction:column;align-items:stretch;gap:10px;min-width:240px">
+              <button class="btn" id="comm-submit" onclick="submitCommunity()" aria-label="Pay and reserve your seats">Pay ₹2,999 &amp; Reserve</button>
+              <p id="pay-err" class="ferr" role="alert"></p>
             </div>
           </div>
-          <div class="qr-blk">
-            <div class="qrf"><img src="assets/branding/payment-qr.jpeg" alt="Scan to pay via UPI"></div>
-            <div class="upi-row">
-              <span class="upi-txt" id="upiText-comm">baheti.priya@yescred</span>
-              <button class="cp-btn" onclick="copyUPIById('upiText-comm','copyMsg-comm')" aria-label="Copy UPI ID">
-                <svg viewBox="0 0 24 24"><rect x="9" y="9" width="13" height="13" rx="2"/><rect x="3" y="3" width="13" height="13" rx="2"/></svg>
-              </button>
-              <span id="copyMsg-comm" class="cp-toast" aria-live="polite">Copied</span>
-            </div>
-          </div>
+          <div class="no-refund-note">All bookings are non-refundable. No cancellations or rescheduling.</div>
         </div>
-      </div>
-
-      <div class="no-refund-note">All bookings are non-refundable. No cancellations or rescheduling.</div>
-
-      <div class="after-row rev" aria-label="What to expect after booking">
-        <div class="after-item">
-          <div class="after-icon">💬</div>
-          <div class="after-text"><strong>WhatsApp Confirmation</strong>Within a few hours of your booking.</div>
+        <div class="wiz-nav wiz-nav-back-only">
+          <button class="wiz-btn wiz-back" onclick="wizBack(2)">Back</button>
         </div>
-        <div class="after-item">
-          <div class="after-icon">📍</div>
-          <div class="after-text"><strong>Location Shared</strong>Sent privately before the evening.</div>
-        </div>
-        <div class="after-item">
-          <div class="after-icon">🕯</div>
-          <div class="after-text"><strong>Evening Duration</strong>Approx 2–3 hours, unhurried.</div>
-        </div>
-      </div>
-
-      <div class="rev">
-        <p class="eyebrow" style="margin-bottom:20px;">Step 4 — Guest details</p>
-        <div id="member-forms" aria-live="polite"></div>
-        <button class="btn" id="comm-submit" onclick="submitCommunity()" aria-label="Submit community booking">I've Paid — Confirm My Seat(s)</button>
       </div>
 
     </div><!-- /community -->
 
-    <!-- ══ PRIVATE PANEL ══ -->
-    <div class="panel" id="panel-private" role="tabpanel" aria-labelledby="tab-private">
-
-      <p class="pd-intro">Host an exclusive evening for your group. The full table is yours — we take care of the 6-course menu, the ambience, everything. Tell us your preferred date and we'll reach out.</p>
-
-      <div class="pd-feats rev">
-        <div class="pd-feat"><div class="fi">🕯</div><div class="ft">Full Table</div><div class="fd">Exclusive use of the table (up to 8 guests). No strangers — just your people.</div></div>
-        <div class="pd-feat"><div class="fi">🍽</div><div class="ft">6-Course Menu</div><div class="fd">The same thoughtfully curated menu, tailored to your group.</div></div>
-        <div class="pd-feat"><div class="fi">✦</div><div class="ft">Personalised</div><div class="fd">Dietary accommodations, and a truly memorable evening.</div></div>
-      </div>
-
-      <div class="rev" style="margin-bottom:32px">
-        <p class="eyebrow" style="margin-bottom:20px;">Complete payment first</p>
-        <div class="pay-row">
-          <div>
-            <div class="p-amt"><sup>₹</sup>20,000</div>
-            <div class="p-sub">Full table · Up to 8 guests · All-inclusive</div>
-            <div class="steps">
-              <div class="step"><span class="s-n" aria-hidden="true">1.</span><div class="s-c"><strong>Pay via UPI</strong>Scan the QR or copy the ID →</div></div>
-              <div class="step"><span class="s-n" aria-hidden="true">2.</span><div class="s-c"><strong>Fill your details below</strong>Takes 2 minutes.</div></div>
-              <div class="step"><span class="s-n" aria-hidden="true">3.</span><div class="s-c"><strong>We'll call you</strong>To finalise date and preferences.</div></div>
-            </div>
-          </div>
-          <div class="qr-blk">
-            <div class="qrf"><img src="assets/branding/payment-qr.jpeg" alt="Scan to pay via UPI"></div>
-            <div class="upi-row">
-              <span class="upi-txt" id="upiText-private">baheti.priya@yescred</span>
-              <button class="cp-btn" onclick="copyUPIById('upiText-private','copyMsg-private')" aria-label="Copy UPI ID">
-                <svg viewBox="0 0 24 24"><rect x="9" y="9" width="13" height="13" rx="2"/><rect x="3" y="3" width="13" height="13" rx="2"/></svg>
-              </button>
-              <span id="copyMsg-private" class="cp-toast" aria-live="polite">Copied</span>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <div class="rev">
-        <p class="eyebrow" style="margin-bottom:20px;">Your details</p>
-        <form id="privateForm"
-              action="https://script.google.com/macros/s/AKfycbzG7rbwL80ILaNIlxJUwlcI1PgRRllYP1RXHWdWJfhTUllEg0VCJYvKeDCetM3LrLppgw/exec"
-              method="POST" target="hidden_iframe_pd">
-          <div class="fgrid">
-            <div class="ff"><label for="pd-name">Your Full Name *</label><input type="text" name="name" id="pd-name" placeholder="Host name" required autocomplete="name"></div>
-            <div class="ff"><label for="pd-phone">WhatsApp Number *</label><input type="tel" name="whatsapp" id="pd-phone" placeholder="10-digit number" required autocomplete="tel"></div>
-            <div class="ff">
-              <label for="pd-guests">Number of Guests</label>
-              <select name="guest_count" id="pd-guests">
-                <option value="">Select</option>
-                <option>2</option><option>3</option><option>4</option>
-                <option>5</option><option>6</option><option>7</option><option>8</option>
-              </select>
-            </div>
-            <div class="ff">
-              <label for="pd-date">Preferred Date</label>
-              <input type="text" name="preferred_date" id="pd-date" placeholder="Select a date" readonly>
-            </div>
-            <div class="ff"><label for="pd-diet">Dietary Notes</label><input type="text" name="dietary_notes" id="pd-diet" placeholder="Any allergies or preferences"></div>
-            <div class="ff"><label for="pd-occ">Occasion (optional)</label><input type="text" name="occasion" id="pd-occ" placeholder="Birthday, anniversary…"></div>
-            <div class="ff span2">
-              <label for="pd-src">How did you hear about us? *</label>
-              <select name="source" id="pd-src" required>
-                <option value="">Select one</option>
-                <option>Instagram</option><option>Twitter / X</option><option>Friend / Previous Guest</option>
-              </select>
-            </div>
-            <input type="hidden" name="booking_type" value="Private Dining">
-          </div>
-          <button type="submit" class="btn" id="pd-submit">I've Paid — Request Private Dining</button>
-        </form>
-        <iframe name="hidden_iframe_pd" style="display:none" title="Form submission frame"></iframe>
-      </div>
-
-      <div class="wa-private">
-        <p class="wa-text">Prefer to plan this over WhatsApp?</p>
-        <a href="https://wa.me/917218132167?text=Hi%2C%20I%27d%20like%20to%20book%20a%20private%20dining%20experience" target="_blank" rel="noopener" class="wa-link">Chat with us</a>
-      </div>
-
-    </div><!-- /private -->
-
     <!-- ══ GIFT PANEL ══ -->
     <div class="panel" id="panel-gift" role="tabpanel" aria-labelledby="tab-gift">
 
-      <div class="gift-banner rev">
+      <div class="bk-sec gift-banner rev">
         <div class="gift-banner-inner">
-          <div class="gift-icon">🎁</div>
+          <div class="ic-badge on-dark" aria-hidden="true">🎁</div>
           <h3 class="gift-title">Give the gift of an <em>evening</em></h3>
           <p class="gift-sub">A seat at Not Just Dinner — for someone who deserves a beautiful, unhurried night.</p>
-          <p class="gift-validity">Valid for the next 3 months · Community Dining only · Redeemable on any Saturday or Sunday evening</p>
+          <p class="gift-validity">Valid 3 months · Redeemable on any upcoming Saturday</p>
         </div>
       </div>
 
-      <div class="voucher-card rev" aria-label="Voucher preview">
-        <div class="vc-label">Gift Voucher Preview</div>
-        <div class="vc-title">Not Just Dinner</div>
-        <div class="vc-sub">An evening of intention, conversation &amp; beautiful food</div>
-        <div class="vc-badge" aria-hidden="true">✦<br><span style="font-size:8px">Gift</span></div>
-        <div class="vc-meta">
-          <div class="vc-mi"><div class="vc-ml">For</div><div class="vc-mv" id="vp-for">—</div></div>
-          <div class="vc-mi"><div class="vc-ml">From</div><div class="vc-mv" id="vp-from">—</div></div>
-          <div class="vc-mi"><div class="vc-ml">Seats</div><div class="vc-mv" id="vp-seats">1 guest</div></div>
-          <div class="vc-mi"><div class="vc-ml">Value</div><div class="vc-mv" id="vp-val">₹2,999</div></div>
+      <div class="bk-sec rev">
+        <p class="eyebrow" style="margin-bottom:16px;">Number of seats</p>
+        <div class="g-row">
+          <span class="g-lbl">Seats to gift</span>
+          <div class="g-ctr" role="group" aria-label="Gift seat count">
+            <button class="g-btn" id="gg-" onclick="changeGiftSeats(-1)" aria-label="Remove seat" disabled>−</button>
+            <div class="g-num" id="gg-n" aria-live="polite" aria-atomic="true">1</div>
+            <button class="g-btn" id="gg+" onclick="changeGiftSeats(1)" aria-label="Add seat">+</button>
+          </div>
+          <span class="g-total" id="gg-tot" aria-live="polite">₹2,999</span>
         </div>
-        <div class="vc-footer-note">Valid for the next 3 months · Community Dining only · Koramangala, Bengaluru · 7:30 PM</div>
+        <p class="g-err" id="gg-err" role="alert">We keep gifted seats to 4 per voucher — it's the same community table, kept intentionally small. For a larger group, <a href="https://wa.me/917218132167?text=Hi%2C%20I%27d%20like%20to%20gift%20seats%20for%20a%20larger%20group" target="_blank" rel="noopener">message us on WhatsApp</a>.</p>
       </div>
 
-      <div class="rev" style="margin-bottom:32px">
-        <p class="eyebrow" style="margin-bottom:20px;">Complete payment first</p>
+      <div class="bk-sec rev">
+        <p class="eyebrow" style="margin-bottom:20px;">Who's it for</p>
+        <div class="fgrid">
+          <p class="field-group-label">For the recipient</p>
+          <div class="ff">
+            <label>Recipient's Name *</label>
+            <input type="text" id="g-rec-name" placeholder="Who is this for?" autocomplete="off">
+            <p id="err-g-rec-name" class="ferr"></p>
+          </div>
+          <div class="ff">
+            <label>Recipient's WhatsApp</label>
+            <input type="tel" id="g-rec-wa" placeholder="Optional" maxlength="10" autocomplete="off">
+          </div>
+          <div class="ff">
+            <label>Occasion (optional)</label>
+            <input type="text" id="g-occasion" placeholder="Birthday, anniversary…" autocomplete="off">
+          </div>
+          <div class="ff">
+            <label>Note for them (optional)</label>
+            <input type="text" id="g-note" placeholder="A short message…" autocomplete="off">
+          </div>
+
+          <p class="field-group-label">About you</p>
+          <div class="ff">
+            <label>Your Name *</label>
+            <input type="text" id="g-gifter-name" placeholder="Your name" autocomplete="name">
+            <p id="err-g-gifter-name" class="ferr"></p>
+          </div>
+          <div class="ff">
+            <label>Your WhatsApp *</label>
+            <input type="tel" id="g-gifter-wa" placeholder="10-digit number" maxlength="10" autocomplete="tel">
+            <p id="err-g-gifter-wa" class="ferr"></p>
+          </div>
+          <div class="ff">
+            <label>Voucher delivery</label>
+            <select id="g-delivery">
+              <option value="gifter">Send to me — I'll hand it over</option>
+              <option value="recipient">Send directly to recipient on WhatsApp</option>
+            </select>
+          </div>
+          <div class="ff">
+            <label>How did you hear about us? *</label>
+            <select id="g-source">
+              <option value="">Select one</option>
+              <option value="Instagram">Instagram</option>
+              <option value="Twitter / X">Twitter / X</option>
+              <option value="Friend / Previous Guest">Friend / Previous Guest</option>
+            </select>
+            <p id="err-g-source" class="ferr"></p>
+          </div>
+        </div>
+      </div>
+
+      <div class="bk-sec-divider"></div>
+
+      <div class="bk-sec rev">
+        <p class="eyebrow" style="margin-bottom:20px;">Review &amp; pay</p>
         <div class="pay-row">
           <div>
-            <div class="p-amt" id="g-amt"><sup>₹</sup>2,999</div>
+            <div class="p-amt" id="g-amt" aria-live="polite"><sup>₹</sup>2,999</div>
             <div class="p-sub" id="g-sub">for 1 seat · all-inclusive</div>
             <div class="steps">
-              <div class="step"><span class="s-n" aria-hidden="true">1.</span><div class="s-c"><strong>Pay via UPI</strong>Scan the QR or copy the ID →</div></div>
-              <div class="step"><span class="s-n" aria-hidden="true">2.</span><div class="s-c"><strong>Fill the form below</strong>Tell us who the gift is for.</div></div>
-              <div class="step"><span class="s-n" aria-hidden="true">3.</span><div class="s-c"><strong>We send the voucher</strong>A beautiful PDF — to you or the recipient.</div></div>
+              <div class="step"><span class="s-n" aria-hidden="true">✓</span><div class="s-c"><strong>Secure checkout</strong>Pay by card, UPI, or netbanking via Razorpay.</div></div>
+              <div class="step"><span class="s-n" aria-hidden="true">✓</span><div class="s-c"><strong>Instant confirmation</strong>We'll be in touch on WhatsApp right after.</div></div>
+              <div class="step"><span class="s-n" aria-hidden="true">✓</span><div class="s-c"><strong>Flexible redemption</strong>Recipient picks any upcoming Saturday, valid 3 months.</div></div>
             </div>
           </div>
-          <div class="qr-blk">
-            <div class="qrf"><img src="assets/branding/payment-qr.jpeg" alt="Scan to pay via UPI"></div>
-            <div class="upi-row">
-              <span class="upi-txt" id="upiText-gift">baheti.priya@yescred</span>
-              <button class="cp-btn" onclick="copyUPIById('upiText-gift','copyMsg-gift')" aria-label="Copy UPI ID">
-                <svg viewBox="0 0 24 24"><rect x="9" y="9" width="13" height="13" rx="2"/><rect x="3" y="3" width="13" height="13" rx="2"/></svg>
-              </button>
-              <span id="copyMsg-gift" class="cp-toast" aria-live="polite">Copied</span>
-            </div>
+          <div style="display:flex;flex-direction:column;align-items:stretch;gap:10px;min-width:240px">
+            <button class="btn" id="gift-submit" onclick="submitGift()" aria-label="Pay and send the gift">Pay ₹2,999 &amp; Gift</button>
+            <p id="gift-pay-err" class="ferr" role="alert"></p>
           </div>
         </div>
-      </div>
-
-      <div class="rev">
-        <p class="eyebrow" style="margin-bottom:20px;">Gift details</p>
-        <form id="giftForm"
-              action="https://script.google.com/macros/s/AKfycbw_MO48-U0Nr_S3PxwrDWr1LahqJqJ7wgCo8GroQoFW9Zz6e85OhGpoxwgNtN2_RXJj/exec"
-              method="POST" target="hidden_iframe_gf">
-          <div class="fgrid">
-            <div class="ff">
-              <label for="g-rec">Recipient's Name *</label>
-              <input type="text" name="recipient_name" id="g-rec" placeholder="Who is this for?" required
-                     oninput="document.getElementById('vp-for').textContent=this.value||'—'">
-            </div>
-            <div class="ff">
-              <label for="g-rec-wa">Recipient's WhatsApp</label>
-              <input type="tel" name="recipient_whatsapp" id="g-rec-wa" placeholder="Optional">
-            </div>
-            <div class="ff">
-              <label for="g-gifter">Your Name *</label>
-              <input type="text" name="gifter_name" id="g-gifter" placeholder="Your name" required
-                     oninput="document.getElementById('vp-from').textContent=this.value||'—'" autocomplete="name">
-            </div>
-            <div class="ff">
-              <label for="g-gifter-wa">Your WhatsApp *</label>
-              <input type="tel" name="gifter_whatsapp" id="g-gifter-wa" placeholder="10-digit number" required autocomplete="tel">
-            </div>
-            <div class="ff">
-              <label for="g-seats">Number of Seats *</label>
-              <select name="gift_seats" id="g-seats" required onchange="updateGiftPrice(this.value)">
-                <option value="1">1 seat — ₹2,999</option>
-                <option value="2">2 seats — ₹5,998</option>
-                <option value="3">3 seats — ₹8,997</option>
-                <option value="4">4 seats — ₹11,996</option>
-              </select>
-            </div>
-            <div class="ff">
-              <label for="g-occ">Occasion (optional)</label>
-              <input type="text" name="occasion" id="g-occ" placeholder="Birthday, anniversary…">
-            </div>
-            <div class="ff span2">
-              <label for="g-note">Personal Note (optional)</label>
-              <textarea name="personal_note" id="g-note" placeholder="A message that will appear on the voucher…"></textarea>
-            </div>
-            <div class="ff span2">
-              <label for="g-delivery">Voucher delivery</label>
-              <select name="voucher_delivery" id="g-delivery">
-                <option value="gifter">Send PDF to me — I'll hand it over</option>
-                <option value="recipient">Send directly to recipient on WhatsApp</option>
-              </select>
-            </div>
-            <div class="ff span2">
-              <label for="g-src">How did you hear about us? *</label>
-              <select name="source" id="g-src" required>
-                <option value="">Select one</option>
-                <option>Instagram</option><option>Twitter / X</option><option>Friend / Previous Guest</option>
-              </select>
-            </div>
-            <input type="hidden" name="booking_type" value="Gift Voucher">
-          </div>
-          <button type="submit" class="btn" id="gf-submit">I've Paid — Send the Voucher</button>
-        </form>
-        <iframe name="hidden_iframe_gf" style="display:none" title="Gift form submission"></iframe>
+        <div class="no-refund-note">Gift purchases are non-refundable. Redemption date is arranged with you on WhatsApp after purchase.</div>
       </div>
 
     </div><!-- /gift -->
@@ -596,26 +497,10 @@
 <!-- ══ MODALS ════════════════════════════════════════ -->
 <div id="m-community" class="modal-ov" role="dialog" aria-modal="true" aria-labelledby="mc-title">
   <div class="modal-box">
-    <div class="m-icon">🕯</div>
+    <div class="m-icon" id="mc-icon">🕯</div>
     <h3 class="m-title" id="mc-title">Seats Confirmed</h3>
-    <p class="m-body">Thank you for joining <strong style="font-weight:400">Not Just Dinner</strong>. We'll send the exact location and all details to your WhatsApp shortly.</p>
+    <p class="m-body" id="mc-body">Thank you for joining <strong style="font-weight:400">Not Just Dinner</strong>. We'll send the exact location and all details to your WhatsApp shortly.</p>
     <div class="modal-actions"><button onclick="closeModal('m-community')" class="btn modal-btn">Done</button></div>
-  </div>
-</div>
-<div id="m-private" class="modal-ov" role="dialog" aria-modal="true" aria-labelledby="mp-title">
-  <div class="modal-box">
-    <div class="m-icon">✦</div>
-    <h3 class="m-title" id="mp-title">Request Received</h3>
-    <p class="m-body">Thank you for choosing <strong style="font-weight:400">Private Dining</strong>. We'll reach out on WhatsApp within 24 hours to confirm your date and details.</p>
-    <div class="modal-actions"><button onclick="closeModal('m-private')" class="btn modal-btn">Done</button></div>
-  </div>
-</div>
-<div id="m-gift" class="modal-ov" role="dialog" aria-modal="true" aria-labelledby="mg-title">
-  <div class="modal-box">
-    <div class="m-icon">🎁</div>
-    <h3 class="m-title" id="mg-title">Voucher on its way</h3>
-    <p class="m-body">The gift voucher will be sent shortly. <strong style="font-weight:400">Not Just Dinner</strong> — for someone who deserves a beautiful evening.</p>
-    <div class="modal-actions"><button onclick="closeModal('m-gift')" class="btn modal-btn">Done</button></div>
   </div>
 </div>
 
@@ -649,6 +534,7 @@
   <p class="ftr-copy">Questions? Reach us on the links above or join our WhatsApp Community.</p>
 </footer>
 
+<script src="https://checkout.razorpay.com/v1/checkout.js"></script>
 <script src="script.js"></script>
 </body>
 </html>

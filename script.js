@@ -3,31 +3,18 @@
 /* ═══════════════════════════════════════
    CONFIG
 ═══════════════════════════════════════ */
-const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbx0oc-UL4prXW5j_v5WDHVpzeqDPEE3iFtdlaq1EcLPYqrvSQI-WMMm9leWBclvFFBbbQ/exec';
-const MAX_SEATS  = 8;
-const PRICE      = 2999;
+const BACKEND_URL = 'https://script.google.com/macros/s/AKfycbwDaM6f1PEJkCVk8ydRi4j65pZALJnyacRQaMTg2Tz8q6NhPHKwnYcSXL27mXjLWjTQcw/exec'; // Razorpay + Community Dining bookings
+const MAX_SEATS   = 8;
+const PRICE       = 2999;
 
 /* ═══════════════════════════════════════
    STATE
 ═══════════════════════════════════════ */
-let selectedDate = '2026-06-20';
+let selectedDate = null;
 let availability = {};
 let gCount       = 1;
-
-/* ═══════════════════════════════════════
-   POST TO SHEET
-═══════════════════════════════════════ */
-function postToSheet(payload) {
-  const body = Object.entries(payload)
-    .map(([k, v]) => encodeURIComponent(k) + '=' + encodeURIComponent(v ?? ''))
-    .join('&');
-  return fetch(SCRIPT_URL, {
-    method : 'POST',
-    mode   : 'cors',
-    headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-    body
-  });
-}
+let wizStep      = 1;
+let appliedCoupon = null; // { code, discountPercent } — Community Dining only
 
 /* ═══════════════════════════════════════
    MODAL
@@ -46,23 +33,10 @@ window.closeModal = function (id) {
 };
 
 /* ═══════════════════════════════════════
-   TAB SWITCHING
-═══════════════════════════════════════ */
-window.switchTab = function (tab) {
-  ['community', 'private', 'gift'].forEach(id => {
-    document.getElementById('tab-'   + id).classList.toggle('on', id === tab);
-    document.getElementById('panel-' + id).classList.toggle('on', id === tab);
-  });
-  const prompt = document.getElementById('tab-prompt');
-  if (prompt) prompt.style.display = 'none';
-  if (tab === 'community') renderForms();
-};
-
-/* ═══════════════════════════════════════
    AVAILABILITY
 ═══════════════════════════════════════ */
 function fetchAvailability() {
-  fetch(SCRIPT_URL)
+  fetch(BACKEND_URL)
     .then(r => r.json())
     .then(data => {
       availability = {};
@@ -93,8 +67,18 @@ function fetchAvailability() {
    - Month heading computed dynamically
 ═══════════════════════════════════════ */
 
-// Only these evenings are open for booking this edition.
-const OPEN_DATES = ['2026-08-01', '2026-08-15', '2026-08-29', '2026-08-22'];
+// Every Saturday of the current month is open for booking — computed live
+// below so this rolls forward automatically each month with no manual edits.
+function getSaturdaysOfMonth_(year, month) {
+  const dates = [];
+  const daysInMonth = new Date(year, month + 1, 0).getDate();
+  for (let d = 1; d <= daysInMonth; d++) {
+    if (new Date(year, month, d).getDay() === 6) {
+      dates.push(`${year}-${String(month + 1).padStart(2, '0')}-${String(d).padStart(2, '0')}`);
+    }
+  }
+  return dates;
+}
 
 function buildCal() {
   const grid = document.getElementById('cal-comm');
@@ -106,9 +90,10 @@ function buildCal() {
   const now       = new Date();
   const today     = new Date(now.getFullYear(), now.getMonth(), now.getDate());
 
-  // ── Event month ──────────────────────────────
-  const viewYear  = 2026;
-  const viewMonth = 7; // August (0-indexed)
+  // ── Event month — always the real current month ──
+  const viewYear  = now.getFullYear();
+  const viewMonth = now.getMonth();
+  const OPEN_DATES = getSaturdaysOfMonth_(viewYear, viewMonth);
 
   // Update heading
   const monthNames = ['January','February','March','April','May','June',
@@ -195,7 +180,40 @@ function selectDate(dateKey, cell, remaining) {
   cell.classList.add('sel');
   selectedDate = dateKey;
   hideErr('cal-err');
+  const nextBtn = document.getElementById('wiz-next-1');
+  if (nextBtn) nextBtn.disabled = false;
 }
+
+/* ═══════════════════════════════════════
+   BOOKING WIZARD (Community Dining)
+   2 steps: 1 Evening & Guests · 2 Details & Pay
+═══════════════════════════════════════ */
+function goToWizStep(n) {
+  wizStep = n;
+  document.querySelectorAll('.wiz-step').forEach(el => {
+    el.classList.toggle('active', el.id === 'wiz-step-' + n);
+  });
+  document.querySelectorAll('.wiz-dot').forEach(dot => {
+    const step = Number(dot.dataset.step);
+    dot.classList.toggle('active', step === n);
+    dot.classList.toggle('done', step < n);
+  });
+  if (n === 2) updatePriceDisplay();
+  const progress = document.getElementById('wiz-progress');
+  if (progress) progress.scrollIntoView({ behavior: 'smooth', block: 'start' });
+}
+
+window.wizNext = function (current) {
+  if (current === 1 && !selectedDate) {
+    showErr('cal-err', 'Please select a date to continue.');
+    return;
+  }
+  goToWizStep(current + 1);
+};
+
+window.wizBack = function (current) {
+  goToWizStep(current - 1);
+};
 
 /* ═══════════════════════════════════════
    ERROR HELPERS
@@ -331,16 +349,18 @@ function renderForms() {
 ═══════════════════════════════════════ */
 window.changeG = function (delta) {
   const next = gCount + delta;
-  if (next < 1 || next > 4) return;
+  if (next > 4) {
+    const el = document.getElementById('g-err');
+    if (el) el.style.display = 'block';
+    return;
+  }
+  if (next < 1) return;
   gCount = next;
   document.getElementById('gc-n').textContent = gCount;
   document.getElementById('gc-').disabled      = gCount === 1;
   document.getElementById('gc+').disabled      = gCount === 4;
   hideErr('g-err');
-  const total = PRICE * gCount;
-  document.getElementById('gc-tot').textContent = '₹' + total.toLocaleString('en-IN');
-  document.getElementById('c-amt').innerHTML    = `<sup>₹</sup>${total.toLocaleString('en-IN')}`;
-  document.getElementById('c-sub').textContent  = `for ${gCount} guest${gCount > 1 ? 's' : ''} · all-inclusive`;
+  updatePriceDisplay();
   if (selectedDate) {
     const remaining = MAX_SEATS - (availability[selectedDate] || 0);
     if (remaining < gCount) {
@@ -349,45 +369,130 @@ window.changeG = function (delta) {
       document.getElementById('gc-n').textContent = gCount;
       document.getElementById('gc-').disabled = gCount === 1;
       document.getElementById('gc+').disabled = true;
+      updatePriceDisplay();
     }
   }
   renderForms();
 };
 
 /* ═══════════════════════════════════════
-   COPY UPI
+   PRICE / COUPON
 ═══════════════════════════════════════ */
-window.copyUPIById = function (textId, toastId) {
-  const textEl  = document.getElementById(textId);
-  const toastEl = document.getElementById(toastId);
-  if (!textEl) return;
-  const text = textEl.textContent.trim();
-  navigator.clipboard.writeText(text).catch(() => {
-    const ta = document.createElement('textarea');
-    ta.value = text;
-    ta.style.cssText = 'position:fixed;opacity:0';
-    document.body.appendChild(ta);
-    ta.select();
-    document.execCommand('copy');
-    document.body.removeChild(ta);
-  });
-  if (toastEl) {
-    toastEl.style.opacity = '1';
-    setTimeout(() => { toastEl.style.opacity = '0'; }, 1600);
+function currentAmount() {
+  const base = PRICE * gCount;
+  return appliedCoupon ? Math.round(base * (1 - appliedCoupon.discountPercent / 100)) : base;
+}
+
+function updatePriceDisplay() {
+  const base  = PRICE * gCount;
+  const final = currentAmount();
+
+  const gcTot = document.getElementById('gc-tot');
+  if (gcTot) gcTot.textContent = '₹' + final.toLocaleString('en-IN');
+
+  const amtEl = document.getElementById('c-amt');
+  if (amtEl) {
+    amtEl.innerHTML = appliedCoupon
+      ? `<span class="p-amt-orig">₹${base.toLocaleString('en-IN')}</span><sup>₹</sup>${final.toLocaleString('en-IN')}`
+      : `<sup>₹</sup>${final.toLocaleString('en-IN')}`;
   }
+
+  const subEl = document.getElementById('c-sub');
+  if (subEl) {
+    subEl.textContent = appliedCoupon
+      ? `for ${gCount} guest${gCount > 1 ? 's' : ''} · ${appliedCoupon.discountPercent}% off applied`
+      : `for ${gCount} guest${gCount > 1 ? 's' : ''} · all-inclusive`;
+  }
+
+  updatePayButton();
+}
+
+function updatePayButton() {
+  const btn = document.getElementById('comm-submit');
+  if (!btn || btn.disabled) return;
+  btn.textContent = `Pay ₹${currentAmount().toLocaleString('en-IN')} & Reserve`;
+}
+
+// Checks a coupon code against the backend (Community Dining only). The
+// backend is the source of truth for the discount -- this just previews it
+// and remembers the code so submitCommunity() can send it along.
+window.applyCoupon = async function () {
+  const codeInput = document.getElementById('coupon-code');
+  const msg       = document.getElementById('coupon-msg');
+  const code      = codeInput ? codeInput.value.trim() : '';
+
+  if (!code) {
+    appliedCoupon = null;
+    if (msg) msg.style.display = 'none';
+    updatePriceDisplay();
+    return;
+  }
+
+  const btn = document.getElementById('coupon-apply-btn');
+  if (btn) { btn.disabled = true; btn.textContent = 'Checking…'; }
+
+  try {
+    const res  = await fetch(BACKEND_URL, {
+      method: 'POST',
+      body  : JSON.stringify({ action: 'validateCoupon', code: code, guestCount: gCount })
+    });
+    const data = await res.json();
+
+    if (data.valid) {
+      appliedCoupon = { code: data.code, discountPercent: data.discountPercent };
+      if (msg) {
+        msg.textContent = `"${data.code}" applied — ${data.discountPercent}% off.`;
+        msg.className   = 'coupon-msg ok';
+        msg.style.display = 'block';
+      }
+    } else {
+      appliedCoupon = null;
+      if (msg) {
+        msg.textContent = data.error || 'That coupon code is not valid.';
+        msg.className   = 'coupon-msg err';
+        msg.style.display = 'block';
+      }
+    }
+  } catch (err) {
+    appliedCoupon = null;
+    if (msg) {
+      msg.textContent = 'Could not check that code — please try again.';
+      msg.className   = 'coupon-msg err';
+      msg.style.display = 'block';
+    }
+  }
+
+  if (btn) { btn.disabled = false; btn.textContent = 'Apply'; }
+  updatePriceDisplay();
 };
-window.copyUPI = function () { window.copyUPIById('upiText-comm', 'copyMsg-comm'); };
+
+/* ═══════════════════════════════════════
+   TAB SWITCHER — Community Dining / Gift a Seat
+═══════════════════════════════════════ */
+window.switchTab = function (name) {
+  const isGift = name === 'gift';
+  const tabCommunity = document.getElementById('tab-community');
+  const tabGift       = document.getElementById('tab-gift');
+  const panelCommunity = document.getElementById('panel-community');
+  const panelGift       = document.getElementById('panel-gift');
+
+  if (tabCommunity) {
+    tabCommunity.classList.toggle('on', !isGift);
+    tabCommunity.setAttribute('aria-selected', String(!isGift));
+  }
+  if (tabGift) {
+    tabGift.classList.toggle('on', isGift);
+    tabGift.setAttribute('aria-selected', String(isGift));
+  }
+  if (panelCommunity) panelCommunity.classList.toggle('on', !isGift);
+  if (panelGift)       panelGift.classList.toggle('on', isGift);
+};
 
 /* ═══════════════════════════════════════
    VALIDATE COMMUNITY
 ═══════════════════════════════════════ */
-function validateCommunity() {
+function validateGuestDetails() {
   let ok = true;
-  if (!selectedDate) {
-    showErr('cal-err', 'Please select a date to continue.');
-    document.getElementById('cal-err').scrollIntoView({ behavior: 'smooth', block: 'center' });
-    ok = false;
-  }
   for (let i = 1; i <= gCount; i++) {
     const name     = val(`guest_name_${i}`);
     const wa       = val(`guest_wa_${i}`);
@@ -405,200 +510,328 @@ function validateCommunity() {
   return ok;
 }
 
+function validateCommunity() {
+  let ok = true;
+  if (!selectedDate) {
+    showErr('cal-err', 'Please select a date to continue.');
+    ok = false;
+  }
+  if (!validateGuestDetails()) ok = false;
+  return ok;
+}
+
 /* ═══════════════════════════════════════
-   SUBMIT — COMMUNITY
+   SUBMIT — COMMUNITY (Razorpay checkout)
 ═══════════════════════════════════════ */
-window.submitCommunity = function () {
+window.submitCommunity = async function () {
   if (!validateCommunity()) return;
+  hideErr('pay-err');
+
   const btn = document.getElementById('comm-submit');
   btn.disabled    = true;
-  btn.textContent = 'Submitting…';
+  btn.textContent = 'Processing…';
+
   const source = val('guest_source');
-  const posts  = [];
+  const guests = [];
   for (let i = 1; i <= gCount; i++) {
-    posts.push(postToSheet({
-      Booking_Type              : 'Community Dining',
-      'Date'                    : selectedDate,
-      'Total Guests in Booking' : String(gCount),
-      'Guest #'                 : String(i),
-      'Guest Name'              : val(`guest_name_${i}`),
-      'WhatsApp'                : val(`guest_wa_${i}`),
-      'Diet'                    : val(`guest_diet_${i}`),
-      'Social Platform'         : getRadio(`guest_platform_${i}`),
-      'Social Username'         : val(`guest_username_${i}`),
-      'Source'                  : source
-    }));
+    guests.push({
+      name    : val(`guest_name_${i}`),
+      whatsapp: val(`guest_wa_${i}`),
+      diet    : val(`guest_diet_${i}`),
+      platform: getRadio(`guest_platform_${i}`),
+      handle  : val(`guest_username_${i}`),
+      source  : i === 1 ? source : ''
+    });
   }
-  Promise.allSettled(posts).finally(() => {
-    availability[selectedDate] = (availability[selectedDate] || 0) + gCount;
-    buildCal();
-    openModal('m-community');
-    resetCommunityForm();
-    btn.disabled    = false;
-    btn.textContent = "I've Paid — Confirm My Seat(s)";
-  });
+  const couponCode = appliedCoupon ? appliedCoupon.code : '';
+
+  function restoreButton() {
+    btn.disabled = false;
+    updatePayButton();
+  }
+
+  try {
+    const orderRes = await fetch(BACKEND_URL, {
+      method: 'POST',
+      body: JSON.stringify({
+        action     : 'createOrder',
+        bookingDate: selectedDate,
+        guestCount : gCount,
+        couponCode : couponCode
+      })
+    });
+    const order = await orderRes.json();
+    if (order.error) throw new Error(order.error);
+
+    const rzp = new Razorpay({
+      key        : order.keyId,
+      amount     : order.amount,
+      currency   : order.currency,
+      name       : 'Not Just Dinner',
+      description: `Community Dining · ${gCount} guest${gCount > 1 ? 's' : ''} · ${selectedDate}`,
+      order_id   : order.orderId,
+      prefill    : {
+        name   : guests[0].name,
+        contact: guests[0].whatsapp ? '+91' + guests[0].whatsapp : ''
+      },
+      theme  : { color: '#2E1208' },
+      modal  : { ondismiss: restoreButton },
+      handler: async function (response) {
+        try {
+          const verifyRes = await fetch(BACKEND_URL, {
+            method: 'POST',
+            body: JSON.stringify({
+              action              : 'verifyBooking',
+              razorpay_order_id   : response.razorpay_order_id,
+              razorpay_payment_id : response.razorpay_payment_id,
+              razorpay_signature  : response.razorpay_signature,
+              bookingDate         : selectedDate,
+              guests              : guests,
+              couponCode          : couponCode
+            })
+          });
+          const result = await verifyRes.json();
+          if (result.verified) {
+            availability[selectedDate] = (availability[selectedDate] || 0) + gCount;
+            buildCal();
+            const icon  = document.getElementById('mc-icon');
+            const title = document.getElementById('mc-title');
+            const body  = document.getElementById('mc-body');
+            if (icon)  icon.textContent  = '🕯';
+            if (title) title.textContent = 'Seats Confirmed';
+            if (body)  body.innerHTML    = 'Thank you for joining <strong style="font-weight:400">Not Just Dinner</strong>. We\'ll send the exact location and all details to your WhatsApp shortly.';
+            openModal('m-community');
+            resetCommunityForm();
+          } else {
+            showErr('pay-err', `We couldn't verify your payment. If you were charged, message us on WhatsApp with payment ID ${response.razorpay_payment_id} and we'll sort it out.`);
+            restoreButton();
+          }
+        } catch (err) {
+          showErr('pay-err', 'Something went wrong confirming your payment. If you were charged, please message us on WhatsApp.');
+          restoreButton();
+        }
+      }
+    });
+    rzp.on('payment.failed', function (resp) {
+      showErr('pay-err', 'Payment failed: ' + (resp.error?.description || 'please try again.'));
+      restoreButton();
+    });
+    rzp.open();
+  } catch (err) {
+    showErr('pay-err', 'Could not start payment. Please try again.');
+    restoreButton();
+  }
 };
 
 /* ═══════════════════════════════════════
    RESET COMMUNITY FORM
 ═══════════════════════════════════════ */
 function resetCommunityForm() {
-  selectedDate = 'null';
+  selectedDate = null;
   document.querySelectorAll('.day.sel').forEach(c => c.classList.remove('sel'));
   gCount = 1;
+  appliedCoupon = null;
+  const couponInput = document.getElementById('coupon-code');
+  if (couponInput) couponInput.value = '';
+  const couponMsg = document.getElementById('coupon-msg');
+  if (couponMsg) couponMsg.style.display = 'none';
   document.getElementById('gc-n').textContent  = '1';
   document.getElementById('gc-').disabled       = true;
   document.getElementById('gc+').disabled       = false;
-  document.getElementById('gc-tot').textContent = '₹2,999';
-  document.getElementById('c-amt').innerHTML    = '<sup>₹</sup>2,999';
-  document.getElementById('c-sub').textContent  = 'for 1 guest · all-inclusive';
+  document.getElementById('comm-submit').disabled = false;
+  const nextBtn = document.getElementById('wiz-next-1');
+  if (nextBtn) nextBtn.disabled = true;
+  updatePriceDisplay();
   renderForms();
+  goToWizStep(1);
 }
 
 /* ═══════════════════════════════════════
-   PRIVATE DINING FORM
+   GIFT A SEAT — flexible, no fixed date.
+   Recipient's actual evening is arranged
+   over WhatsApp after purchase (valid 3
+   months). Same Razorpay checkout flow as
+   Community Dining, separate backend action.
 ═══════════════════════════════════════ */
-function initPrivateForm() {
-  const form = document.getElementById('privateForm');
-  if (!form) return;
-  addErrEl('pd-name',  'err-pd-name');
-  addErrEl('pd-phone', 'err-pd-phone');
-  addErrEl('pd-src',   'err-pd-src');
-  document.getElementById('pd-name')?.addEventListener('blur', function() {
-    this.value.trim() ? hideErr('err-pd-name') : showErr('err-pd-name', 'Name is required');
-  });
-  document.getElementById('pd-phone')?.addEventListener('blur', function() {
-    /^\d{10}$/.test(this.value.trim()) ? hideErr('err-pd-phone') : showErr('err-pd-phone', 'Enter a valid 10-digit number');
-  });
-  document.getElementById('pd-phone')?.addEventListener('input', function() {
-    this.value = this.value.replace(/\D/g, '');
-  });
-  document.getElementById('pd-src')?.addEventListener('change', function() {
-    this.value ? hideErr('err-pd-src') : showErr('err-pd-src', 'Please tell us how you heard about us');
-  });
-  form.addEventListener('submit', function (e) {
-    e.preventDefault();
-    let ok    = true;
-    const name  = document.getElementById('pd-name')?.value.trim()  || '';
-    const phone = document.getElementById('pd-phone')?.value.trim() || '';
-    const src   = document.getElementById('pd-src')?.value          || '';
-    if (!name)                   { showErr('err-pd-name',  'Name is required'); ok = false; }
-    if (!/^\d{10}$/.test(phone)) { showErr('err-pd-phone', 'Enter a valid 10-digit number'); ok = false; }
-    if (!src)                    { showErr('err-pd-src',   'Please tell us how you heard about us'); ok = false; }
-    if (!ok) return;
-    const btn = document.getElementById('pd-submit');
-    btn.disabled    = true;
-    btn.textContent = 'Submitting…';
-    const payload = {
-      Booking_Type     : 'Private Dining',
-      'Preferred Date' : document.getElementById('pd-date')?.value   || '',
-      'Guest Count'    : document.getElementById('pd-guests')?.value || '',
-      'Host Name'      : name,
-      'WhatsApp'       : phone,
-      'Dietary Notes'  : document.getElementById('pd-diet')?.value   || '',
-      'Occasion'       : document.getElementById('pd-occ')?.value    || '',
-      'Source'         : src
-    };
-    postToSheet(payload).finally(() => {
-      openModal('m-private');
-      form.reset();
-      btn.disabled    = false;
-      btn.textContent = "I've Paid — Request Private Dining";
-    });
-  });
-}
+let ggCount = 1;
 
-/* ═══════════════════════════════════════
-   GIFT VOUCHER FORM
-═══════════════════════════════════════ */
-function initGiftForm() {
-  const form = document.getElementById('giftForm');
-  if (!form) return;
-  addErrEl('g-rec',       'err-g-rec');
-  addErrEl('g-gifter',    'err-g-gifter');
-  addErrEl('g-gifter-wa', 'err-g-gifter-wa');
-  addErrEl('g-src',       'err-g-src');
-  document.getElementById('g-rec')?.addEventListener('blur', function() {
-    this.value.trim() ? hideErr('err-g-rec') : showErr('err-g-rec', "Recipient's name is required");
-  });
-  document.getElementById('g-gifter')?.addEventListener('blur', function() {
-    this.value.trim() ? hideErr('err-g-gifter') : showErr('err-g-gifter', 'Your name is required');
-  });
-  document.getElementById('g-gifter-wa')?.addEventListener('blur', function() {
-    /^\d{10}$/.test(this.value.trim()) ? hideErr('err-g-gifter-wa') : showErr('err-g-gifter-wa', 'Enter a valid 10-digit number');
-  });
-  document.getElementById('g-gifter-wa')?.addEventListener('input', function() {
-    this.value = this.value.replace(/\D/g, '');
-  });
-  document.getElementById('g-src')?.addEventListener('change', function() {
-    this.value ? hideErr('err-g-src') : showErr('err-g-src', 'Please tell us how you heard about us');
-  });
-  form.addEventListener('submit', function (e) {
-    e.preventDefault();
-    let ok = true;
-    const recName  = document.getElementById('g-rec')?.value.trim()       || '';
-    const gifter   = document.getElementById('g-gifter')?.value.trim()    || '';
-    const gifterWa = document.getElementById('g-gifter-wa')?.value.trim() || '';
-    const src      = document.getElementById('g-src')?.value              || '';
-    if (!recName)                   { showErr('err-g-rec',       "Recipient's name is required"); ok = false; }
-    if (!gifter)                    { showErr('err-g-gifter',    'Your name is required'); ok = false; }
-    if (!/^\d{10}$/.test(gifterWa)) { showErr('err-g-gifter-wa','Enter a valid 10-digit number'); ok = false; }
-    if (!src)                       { showErr('err-g-src',       'Please tell us how you heard about us'); ok = false; }
-    if (!ok) return;
-    const btn = document.getElementById('gf-submit');
-    btn.disabled    = true;
-    btn.textContent = 'Submitting…';
-    const seats = document.getElementById('g-seats')?.value || '1';
-    const payload = {
-      Booking_Type        : 'Gift Voucher',
-      'Recipient Name'    : recName,
-      'Recipient WhatsApp': document.getElementById('g-rec-wa')?.value.trim() || '',
-      'Gifter Name'       : gifter,
-      'Gifter WhatsApp'   : gifterWa,
-      'Gift Seats'        : seats,
-      'Gift Value'        : PRICE * Number(seats),
-      'Occasion'          : document.getElementById('g-occ')?.value   || '',
-      'Personal Note'     : document.getElementById('g-note')?.value  || '',
-      'Voucher Delivery'  : document.getElementById('g-delivery')?.value || '',
-      'Source'            : src
-    };
-    postToSheet(payload).finally(() => {
-      openModal('m-gift');
-      form.reset();
-      document.getElementById('vp-for').textContent   = '—';
-      document.getElementById('vp-from').textContent  = '—';
-      document.getElementById('vp-seats').textContent = '1 guest';
-      document.getElementById('vp-val').textContent   = '₹1,999';
-      document.getElementById('g-amt').innerHTML      = '<sup>₹</sup>1,999';
-      document.getElementById('g-sub').textContent    = 'for 1 seat · all-inclusive';
-      btn.disabled    = false;
-      btn.textContent = "I've Paid — Send the Voucher";
-    });
-  });
-}
-
-/* ═══════════════════════════════════════
-   GIFT PRICE UPDATER
-═══════════════════════════════════════ */
-window.updateGiftPrice = function (seats) {
-  const price = PRICE * Number(seats);
-  document.getElementById('g-amt').innerHTML      = `<sup>₹</sup>${price.toLocaleString('en-IN')}`;
-  document.getElementById('g-sub').textContent    = `for ${seats} seat${seats > 1 ? 's' : ''} · all-inclusive`;
-  document.getElementById('vp-seats').textContent = `${seats} guest${seats > 1 ? 's' : ''}`;
-  document.getElementById('vp-val').textContent   = `₹${price.toLocaleString('en-IN')}`;
+window.changeGiftSeats = function (delta) {
+  const next = ggCount + delta;
+  if (next > 4) {
+    const el = document.getElementById('gg-err');
+    if (el) el.style.display = 'block';
+    return;
+  }
+  if (next < 1) return;
+  ggCount = next;
+  document.getElementById('gg-n').textContent = ggCount;
+  document.getElementById('gg-').disabled      = ggCount === 1;
+  document.getElementById('gg+').disabled      = ggCount === 4;
+  hideErr('gg-err');
+  const total = PRICE * ggCount;
+  document.getElementById('gg-tot').textContent = '₹' + total.toLocaleString('en-IN');
+  document.getElementById('g-amt').innerHTML    = `<sup>₹</sup>${total.toLocaleString('en-IN')}`;
+  document.getElementById('g-sub').textContent  = `for ${ggCount} seat${ggCount > 1 ? 's' : ''} · all-inclusive`;
+  updateGiftPayButton();
 };
 
-/* ═══════════════════════════════════════
-   HELPER — insert error element after input
-═══════════════════════════════════════ */
-function addErrEl(inputId, errorId) {
-  if (document.getElementById(errorId)) return;
-  const input = document.getElementById(inputId);
-  if (!input) return;
-  const p = document.createElement('p');
-  p.id        = errorId;
-  p.className = 'ferr';
-  input.parentNode.insertBefore(p, input.nextSibling);
+function updateGiftPayButton() {
+  const btn = document.getElementById('gift-submit');
+  if (!btn || btn.disabled) return;
+  const total = PRICE * ggCount;
+  btn.textContent = `Pay ₹${total.toLocaleString('en-IN')} & Gift`;
+}
+
+function initGiftForm() {
+  const bindBlur = (id, errId, check, msg) => {
+    const el = document.getElementById(id);
+    if (!el) return;
+    el.addEventListener('blur', function () {
+      check(this.value.trim()) ? hideErr(errId) : showErr(errId, msg);
+    });
+  };
+  bindBlur('g-rec-name',    'err-g-rec-name',    v => !!v,               "Recipient's name is required");
+  bindBlur('g-gifter-name', 'err-g-gifter-name', v => !!v,               'Your name is required');
+  bindBlur('g-gifter-wa',   'err-g-gifter-wa',   v => /^\d{10}$/.test(v), 'Enter a valid 10-digit WhatsApp number');
+  const wa = document.getElementById('g-gifter-wa');
+  if (wa) wa.addEventListener('input', function () { this.value = this.value.replace(/\D/g, ''); });
+  const src = document.getElementById('g-source');
+  if (src) src.addEventListener('change', function () {
+    this.value ? hideErr('err-g-source') : showErr('err-g-source', 'Please tell us how you heard about us');
+  });
+}
+
+function validateGift() {
+  let ok = true;
+  const recName    = val('g-rec-name');
+  const gifterName = val('g-gifter-name');
+  const gifterWa   = val('g-gifter-wa');
+  const source     = val('g-source');
+  if (!recName)                  { showErr('err-g-rec-name',    "Recipient's name is required"); ok = false; }
+  if (!gifterName)                { showErr('err-g-gifter-name', 'Your name is required'); ok = false; }
+  if (!/^\d{10}$/.test(gifterWa)) { showErr('err-g-gifter-wa',   'Enter a valid 10-digit WhatsApp number'); ok = false; }
+  if (!source)                    { showErr('err-g-source',      'Please tell us how you heard about us'); ok = false; }
+  return ok;
+}
+
+window.submitGift = async function () {
+  if (!validateGift()) return;
+  hideErr('gift-pay-err');
+
+  const btn = document.getElementById('gift-submit');
+  btn.disabled    = true;
+  btn.textContent = 'Processing…';
+
+  const recipientName     = val('g-rec-name');
+  const recipientWhatsapp = val('g-rec-wa');
+  const gifterName        = val('g-gifter-name');
+  const gifterWhatsapp    = val('g-gifter-wa');
+  const occasion           = val('g-occasion');
+  const note               = val('g-note');
+  const delivery           = val('g-delivery');
+  const source             = val('g-source');
+
+  function restoreButton() {
+    btn.disabled = false;
+    updateGiftPayButton();
+  }
+
+  try {
+    const orderRes = await fetch(BACKEND_URL, {
+      method: 'POST',
+      body: JSON.stringify({
+        action     : 'createOrder',
+        bookingDate: '',
+        guestCount : ggCount
+      })
+    });
+    const order = await orderRes.json();
+    if (order.error) throw new Error(order.error);
+
+    const rzp = new Razorpay({
+      key        : order.keyId,
+      amount     : order.amount,
+      currency   : order.currency,
+      name       : 'Not Just Dinner',
+      description: `Gift · ${ggCount} seat${ggCount > 1 ? 's' : ''} · for ${recipientName}`,
+      order_id   : order.orderId,
+      prefill    : {
+        name   : gifterName,
+        contact: gifterWhatsapp ? '+91' + gifterWhatsapp : ''
+      },
+      theme  : { color: '#2E1208' },
+      modal  : { ondismiss: restoreButton },
+      handler: async function (response) {
+        try {
+          const verifyRes = await fetch(BACKEND_URL, {
+            method: 'POST',
+            body: JSON.stringify({
+              action               : 'verifyGift',
+              razorpay_order_id    : response.razorpay_order_id,
+              razorpay_payment_id  : response.razorpay_payment_id,
+              razorpay_signature   : response.razorpay_signature,
+              seats                : ggCount,
+              recipientName        : recipientName,
+              recipientWhatsapp    : recipientWhatsapp,
+              gifterName            : gifterName,
+              gifterWhatsapp        : gifterWhatsapp,
+              occasion              : occasion,
+              note                  : note,
+              delivery              : delivery,
+              source                : source
+            })
+          });
+          const result = await verifyRes.json();
+          if (result.verified) {
+            const icon  = document.getElementById('mc-icon');
+            const title = document.getElementById('mc-title');
+            const body  = document.getElementById('mc-body');
+            if (icon)  icon.textContent  = '🎁';
+            if (title) title.textContent = 'Gift Sent!';
+            if (body)  body.innerHTML    = `The seat${ggCount > 1 ? 's are' : ' is'} reserved for <strong style="font-weight:400">${recipientName}</strong>, valid for 3 months on any upcoming Saturday. We'll be in touch on WhatsApp shortly to arrange the evening.`;
+            openModal('m-community');
+            resetGiftForm();
+          } else {
+            showErr('gift-pay-err', `We couldn't verify your payment. If you were charged, message us on WhatsApp with payment ID ${response.razorpay_payment_id} and we'll sort it out.`);
+            restoreButton();
+          }
+        } catch (err) {
+          showErr('gift-pay-err', 'Something went wrong confirming your payment. If you were charged, please message us on WhatsApp.');
+          restoreButton();
+        }
+      }
+    });
+    rzp.on('payment.failed', function (resp) {
+      showErr('gift-pay-err', 'Payment failed: ' + (resp.error?.description || 'please try again.'));
+      restoreButton();
+    });
+    rzp.open();
+  } catch (err) {
+    showErr('gift-pay-err', 'Could not start payment. Please try again.');
+    restoreButton();
+  }
+};
+
+function resetGiftForm() {
+  ggCount = 1;
+  hideErr('gg-err');
+  document.getElementById('gg-n').textContent  = '1';
+  document.getElementById('gg-').disabled       = true;
+  document.getElementById('gg+').disabled       = false;
+  document.getElementById('gg-tot').textContent = '₹2,999';
+  document.getElementById('g-amt').innerHTML    = '<sup>₹</sup>2,999';
+  document.getElementById('g-sub').textContent  = 'for 1 seat · all-inclusive';
+  document.getElementById('gift-submit').disabled = false;
+  ['g-rec-name', 'g-rec-wa', 'g-gifter-name', 'g-gifter-wa', 'g-occasion', 'g-note'].forEach(id => {
+    const el = document.getElementById(id);
+    if (el) el.value = '';
+  });
+  ['g-delivery', 'g-source'].forEach(id => {
+    const el = document.getElementById(id);
+    if (el) el.selectedIndex = 0;
+  });
+  ['err-g-rec-name', 'err-g-gifter-name', 'err-g-gifter-wa', 'err-g-source'].forEach(hideErr);
+  updateGiftPayButton();
 }
 
 /* ═══════════════════════════════════════
@@ -647,32 +880,56 @@ window.lbNav = function (dir, e) {
    INIT
 ═══════════════════════════════════════ */
 window.onload = function () {
-  document.querySelectorAll('.rev').forEach(el => el.classList.add('vis'));
-  document.querySelectorAll('.cr').forEach((el, i) => {
-    setTimeout(() => el.classList.add('vis'), i * 100);
-  });
+  initScrollReveal();
+  initNavScroll();
   renderForms();
   fetchAvailability();
-  initPrivateForm();
-  initGiftForm();
   initLightbox();
+  updatePriceDisplay();
+  initGiftForm();
+  updateGiftPayButton();
 };
 
 /* ═══════════════════════════════════════
-   FLATPICKR for Private Date
+   SCROLL REVEAL — fades/slides sections in
+   as they enter the viewport, with a light
+   stagger for grid children (gallery cards,
+   menu course rows, etc.)
 ═══════════════════════════════════════ */
-function initFlatpickr() {
-  const dateInput = document.getElementById('pd-date');
-  if (!dateInput) return;
-  flatpickr(dateInput, {
-    minDate      : new Date().fp_incr(2),
-    maxDate      : new Date().fp_incr(90),
-    dateFormat   : 'D, d M Y',
-    disableMobile: true,
-    allowInput   : false,
-    onReady      : function (_, __, fp) { fp.input.setAttribute('readonly', true); }
-  });
+function initScrollReveal() {
+  const targets = document.querySelectorAll('.rev, .cr');
+  if (!('IntersectionObserver' in window)) {
+    targets.forEach(el => el.classList.add('vis'));
+    return;
+  }
+  const io = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (!entry.isIntersecting) return;
+      const el    = entry.target;
+      const group = el.closest('.gal, .for-grid, .hosts-grid, .courses');
+      if (group && group !== el) {
+        const idx = Array.from(group.children).indexOf(el);
+        setTimeout(() => el.classList.add('vis'), Math.max(idx, 0) * 80);
+      } else {
+        el.classList.add('vis');
+      }
+      io.unobserve(el);
+    });
+  }, { threshold: 0.15, rootMargin: '0px 0px -40px 0px' });
+  targets.forEach(el => io.observe(el));
 }
+
+/* ═══════════════════════════════════════
+   NAV — subtle shadow once page scrolls
+═══════════════════════════════════════ */
+function initNavScroll() {
+  const nav = document.querySelector('.nav');
+  if (!nav) return;
+  const toggle = () => nav.classList.toggle('scrolled', window.scrollY > 8);
+  toggle();
+  window.addEventListener('scroll', toggle, { passive: true });
+}
+
 /* ═══════════════════════════════════════
    TESTIMONIAL SLIDER
 ═══════════════════════════════════════ */
