@@ -293,6 +293,13 @@ function getRadio(name) {
   const checked = document.querySelector(`input[name="${name}"]:checked`);
   return checked ? checked.value : '';
 }
+// Escapes text before it's interpolated into innerHTML, so a guest typing
+// something like <img onerror=...> into a name field can't inject markup.
+function escapeHtml(str) {
+  const d = document.createElement('div');
+  d.textContent = str == null ? '' : String(str);
+  return d.innerHTML;
+}
 
 /* ═══════════════════════════════════════
    RENDER GUEST FORMS
@@ -411,7 +418,14 @@ window.changeG = function (delta) {
   document.getElementById('gc-n').textContent = gCount;
   document.getElementById('gc-').disabled      = gCount === 1;
   document.getElementById('gc+').disabled      = gCount === 4;
-  hideErr('g-err');
+  // At the 4-guest cap, keep the WhatsApp note visible (not just on a
+  // blocked attempt to go past it) so guests always see why + is disabled.
+  if (gCount === 4) {
+    const gErrEl = document.getElementById('g-err');
+    if (gErrEl) gErrEl.style.display = 'block';
+  } else {
+    hideErr('g-err');
+  }
   updatePriceDisplay();
   if (selectedDate) {
     const remaining = MAX_SEATS - (availability[selectedDate] || 0);
@@ -690,6 +704,7 @@ function resetCommunityForm() {
   document.getElementById('gc-n').textContent  = '1';
   document.getElementById('gc-').disabled       = true;
   document.getElementById('gc+').disabled       = false;
+  hideErr('g-err');
   document.getElementById('comm-submit').disabled = false;
   const nextBtn = document.getElementById('wiz-next-1');
   if (nextBtn) nextBtn.disabled = true;
@@ -840,7 +855,7 @@ window.submitGift = async function () {
             const body  = document.getElementById('mc-body');
             if (icon)  icon.textContent  = '🎁';
             if (title) title.textContent = 'Gift Sent!';
-            if (body)  body.innerHTML    = `The seat${ggCount > 1 ? 's are' : ' is'} reserved for <strong style="font-weight:400">${recipientName}</strong>, valid for 3 months on any upcoming Saturday. We'll be in touch on WhatsApp shortly to arrange the evening.`;
+            if (body)  body.innerHTML    = `The seat${ggCount > 1 ? 's are' : ' is'} reserved for <strong style="font-weight:400">${escapeHtml(recipientName)}</strong>, valid for 3 months on any upcoming Saturday. We'll be in touch on WhatsApp shortly to arrange the evening.`;
             openModal('m-community');
             resetGiftForm();
           } else {

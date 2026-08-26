@@ -543,6 +543,11 @@ hr.rl{border:none;border-top:1px solid var(--rl)}
   border:1px solid rgba(139,37,0,.14);padding:10px 12px;margin-top:14px;
   line-height:1.6;display:none;font-style:italic;
 }
+/* Make the WhatsApp link inside these notes read as a link, not plain
+   text — the site's global `a{text-decoration:none}` reset otherwise
+   makes it indistinguishable from the surrounding copy. */
+.g-err a{color:var(--br);text-decoration:underline;font-style:normal;font-weight:500}
+.g-err a:hover{color:var(--ink)}
 
 /* Sub-group labels — chunk long form grids into scannable groups
    instead of one dense wall of fields. */
