@@ -15,6 +15,8 @@ let availability = {};
 let gCount       = 1;
 let wizStep      = 1;
 let appliedCoupon = null; // { code, discountPercent } — Community Dining only
+let calMonthOffset = 0;         // 0 = current month, 1 = next month, etc.
+const MAX_CAL_MONTHS_AHEAD = 1; // how many months ahead guests can browse/book
 
 /* ═══════════════════════════════════════
    MODAL
@@ -90,9 +92,12 @@ function buildCal() {
   const now       = new Date();
   const today     = new Date(now.getFullYear(), now.getMonth(), now.getDate());
 
-  // ── Event month — always the real current month ──
-  const viewYear  = now.getFullYear();
-  const viewMonth = now.getMonth();
+  // ── Event month — current month by default. Guests can page/swipe
+  //    forward up to MAX_CAL_MONTHS_AHEAD months to book ahead once this
+  //    month's Saturdays fill up or pass — no manual date edits needed. ──
+  const viewDate   = new Date(now.getFullYear(), now.getMonth() + calMonthOffset, 1);
+  const viewYear   = viewDate.getFullYear();
+  const viewMonth  = viewDate.getMonth();
   const OPEN_DATES = getSaturdaysOfMonth_(viewYear, viewMonth);
 
   // Update heading
@@ -100,6 +105,11 @@ function buildCal() {
                       'July','August','September','October','November','December'];
   const headEl = document.getElementById('cal-head');
   if (headEl) headEl.textContent = `${monthNames[viewMonth]} ${viewYear}`;
+
+  const prevBtn = document.getElementById('cal-prev');
+  const nextBtn = document.getElementById('cal-next');
+  if (prevBtn) prevBtn.disabled = calMonthOffset <= 0;
+  if (nextBtn) nextBtn.disabled = calMonthOffset >= MAX_CAL_MONTHS_AHEAD;
 
   // ── Mon-first offset ─────────────────────────
   // JS getDay(): Sun=0, Mon=1 … Sat=6
@@ -164,11 +174,53 @@ function buildCal() {
       cell.className = 'day other';
     }
 
+    if (key === selectedDate) cell.classList.add('sel');
+
     grid.appendChild(cell);
   }
 
   const loading = document.getElementById('cal-loading');
   if (loading) loading.style.display = 'none';
+}
+
+/* ═══════════════════════════════════════
+   MONTH NAVIGATION — swipe or click to page
+   the calendar forward (up to MAX_CAL_MONTHS_AHEAD
+   months) so guests can always book the next
+   available Saturday without a manual date update.
+═══════════════════════════════════════ */
+window.calPrevMonth = function () {
+  if (calMonthOffset <= 0) return;
+  calMonthOffset--;
+  buildCal();
+};
+window.calNextMonth = function () {
+  if (calMonthOffset >= MAX_CAL_MONTHS_AHEAD) return;
+  calMonthOffset++;
+  buildCal();
+};
+
+function initCalSwipe() {
+  const el = document.getElementById('cal-comm');
+  if (!el) return;
+  let startX = 0, startY = 0, tracking = false;
+  el.addEventListener('touchstart', (e) => {
+    if (!e.touches || !e.touches.length) return;
+    startX = e.touches[0].clientX;
+    startY = e.touches[0].clientY;
+    tracking = true;
+  }, { passive: true });
+  el.addEventListener('touchend', (e) => {
+    if (!tracking) return;
+    tracking = false;
+    const touch = e.changedTouches && e.changedTouches[0];
+    if (!touch) return;
+    const dx = touch.clientX - startX;
+    const dy = touch.clientY - startY;
+    if (Math.abs(dx) > 40 && Math.abs(dx) > Math.abs(dy) * 1.5) {
+      if (dx < 0) window.calNextMonth(); else window.calPrevMonth();
+    }
+  }, { passive: true });
 }
 
 function selectDate(dateKey, cell, remaining) {
@@ -888,6 +940,7 @@ window.onload = function () {
   updatePriceDisplay();
   initGiftForm();
   updateGiftPayButton();
+  initCalSwipe();
 };
 
 /* ═══════════════════════════════════════

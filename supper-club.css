@@ -455,6 +455,18 @@ hr.rl{border:none;border-top:1px solid var(--rl)}
    CALENDAR
 ══════════════════════════════════════════ */
 .cal-shell{margin-bottom:0}
+.cal-nav-row{display:flex;align-items:center;justify-content:space-between;gap:12px;max-width:480px;margin-bottom:16px}
+.cal-nav-row .cal-head{margin-bottom:0}
+.cal-arrow{
+  flex-shrink:0;width:30px;height:30px;
+  background:var(--cr2);border:1px solid var(--rl);cursor:pointer;
+  font-size:16px;color:var(--ink);font-family:serif;
+  display:flex;align-items:center;justify-content:center;
+  transition:background .2s,border-color .2s,opacity .2s;
+  user-select:none;border-radius:2px;
+}
+.cal-arrow:hover:not(:disabled){background:var(--ink);color:var(--cr);border-color:var(--ink)}
+.cal-arrow:disabled{opacity:.25;cursor:not-allowed}
 .cal-head{font-family:var(--sf);font-size:19px;color:var(--ink);margin-bottom:16px}
 .cal-grid{display:grid;grid-template-columns:repeat(7,1fr);gap:2px;max-width:480px}
 .day-lbl{
