@@ -10,11 +10,44 @@
 <meta property="og:description" content="A beautiful, intentional dining experience. Limited to 8 seats.">
 <meta property="og:image" content="assets/supper-club/supper-0.jpg">
 <meta property="og:type" content="website">
-<link rel="icon" type="image/png" href="assets/branding/favicon.jpg">
+<link rel="icon" type="image/jpeg" href="assets/branding/favicon.jpg">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="stylesheet" href="supper-club.css">
-<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,300;0,400;0,600;1,300;1,400&family=Cormorant+Garamond:ital,wght@0,400;0,500;1,400&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+
+<link rel="preconnect" href="https://script.google.com" crossorigin>
+<link rel="preconnect" href="https://script.googleusercontent.com" crossorigin>
+
+<!-- LCP: the hero background lives in CSS, so the browser can't find it until
+     the stylesheet parses. Preloading it starts the download immediately. -->
+<link rel="preload" as="image" href="assets/supper-club/supper-0.jpg" fetchpriority="high">
+
+<link rel="stylesheet" href="supper-club.css?v=20260930a">
+
+<!-- Fonts load without blocking first paint. display=swap means text is
+     visible in a fallback face until Playfair/DM Sans arrive. -->
+<link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,300;0,400;0,600;1,300;1,400&family=Cormorant+Garamond:ital,wght@0,400;0,500;1,400&family=DM+Sans:wght@300;400;500&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,300;0,400;0,600;1,300;1,400&family=Cormorant+Garamond:ital,wght@0,400;0,500;1,400&family=DM+Sans:wght@300;400;500&display=swap" media="print" onload="this.media='all';this.onload=null">
+<noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,300;0,400;0,600;1,300;1,400&family=Cormorant+Garamond:ital,wght@0,400;0,500;1,400&family=DM+Sans:wght@300;400;500&display=swap"></noscript>
+
+<!-- ══ META PIXEL ═══════════════════════════════════
+     Dataset "Not Just Dinner - Website" · ID 28336286829354606
+     Events Manager → Data Sources. Created 21 Sep 2026.
+══════════════════════════════════════════════════ -->
+<script>
+// UAT (your computer / file:// / ?env=uat) never reports to the live Pixel.
+if (!(/^(localhost|127\.0\.0\.1|)$/.test(location.hostname) || /[?&]env=uat\b/.test(location.search))) {
+!function(f,b,e,v,n,t,s){if(f.fbq)return;n=f.fbq=function(){n.callMethod?
+n.callMethod.apply(n,arguments):n.queue.push(arguments)};if(!f._fbq)f._fbq=n;
+n.push=n;n.loaded=!0;n.version='2.0';n.queue=[];t=b.createElement(e);t.async=!0;
+t.src=v;s=b.getElementsByTagName(e)[0];s.parentNode.insertBefore(t,s)}
+(window,document,'script','https://connect.facebook.net/en_US/fbevents.js');
+fbq('init','28336286829354606');
+fbq('track','PageView');
+}
+</script>
+<noscript><img height="1" width="1" style="display:none" alt=""
+src="https://www.facebook.com/tr?id=28336286829354606&ev=PageView&noscript=1"/></noscript>
+<!-- ══ END META PIXEL ═══════════════════════════════ -->
 </head>
 <body>
 
@@ -23,9 +56,10 @@
   <div class="w nav-inner">
     <a href="/" aria-label="Not Just Dinner – Home">
       <img src="assets/branding/logo.png" class="nav-logo" alt="Not Just Dinner" fetchpriority="high"
+           width="200" height="130" decoding="async"
            onerror="this.outerHTML='<span class=\'nav-logo-fb\'>Not <em>Just</em> Dinner</span>'">
     </a>
-    <a href="https://chat.whatsapp.com/FWgqkihDAlhEJfXYPFlPjW" target="_blank" rel="noopener" class="nav-wa" aria-label="Join WhatsApp Community">
+    <a href="https://chat.whatsapp.com/FWgqkihDAlhEJfXYPFlPjW" target="_blank" rel="noopener" class="nav-wa" aria-label="Join Community on WhatsApp">
       <svg class="nav-wa-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
         <path d="M12 2a10 10 0 0 0-8.94 14.5L2 22l5.7-1.9A10 10 0 1 0 12 2z"/>
       </svg>
@@ -57,7 +91,7 @@
     <div class="si">
       <div class="si-l">When</div>
       <div class="si-v">Every Saturday</div>
-      <div class="si-n">This month · see calendar below</div>
+      <div class="si-n" id="strip-next">See calendar below</div>
     </div>
     <div class="si">
       <div class="si-l">Time</div>
@@ -69,7 +103,7 @@
     </div>
     <div class="si">
       <div class="si-l">Menu</div>
-      <div class="si-v">6-course · <em>3.0</em></div>
+      <div class="si-v">6-course · <em>4.0</em></div>
       <div class="si-n">All vegetarian</div>
     </div>
   </div>
@@ -82,45 +116,13 @@
     <div class="about-lay rev">
       <div class="about-img-frame">
         <div class="about-img">
-          <img src="assets/supper-club/supper-00.jpg" alt="Guests at a Not Just Dinner evening" loading="lazy">
+          <img src="assets/supper-club/supper-00.jpg" alt="Guests at a Not Just Dinner evening" loading="lazy" width="600" height="800" decoding="async">
         </div>
       </div>
       <div class="about-txt">
         <p class="eyebrow">The Experience · More than a meal</p>
         <p>Not Just Dinner is an intentionally hosted dining experience designed for people who appreciate thoughtful food, calm spaces, and meaningful moments.</p>
         <p>Each evening is carefully planned — from the menu to the pacing of the meal — so guests can slow down, feel present, and enjoy a dinner that unfolds naturally.</p>
-      </div>
-    </div>
-  </div>
-</section>
-
-<!-- ══ WHO IS THIS FOR ══════════════════════════════ -->
-<section class="sec-compact sec-alt" aria-labelledby="for-h">
-  <div class="w">
-    <div class="sec-hd-sm rev">
-      <p class="eyebrow">Who This Is For</p>
-      <h2 class="display-sm" id="for-h">Come as a stranger, <em>leave with friends</em></h2>
-    </div>
-    <div class="for-grid rev">
-      <div class="for-card">
-        <div class="for-icon">🫂</div>
-        <div class="for-title">New to the City</div>
-        <div class="for-desc">Just moved here? This is the easiest room to walk into and actually connect with people.</div>
-      </div>
-      <div class="for-card">
-        <div class="for-icon">🌹</div>
-        <div class="for-title">Date Nights</div>
-        <div class="for-desc">A beautiful, unhurried evening that does the talking for you.</div>
-      </div>
-      <div class="for-card">
-        <div class="for-icon">🍽</div>
-        <div class="for-title">Food Lovers</div>
-        <div class="for-desc">You care about what's on the plate and who made it.</div>
-      </div>
-      <div class="for-card">
-        <div class="for-icon">✦</div>
-        <div class="for-title">Slow Evenings</div>
-        <div class="for-desc">Tired of loud restaurants. You want presence, not performance.</div>
       </div>
     </div>
   </div>
@@ -135,15 +137,15 @@
       <h2 class="display" style="margin-top:12px;">A glimpse into <em>past evenings</em></h2>
     </div>
     <div class="gal rev" role="list" aria-label="Gallery of dinner evenings">
-      <div class="gi" role="listitem"><img src="assets/supper-club/supper-1.jpg" alt="Dinner evening 1" loading="lazy"></div>
-      <div class="gi" role="listitem"><img src="assets/supper-club/supper-2.jpg" alt="Dinner evening 2" loading="lazy"></div>
-      <div class="gi" role="listitem"><img src="assets/supper-club/supper-3.jpg" alt="Dinner evening 3" loading="lazy"></div>
-      <div class="gi" role="listitem"><img src="assets/supper-club/supper-4.jpg" alt="Dinner evening 4" loading="lazy"></div>
-      <div class="gi" role="listitem"><img src="assets/supper-club/supper-5.jpg" alt="Dinner evening 5" loading="lazy"></div>
-      <div class="gi" role="listitem"><img src="assets/supper-club/supper-6.jpg" alt="Dinner evening 6" loading="lazy"></div>
-      <div class="gi" role="listitem"><img src="assets/supper-club/supper-7.jpg" alt="Dinner evening 7" loading="lazy"></div>
-      <div class="gi" role="listitem"><img src="assets/supper-club/supper-8.jpg" alt="Dinner evening 8" loading="lazy"></div>
-      <div class="gi" role="listitem"><img src="assets/supper-club/supper-9.jpg" alt="Dinner evening 9" loading="lazy"></div>
+      <div class="gi" role="listitem"><img src="assets/supper-club/supper-1.jpg" alt="Dinner evening 1" loading="lazy" width="600" height="800" decoding="async"></div>
+      <div class="gi" role="listitem"><img src="assets/supper-club/supper-2.jpg" alt="Dinner evening 2" loading="lazy" width="600" height="800" decoding="async"></div>
+      <div class="gi" role="listitem"><img src="assets/supper-club/supper-3.jpg" alt="Dinner evening 3" loading="lazy" width="419" height="548" decoding="async"></div>
+      <div class="gi" role="listitem"><img src="assets/supper-club/supper-4.jpg" alt="Dinner evening 4" loading="lazy" width="800" height="600" decoding="async"></div>
+      <div class="gi" role="listitem"><img src="assets/supper-club/supper-5.jpg" alt="Dinner evening 5" loading="lazy" width="800" height="604" decoding="async"></div>
+      <div class="gi" role="listitem"><img src="assets/supper-club/supper-6.jpg" alt="Dinner evening 6" loading="lazy" width="453" height="800" decoding="async"></div>
+      <div class="gi" role="listitem"><img src="assets/supper-club/supper-7.jpg" alt="Dinner evening 7" loading="lazy" width="450" height="800" decoding="async"></div>
+      <div class="gi" role="listitem"><img src="assets/supper-club/supper-8.jpg" alt="Dinner evening 8" loading="lazy" width="600" height="800" decoding="async"></div>
+      <div class="gi" role="listitem"><img src="assets/supper-club/supper-9.jpg" alt="Dinner evening 9" loading="lazy" width="600" height="800" decoding="async"></div>
     </div>
 
     <!-- Inner divider between gallery & testimonials -->
@@ -161,8 +163,8 @@
         <div class="tstars">★★★★★</div>
         <p class="tquote">I arrived feeling homesick, but somewhere between the courses, that feeling quietly faded away.</p>
         <div class="tauthor">
-          <img src="assets/branding/guest1.jpeg" class="tav" alt="Gursimran">
-          <p class="tname">Gursimran · Community Dining</p>
+          <img src="assets/branding/guest1.jpeg" class="tav" alt="Gursimran" width="133" height="140" decoding="async">
+          <p class="tname">Gursimran</p>
         </div>
       </div>
 
@@ -170,8 +172,8 @@
         <div class="tstars">★★★★★</div>
         <p class="tquote">The evening felt like walking into a family gathering where you don't know many people at first, but slowly, you start connecting. Like meeting distant cousins and unexpectedly having easy, meaningful conversations.</p>
         <div class="tauthor">
-          <img src="assets/branding/guest2.jpeg" class="tav" alt="Raashi">
-          <p class="tname">Raashi · Community Dining</p>
+          <img src="assets/branding/guest2.jpeg" class="tav" alt="Raashi" width="140" height="132" decoding="async">
+          <p class="tname">Raashi</p>
         </div>
       </div>
 
@@ -179,8 +181,8 @@
         <div class="tstars">★★★★★</div>
         <p class="tquote">The evening flowed so effortlessly that I didn't even think of checking my phone, it's been a long time since I felt that present.</p>
         <div class="tauthor">
-          <img src="assets/branding/guest3.jpeg" class="tav" alt="Harsh">
-          <p class="tname">Harsh · Community Dining</p>
+          <img src="assets/branding/guest3.jpeg" class="tav" alt="Harsh" width="125" height="140" decoding="async">
+          <p class="tname">Harsh</p>
         </div>
       </div>
 
@@ -188,8 +190,8 @@
         <div class="tstars">★★★★★</div>
         <p class="tquote">Honestly, I was a bit nervous about coming alone, but five minutes in, I forgot I didn't know anyone. It's rare to find a space that feels this cozy and intentional without being performative.</p>
         <div class="tauthor">
-          <img src="assets/branding/guest4.jpeg" class="tav" alt="Guest 4">
-          <p class="tname">Muskan · Community Dining</p>
+          <img src="assets/branding/guest4.jpeg" class="tav" alt="Guest 4" width="127" height="140" decoding="async">
+          <p class="tname">Muskan</p>
         </div>
       </div>
 
@@ -197,8 +199,8 @@
         <div class="tstars">★★★★★</div>
         <p class="tquote">The night was just too magical to be Just Dinner.</p>
         <div class="tauthor">
-          <img src="assets/branding/guest5.jpeg" class="tav" alt="Guest 5">
-          <p class="tname">Manpreet · Community Dining</p>
+          <img src="assets/branding/guest5.jpeg" class="tav" alt="Guest 5" width="132" height="140" decoding="async">
+          <p class="tname">Manpreet</p>
         </div>
       </div>
 
@@ -225,19 +227,20 @@
     <div class="menu-lay rev">
       <div class="menu-l">
         <p class="eyebrow" style="color:rgba(240,234,214,.3);margin-bottom:14px;">This Month's Feature</p>
-        <h2 class="display" id="menu-h" style="color:var(--cr);margin-bottom:10px;">Menu <em>3.0</em></h2>
+        <h2 class="display" id="menu-h" style="color:var(--cr);margin-bottom:10px;">Menu <em>4.0</em></h2>
         <div class="rtag"><div class="blink"></div><span>Rotating monthly — new menu each edition</span></div>
-        <p class="menu-desc">Our menu is never the same twice. Each edition is a new 6-course journey. This month: <strong style="color:rgba(240,234,214,.8);font-weight:400">Menu 3.0</strong>.</p>
+        <p class="menu-desc">Our menu is never the same twice. Each edition is a new 6-course journey. This month: <strong style="color:rgba(240,234,214,.8);font-weight:400">Menu 4.0</strong>.</p>
         <p class="mnote">All-vegetarian</p>
         <p class="allergy-note">🌿 Have any allergies? We'll check in with you on WhatsApp when we confirm your booking.</p>
       </div>
       <div class="courses" aria-label="5 course menu">
-        <div class="cr"><span class="ci">i</span><div class="cdash"></div><span class="cn">Hibiscus Lemonade</span><span class="ct"></span></div>
-        <div class="cr"><span class="ci">i</span><div class="cdash"></div><span class="cn">Garden Sablé</span><span class="ct"></span></div>
-        <div class="cr"><span class="ci">ii</span><div class="cdash"></div><span class="cn">Sea Salt Bread & Miso Butter</span><span class="ct"></span></div>
-        <div class="cr"><span class="ci">iii</span><div class="cdash"></div><span class="cn">Chilli Burrata</span><span class="ct"></span></div>
-        <div class="cr"><span class="ci">iv</span><div class="cdash"></div><span class="cn">Leeks & Green Peas</span><span class="ct"></span></div>
-        <div class="cr"><span class="ci">v</span><div class="cdash"></div><span class="cn">Tiramisu</span><span class="ct"></span></div>
+        <!-- Menu 4.0: replace each "Reveals on 3rd Oct" with the dish name (and drop cn-tbd) on reveal day -->
+        <div class="cr"><span class="ci">i</span><div class="cdash"></div><span class="cn cn-tbd">Reveals on 3rd Oct</span><span class="ct"></span></div>
+        <div class="cr"><span class="ci">ii</span><div class="cdash"></div><span class="cn cn-tbd">Reveals on 3rd Oct</span><span class="ct"></span></div>
+        <div class="cr"><span class="ci">iii</span><div class="cdash"></div><span class="cn cn-tbd">Reveals on 3rd Oct</span><span class="ct"></span></div>
+        <div class="cr"><span class="ci">iv</span><div class="cdash"></div><span class="cn cn-tbd">Reveals on 3rd Oct</span><span class="ct"></span></div>
+        <div class="cr"><span class="ci">v</span><div class="cdash"></div><span class="cn cn-tbd">Reveals on 3rd Oct</span><span class="ct"></span></div>
+        <div class="cr"><span class="ci">vi</span><div class="cdash"></div><span class="cn cn-tbd">Reveals on 3rd Oct</span><span class="ct"></span></div>
       </div>
     </div>
   </div>
@@ -253,7 +256,7 @@
     </div>
     <div class="hosts-grid rev">
       <div class="hc">
-        <img src="assets/branding/host-kiran.jpg" alt="Kiran, chef and host" class="hav" onerror="this.style.display='none'">
+        <img src="assets/branding/host-kiran.jpg" alt="Kiran, chef and host" class="hav" onerror="this.style.display='none'" width="397" height="400" decoding="async">
         <h3 class="h-name">Kiran</h3>
         <p class="h-bio">Kiran leads the "Dinner" experience — trained in Michelin-star kitchens and a graduate of Le Cordon Bleu, Paris.</p>
         <a href="https://www.instagram.com/frenchhalwai" target="_blank" rel="noopener" class="s-icon" aria-label="Kiran on Instagram">
@@ -261,7 +264,7 @@
         </a>
       </div>
       <div class="hc">
-        <img src="assets/branding/host-priya.jpg" alt="Priya, host and experience curator" class="hav" onerror="this.style.display='none'">
+        <img src="assets/branding/host-priya.jpg" alt="Priya, host and experience curator" class="hav" onerror="this.style.display='none'" width="480" height="385" decoding="async">
         <h3 class="h-name">Priya</h3>
         <p class="h-bio">Priya looks after the "Not Just" part — the vibe, the flow, and making sure every evening feels warm and intentional.</p>
         <a href="https://www.linkedin.com/in/priyabaheti/" target="_blank" rel="noopener" class="s-icon" aria-label="Priya on LinkedIn">
@@ -285,7 +288,7 @@
       <div class="tab on" id="tab-community" role="tab" aria-selected="true" aria-controls="panel-community" tabindex="0" onclick="switchTab('community')" onkeydown="if(event.key==='Enter')switchTab('community')">
         <div class="ic-badge" aria-hidden="true">🍽</div>
         <div class="tab-name">Community <em>Dining</em></div>
-        <div class="tab-sub">Join the shared table · Up to 8 guests</div>
+        <div class="tab-sub">Join the shared table · Up to 4 per booking</div>
       </div>
       <div class="tab" id="tab-gift" role="tab" aria-selected="false" aria-controls="panel-gift" tabindex="0" onclick="switchTab('gift')" onkeydown="if(event.key==='Enter')switchTab('gift')">
         <div class="ic-badge" aria-hidden="true">🎁</div>
@@ -309,21 +312,21 @@
           <p class="eyebrow" style="margin-bottom:16px;">Pick your evening</p>
           <div class="cal-loading" id="cal-loading" aria-live="polite">
             <div class="cal-loading-dot"></div>
-            Checking live availability…
+            Checking which evenings have seats…
           </div>
           <div class="cal-nav-row">
             <button type="button" class="cal-arrow" id="cal-prev" onclick="calPrevMonth()" aria-label="Previous month" disabled>‹</button>
-          <div class="cal-head" id="cal-head">July 2026</div>
+          <div class="cal-head" id="cal-head">&nbsp;</div>
             <button type="button" class="cal-arrow" id="cal-next" onclick="calNextMonth()" aria-label="Next month">›</button>
           </div>
-          <div class="cal-grid" id="cal-comm" role="grid" aria-label="Calendar">
-            <div class="day-lbl" role="columnheader">Mon</div>
-            <div class="day-lbl" role="columnheader">Tue</div>
-            <div class="day-lbl" role="columnheader">Wed</div>
-            <div class="day-lbl" role="columnheader">Thu</div>
-            <div class="day-lbl" role="columnheader">Fri</div>
-            <div class="day-lbl wknd" role="columnheader">Sat</div>
-            <div class="day-lbl wknd" role="columnheader">Sun</div>
+          <div class="cal-grid" id="cal-comm" role="group" aria-label="Pick an evening">
+            <div class="day-lbl" aria-hidden="true">Mon</div>
+            <div class="day-lbl" aria-hidden="true">Tue</div>
+            <div class="day-lbl" aria-hidden="true">Wed</div>
+            <div class="day-lbl" aria-hidden="true">Thu</div>
+            <div class="day-lbl" aria-hidden="true">Fri</div>
+            <div class="day-lbl wknd" aria-hidden="true">Sat</div>
+            <div class="day-lbl wknd" aria-hidden="true">Sun</div>
           </div>
           <p id="cal-err" role="alert" style="display:none">Please select a date to continue.</p>
         </div>
@@ -337,9 +340,9 @@
               <div class="g-num" id="gc-n" aria-live="polite" aria-atomic="true">1</div>
               <button class="g-btn" id="gc+" onclick="changeG(1)" aria-label="Add guest">+</button>
             </div>
-            <span class="g-total" id="gc-tot" aria-live="polite">₹2,999</span>
+            <span class="g-total" id="gc-tot" aria-live="polite">₹3,000</span>
           </div>
-          <p class="g-err" id="g-err" role="alert">Community Dining is restricted to 4 guests at a time. If you'd like to book for a larger group, <a href="https://wa.me/917218132167?text=Hi%2C%20I%27d%20like%20to%20book%20for%20a%20larger%20group" target="_blank" rel="noopener">message us directly on WhatsApp</a>.</p>
+          <p class="g-err cap-note" id="g-err" role="status"><strong>Up to 4 guests per booking</strong> &mdash; it&rsquo;s one shared table of 8, so we keep each booking small. Coming as a bigger group? <a href="https://wa.me/917218132167?text=Hi%20Not%20Just%20Dinner%21%20We%27re%20a%20group%20of%20more%20than%204%20and%20would%20love%20to%20book%20Community%20Dining%20together.%20Could%20you%20help%20us%20with%20a%20date%3F" target="_blank" rel="noopener">Message us on WhatsApp</a> and we&rsquo;ll sort it out.</p>
         </div>
 
         <div class="wiz-nav">
@@ -366,21 +369,18 @@
             </div>
             <button type="button" class="coupon-apply" id="coupon-apply-btn" onclick="applyCoupon()">Apply</button>
           </div>
+          <button type="button" class="offers-link" onclick="openOffers()">View available offers</button>
           <p id="coupon-msg" class="coupon-msg" role="alert"></p>
 
           <div class="pay-row">
             <div>
-              <div class="p-amt" id="c-amt" aria-live="polite"><sup>₹</sup>2,999</div>
+              <div class="p-amt" id="c-amt" aria-live="polite"><sup>₹</sup>3,000</div>
               <div class="p-sub" id="c-sub">for 1 guest · all-inclusive</div>
-              <div class="steps">
-                <div class="step"><span class="s-n" aria-hidden="true">✓</span><div class="s-c"><strong>Secure checkout</strong>Pay by card, UPI, or netbanking via Razorpay.</div></div>
-                <div class="step"><span class="s-n" aria-hidden="true">✓</span><div class="s-c"><strong>Instant confirmation</strong>Your seats lock the moment payment succeeds.</div></div>
-                <div class="step"><span class="s-n" aria-hidden="true">✓</span><div class="s-c"><strong>WhatsApp follow-up</strong>Location shared before the evening.</div></div>
-              </div>
             </div>
             <div style="display:flex;flex-direction:column;align-items:stretch;gap:10px;min-width:240px">
-              <button class="btn" id="comm-submit" onclick="submitCommunity()" aria-label="Pay and reserve your seats">Pay ₹2,999 &amp; Reserve</button>
+              <button class="btn" id="comm-submit" onclick="submitCommunity()" aria-label="Pay and reserve your seats">Pay ₹3,000 &amp; Reserve</button>
               <p id="pay-err" class="ferr" role="alert"></p>
+              <p class="pay-note">Secure payment via Razorpay · details on WhatsApp</p>
             </div>
           </div>
           <div class="no-refund-note">All bookings are non-refundable. No cancellations or rescheduling.</div>
@@ -413,9 +413,9 @@
             <div class="g-num" id="gg-n" aria-live="polite" aria-atomic="true">1</div>
             <button class="g-btn" id="gg+" onclick="changeGiftSeats(1)" aria-label="Add seat">+</button>
           </div>
-          <span class="g-total" id="gg-tot" aria-live="polite">₹2,999</span>
+          <span class="g-total" id="gg-tot" aria-live="polite">₹3,000</span>
         </div>
-        <p class="g-err" id="gg-err" role="alert">We keep gifted seats to 4 per voucher — it's the same community table, kept intentionally small. For a larger group, <a href="https://wa.me/917218132167?text=Hi%2C%20I%27d%20like%20to%20gift%20seats%20for%20a%20larger%20group" target="_blank" rel="noopener">message us on WhatsApp</a>.</p>
+        <p class="g-err cap-note" id="gg-err" role="status"><strong>Up to 4 seats per gift</strong> &mdash; it&rsquo;s one shared table of 8, so we keep each voucher small. Gifting a bigger group? <a href="https://wa.me/917218132167?text=Hi%20Not%20Just%20Dinner%21%20I%27d%20like%20to%20gift%20Community%20Dining%20seats%20to%20a%20group%20of%20more%20than%204.%20Could%20you%20help%20me%20set%20that%20up%3F" target="_blank" rel="noopener">Message us on WhatsApp</a> and we&rsquo;ll sort it out.</p>
       </div>
 
       <div class="bk-sec rev">
@@ -477,17 +477,13 @@
         <p class="eyebrow" style="margin-bottom:20px;">Review &amp; pay</p>
         <div class="pay-row">
           <div>
-            <div class="p-amt" id="g-amt" aria-live="polite"><sup>₹</sup>2,999</div>
+            <div class="p-amt" id="g-amt" aria-live="polite"><sup>₹</sup>3,000</div>
             <div class="p-sub" id="g-sub">for 1 seat · all-inclusive</div>
-            <div class="steps">
-              <div class="step"><span class="s-n" aria-hidden="true">✓</span><div class="s-c"><strong>Secure checkout</strong>Pay by card, UPI, or netbanking via Razorpay.</div></div>
-              <div class="step"><span class="s-n" aria-hidden="true">✓</span><div class="s-c"><strong>Instant confirmation</strong>We'll be in touch on WhatsApp right after.</div></div>
-              <div class="step"><span class="s-n" aria-hidden="true">✓</span><div class="s-c"><strong>Flexible redemption</strong>Recipient picks any upcoming Saturday, valid 3 months.</div></div>
-            </div>
           </div>
           <div style="display:flex;flex-direction:column;align-items:stretch;gap:10px;min-width:240px">
-            <button class="btn" id="gift-submit" onclick="submitGift()" aria-label="Pay and send the gift">Pay ₹2,999 &amp; Gift</button>
+            <button class="btn" id="gift-submit" onclick="submitGift()" aria-label="Pay and send the gift">Pay ₹3,000 &amp; Gift</button>
             <p id="gift-pay-err" class="ferr" role="alert"></p>
+            <p class="pay-note">Secure payment via Razorpay · valid for 3 months</p>
           </div>
         </div>
         <div class="no-refund-note">Gift purchases are non-refundable. Redemption date is arranged with you on WhatsApp after purchase.</div>
@@ -505,6 +501,27 @@
     <h3 class="m-title" id="mc-title">Seats Confirmed</h3>
     <p class="m-body" id="mc-body">Thank you for joining <strong style="font-weight:400">Not Just Dinner</strong>. We'll send the exact location and all details to your WhatsApp shortly.</p>
     <div class="modal-actions"><button onclick="closeModal('m-community')" class="btn modal-btn">Done</button></div>
+  </div>
+</div>
+
+<div id="m-offers" class="modal-ov" role="dialog" aria-modal="true" aria-labelledby="mo-title" onclick="if(event.target===this)closeModal('m-offers')">
+  <div class="modal-box offers-box">
+    <p class="m-eyebrow">Community Dining</p>
+    <h3 class="m-title" id="mo-title">Available offers</h3>
+    <div class="offers-list" id="offers-list"></div>
+    <div class="modal-actions"><button type="button" onclick="closeModal('m-offers')" class="m-link">Close</button></div>
+  </div>
+</div>
+
+<!-- Special-evening popup. Text comes from the "Calendar" tab of the sheet
+     (Popup Title / Popup Text); the defaults below are the fallback. -->
+<div id="m-event" class="modal-ov" role="dialog" aria-modal="true" aria-labelledby="me-title" onclick="if(event.target===this)closeModal('m-event')">
+  <div class="modal-box">
+    <div class="m-icon" aria-hidden="true">🪔</div>
+    <p class="m-eyebrow" id="me-date">Saturday, 31 October</p>
+    <h3 class="m-title" id="me-title">Diwali Party at Not Just Dinner</h3>
+    <p class="m-body" id="me-body">This evening is exclusive to our regulars. If you&rsquo;ve dined with us this October, we&rsquo;ll reach out to you personally with your invite.</p>
+    <div class="modal-actions"><button type="button" onclick="closeModal('m-event')" class="btn modal-btn">Got it</button></div>
   </div>
 </div>
 
@@ -538,7 +555,13 @@
   <p class="ftr-copy">Questions? Reach us on the links above or join our WhatsApp Community.</p>
 </footer>
 
-<script src="https://checkout.razorpay.com/v1/checkout.js"></script>
-<script src="script.js"></script>
+<!-- ══ STICKY RESERVE BAR (mobile) ══════════════════ -->
+<a href="#book" class="sticky-cta" id="sticky-cta" aria-label="Reserve a seat">
+  <span class="sticky-cta-txt" id="sticky-cta-txt">Reserve · &#8377;3,000</span>
+  <span class="sticky-cta-arrow" aria-hidden="true">&#8594;</span>
+</a>
+
+<!-- Razorpay is loaded on demand by script.js when a guest reaches the pay step. -->
+<script src="script.js?v=20260930a" defer></script>
 </body>
 </html>

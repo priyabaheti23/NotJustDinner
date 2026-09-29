@@ -9,7 +9,7 @@ html{scroll-behavior:smooth;-webkit-font-smoothing:antialiased}
   --cr3: #DFD4B4;
   --ink: #2E1208;
   --br:  #5C2D14;
-  --mu:  #9C6E50;
+  --mu:  #8A5C3E;
   --grn: #3D6B47;
   --red: #8B2500;
   --rl:  rgba(46,18,8,.1);
@@ -50,7 +50,10 @@ a{color:inherit;text-decoration:none}
   height:100%;display:flex;align-items:center;justify-content:space-between;
   gap:12px;
 }
-.nav-logo{height:26px;mix-blend-mode:multiply;flex-shrink:0}
+.nav-logo{height:26px;width:auto;mix-blend-mode:multiply;flex-shrink:0}
+/* width:auto keeps the height constraint in charge now that the img carries
+   explicit width/height attributes -- without it the attribute wins and the
+   logo stretches. */
 .nav-logo-fb{font-family:var(--sf);font-size:15px;font-style:italic;color:var(--ink);flex-shrink:0}
 
 .nav-wa{
@@ -130,10 +133,10 @@ a{color:inherit;text-decoration:none}
 .si:first-child{text-align:left}
 .si:last-child{border-right:none;text-align:right}
 .si-l{font-size:8px;font-weight:500;letter-spacing:.18em;text-transform:uppercase;
-  color:rgba(240,234,214,.3);margin-bottom:3px}
+  color:rgba(240,234,214,.58);margin-bottom:3px}
 .si-v{font-family:var(--sf);font-size:13px;color:rgba(240,234,214,.8)}
 .si-v em{font-style:italic}
-.si-n{font-size:9px;color:rgba(240,234,214,.25);font-style:italic;margin-top:2px}
+.si-n{font-size:9px;color:rgba(240,234,214,.58);font-style:italic;margin-top:2px}
 
 /* ══════════════════════════════════════════
    SECTIONS
@@ -292,13 +295,18 @@ hr.rl{border:none;border-top:1px solid var(--rl)}
   border:1px solid var(--rl);filter:sepia(8%);flex-shrink:0;
 }
 .tname{font-size:10px;font-weight:500;letter-spacing:.14em;text-transform:uppercase;color:var(--mu)}
-.testi-dots{display:flex;gap:8px;justify-content:center;margin-top:16px}
+.testi-dots{display:flex;gap:4px;justify-content:center;margin-top:10px}
 .tdot{
-  width:6px;height:6px;border-radius:50%;border:none;
-  background:rgba(46,18,8,.15);cursor:pointer;padding:0;
-  transition:background .25s,transform .25s;
+  /* The visible dot stays 6px; the button itself is 24px so it clears the
+     minimum touch target. The dot is painted with a border trick rather than
+     width/height so spacing between neighbours also passes. */
+  width:24px;height:24px;border-radius:50%;border:9px solid transparent;
+  background:rgba(46,18,8,.15);background-clip:content-box;
+  cursor:pointer;padding:0;
+  transition:background .25s,border-width .25s;
 }
-.tdot.active{background:var(--ink);transform:scale(1.3)}
+.tdot.active{background:var(--ink);background-clip:content-box;border-width:8px}
+.tdot:focus-visible{outline:2px solid var(--br);outline-offset:-2px}
 
 /* ══════════════════════════════════════════
    MENU
@@ -389,7 +397,7 @@ hr.rl{border:none;border-top:1px solid var(--rl)}
 .tab-name{font-family:var(--sf);font-size:16px;margin-bottom:1px}
 .tab-name em{font-style:italic}
 .tab-sub{font-size:10px;color:var(--mu);letter-spacing:.02em}
-.tab.on .tab-sub{color:rgba(240,234,214,.45)}
+.tab.on .tab-sub{color:rgba(240,234,214,.62)}
 
 /* ══════════════════════════════════════════
    BOOKING PANEL
@@ -485,7 +493,34 @@ hr.rl{border:none;border-top:1px solid var(--rl)}
 .day.avail:hover{background:var(--cr);border-color:var(--br)}
 .day.avail.sel{background:var(--ink);color:var(--cr);border-color:var(--ink)}
 .day.past{color:rgba(46,18,8,.14);cursor:not-allowed;background:rgba(46,18,8,.02)}
-.day.full{background:rgba(46,18,8,.04);color:rgba(46,18,8,.28);cursor:not-allowed;border-color:var(--rl)}
+.day.full{background:rgba(46,18,8,.04);color:rgba(46,18,8,.42);cursor:pointer;border-color:var(--rl);
+  transition:background .2s,border-color .2s,color .2s}
+.day.full:hover,.day.full:focus-visible{background:var(--cr2);border-color:var(--mu);color:var(--ink);outline:none}
+.day.full .day-seats{color:var(--mu)}
+/* Seat counts arrive a couple of seconds after the grid. The date is already
+   correct and on screen; this is the placeholder for the count alone. */
+.day.checking{background:var(--cr2);border-color:var(--rl);color:var(--ink);cursor:default}
+.day-skel{
+  display:block;width:22px;height:5px;border-radius:3px;
+  background:linear-gradient(90deg,rgba(46,18,8,.10) 25%,rgba(46,18,8,.22) 50%,rgba(46,18,8,.10) 75%);
+  background-size:200% 100%;
+  animation:skel 1.15s ease-in-out infinite;
+}
+@keyframes skel{0%{background-position:200% 0}100%{background-position:-200% 0}}
+@media(prefers-reduced-motion:reduce){
+  .day-skel{animation:none;background:rgba(46,18,8,.16)}
+}
+.day.full:hover .day-seats{color:var(--br)}
+/* No supper club that evening (DATE_OVERRIDES status 'closed') — label only */
+.day.closed{background:rgba(46,18,8,.03);border-color:var(--rl);color:rgba(46,18,8,.42);cursor:default}
+.day.closed .day-seats{color:var(--mu);font-style:italic}
+.day.closed .day-seats,.day.event .day-seats{text-align:center;line-height:1.15;padding:0 2px;max-width:100%}
+/* Only one bookable month — hide the arrows, keep the heading centred */
+.cal-nav-row.single .cal-arrow{visibility:hidden}
+/* Special evening (DATE_OVERRIDES status 'event') — e.g. the Diwali party */
+.day.event{cursor:pointer;background:rgba(122,85,0,.09);border-color:rgba(122,85,0,.38);color:var(--ink)}
+.day.event .day-seats{color:#7A5500;font-weight:600;font-size:7px;letter-spacing:.04em}
+.day.event:hover,.day.event:focus-visible{background:rgba(122,85,0,.16);border-color:#7A5500;outline:none}
 .day-num{font-size:13px;line-height:1}
 .day-seats{font-size:7px;letter-spacing:.03em;color:var(--mu);font-family:var(--ss);font-weight:400}
 .day.avail.sel .day-seats{color:rgba(240,234,214,.55)}
@@ -548,6 +583,11 @@ hr.rl{border:none;border-top:1px solid var(--rl)}
    makes it indistinguishable from the surrounding copy. */
 .g-err a{color:var(--br);text-decoration:underline;font-style:normal;font-weight:500}
 .g-err a:hover{color:var(--ink)}
+/* The 4-guest cap is information, not an error — calm styling */
+.g-err.cap-note{color:var(--br);background:var(--cr2);border:1px solid var(--rl);
+  border-left:2px solid var(--mu);font-style:normal;font-size:12.5px;padding:12px 14px}
+.g-err.cap-note strong{font-weight:600;color:var(--ink)}
+.g-err.cap-note a{color:var(--ink)}
 
 /* Sub-group labels — chunk long form grids into scannable groups
    instead of one dense wall of fields. */
@@ -653,6 +693,25 @@ hr.rl{border:none;border-top:1px solid var(--rl)}
 }
 .coupon-apply:hover{background:var(--ink);color:var(--cr)}
 .coupon-apply:disabled{opacity:.35;cursor:not-allowed}
+.offers-link{background:none;border:0;padding:6px 0;margin:0 0 10px;font-family:var(--ss);font-size:12px;
+  color:var(--br);text-decoration:underline;text-underline-offset:3px;cursor:pointer;min-height:24px}
+.offers-link:hover{color:var(--ink)}
+.offers-box{max-width:380px;padding:32px 24px 20px}
+.offers-list{display:flex;flex-direction:column;gap:10px;margin:6px 0 14px;text-align:left}
+.offers-empty{font-size:13px;color:var(--mu);font-style:italic;text-align:center;padding:12px 0}
+.offer-card{display:flex;align-items:center;justify-content:space-between;gap:10px;width:100%;
+  padding:14px 16px;border:1px dashed var(--mu);background:var(--cr2);color:var(--ink);
+  font-family:var(--ss);text-align:left;cursor:pointer;transition:background .18s,border-color .18s}
+button.offer-card:hover,button.offer-card:focus-visible{background:var(--cr3);border-color:var(--ink);outline:none}
+.offer-card.on{border-style:solid;border-color:var(--ink);background:var(--cr3)}
+.offer-main{display:flex;flex-direction:column;gap:2px}
+.offer-pct{font-family:var(--sf);font-size:18px;line-height:1.1}
+.offer-code{font-size:11px;letter-spacing:.16em;color:var(--br);font-weight:600}
+.offer-state{font-size:11px;color:var(--br);white-space:nowrap}
+.offer-left{font-size:10px;color:var(--red);font-weight:600;margin-left:auto}
+.offer-card.used{cursor:not-allowed;background:rgba(46,18,8,.04);border-color:var(--rl);color:rgba(46,18,8,.4)}
+.offer-card.used .offer-code{color:rgba(46,18,8,.4);text-decoration:line-through}
+.offer-card.used .offer-state{color:var(--red);font-weight:600}
 .coupon-msg{font-size:12px;margin:0 0 20px;display:none;font-style:italic;line-height:1.5}
 .coupon-msg.ok{color:var(--br)}
 .coupon-msg.err{color:var(--red)}
@@ -727,6 +786,12 @@ hr.rl{border:none;border-top:1px solid var(--rl)}
 .m-body{font-size:13px;color:var(--br);line-height:1.7;margin-bottom:22px}
 .modal-actions{display:flex;justify-content:center}
 .modal-btn{width:auto!important;padding:11px 36px!important;margin-top:0!important;display:inline-flex!important}
+#m-event .m-title{line-height:1.25}
+.m-eyebrow{font-size:10px;letter-spacing:.18em;text-transform:uppercase;color:var(--mu);margin-bottom:8px}
+.modal-actions.m-stack{flex-direction:column;align-items:center;gap:10px}
+.m-link{background:none;border:0;font-family:var(--ss);font-size:12px;color:var(--mu);
+  text-decoration:underline;text-underline-offset:3px;cursor:pointer;padding:8px 12px;min-height:24px}
+.m-link:hover{color:var(--ink)}
 
 /* ══════════════════════════════════════════
    FOOTER
@@ -895,3 +960,57 @@ hr.rl{border:none;border-top:1px solid var(--rl)}
   .hero-copy .l3{font-size:18px}
   .for-grid{grid-template-columns:1fr}
 }
+
+
+/* ══════════════════════════════════════════
+   STICKY RESERVE BAR
+   Hidden until the hero is scrolled past,
+   hidden again over the booking section.
+══════════════════════════════════════════ */
+.sticky-cta{
+  position:fixed;left:0;right:0;bottom:0;z-index:98;
+  display:flex;align-items:center;justify-content:center;gap:10px;
+  padding:16px 20px;
+  padding-bottom:calc(16px + env(safe-area-inset-bottom,0px));
+  background:var(--ink);color:var(--cr);
+  font-family:var(--ss);font-size:10px;font-weight:500;
+  letter-spacing:.2em;text-transform:uppercase;
+  border-top:1px solid rgba(240,234,214,.14);
+  box-shadow:0 -6px 24px rgba(46,18,8,.22);
+  transform:translateY(110%);
+  transition:transform .28s ease, background .25s;
+  will-change:transform;
+}
+.sticky-cta.on{transform:translateY(0)}
+.sticky-cta:hover{background:var(--br)}
+.sticky-cta-arrow{font-size:13px;letter-spacing:0;line-height:1}
+
+@media(min-width:901px){
+  /* A bottom bar reads as mobile furniture — desktop keeps the nav CTA. */
+  .sticky-cta{display:none}
+}
+@media(max-width:360px){
+  .sticky-cta{font-size:9px;letter-spacing:.14em;padding-inline:14px}
+}
+@media(prefers-reduced-motion:reduce){
+  .sticky-cta{transition:none}
+}
+
+/* ══════════════════════════════════════════
+   FORM — booker vs. additional guests
+══════════════════════════════════════════ */
+.mbl-hint{
+  font-family:var(--ss);font-size:8px;font-weight:400;
+  letter-spacing:.14em;text-transform:uppercase;color:var(--mu);
+}
+.ff label .opt{
+  font-size:8px;letter-spacing:.14em;text-transform:uppercase;
+  color:var(--mu);font-weight:400;
+}
+
+
+/* One quiet line under the pay button (replaced the three-item checklist) */
+.pay-note{font-size:11px;color:var(--mu);text-align:center;margin:0;letter-spacing:.02em}
+
+/* Menu course not announced yet ("Reveals on 3rd Oct") */
+.cn.cn-tbd{font-style:italic;opacity:.55;letter-spacing:.01em}
