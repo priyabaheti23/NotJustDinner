@@ -167,7 +167,7 @@ const MAX_CAL_MONTHS_AHEAD = 1; // default: how many months ahead guests can bro
 // months); past days inside them still grey out as usual. Once they have
 // all ended, the calendar falls back to the default rolling behaviour.
 // Leave the list empty [] for the default.
-const BOOKING_MONTHS = ['2026-10'];
+const BOOKING_MONTHS = ['2026-11'];
 
 // Can guests book an evening on the same day? false = bookings for a date
 // close at midnight before it. (The backend enforces the same rule.)
